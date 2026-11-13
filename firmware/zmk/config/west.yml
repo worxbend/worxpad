@@ -4,8 +4,8 @@
 # this file wins over the ZMK import of the same name, so the entry repeats ZMK's import name-blocklist.
 # Imports resolve in file order and the first definition of a name wins, so ZMK comes first: its LVGL pin must
 # win over the LVGL entry in Zephyr's manifest.
-# It also repeats ZMK's group-filter, because Zephyr's own filter turns the optional group off and nanopb, which
-# ZMK Studio needs, is in that group. LVGL and the Studio messages stay pinned by commit in ZMK's manifest.
+# LVGL and the Studio messages stay pinned by commit in ZMK's manifest. Against ZMK's manifest alone, the
+# resolved project list differs only in the Zephyr revision (west list, 57 projects, 2026-11-14).
 manifest:
   remotes:
     - name: zmkfirmware
@@ -38,6 +38,5 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
-  group-filter: [+optional]
   self:
     path: config

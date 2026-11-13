@@ -2,7 +2,9 @@
 
 How to turn an assembled board from JLCPCB, the case parts and the hand-fitted parts into a worxpad. The bare
 board is tested before anything is soldered or closed. The case build order is decision
-[D28](decisions.md#d28-build-order-cell-orientation-and-lead); this page adds the bench tests around it.
+[D28](decisions.md#d28-build-order-cell-orientation-and-lead), steps 7 on as revised by
+[D39](decisions.md#d39-cell-bonded-to-the-pocket-floor-top-assembly-lowered-onto-the-bottom-shell); this page adds
+the bench tests around it.
 
 > **Nobody has built one.** These steps follow the design files and the records. Nothing here has been tried
 > on real parts. Where a step depends on a guess, it says so. Stop at the first step that does not behave as
@@ -16,8 +18,8 @@ board is tested before anything is soldered or closed. The case build order is d
 - Screws and feet: [cad/production/hardware.csv](../cad/production/hardware.csv).
 - The printed switch insertion jig (D26) and a 1.10 mm fork shim for the knobs.
 - A soldering iron, flux, a multimeter, a USB-C cable, a TC2030 cable and an SWD probe ([flashing.md](flashing.md)).
-- 0.3 mm insulating sheet, the lens adhesive ring, the black tape frame, the display foam pad and the battery
-  foam pad.
+- A self-adhesive 0.3 mm insulating sheet (0.3 mm overall), the lens adhesive ring, the black tape frame, the
+  display foam pad and 0.2 mm double-sided foam tape for the cell.
 
 ## What is already on the board
 
@@ -55,10 +57,20 @@ USB. Neither has run on a board yet.
 
 ## 5. Test the inputs
 
-1. Short each socket's two contacts with tweezers: the key reports. With the firmware's keymap
-   ([keymap.md](keymap.md)) every position must give its own code.
-2. Press both buttons and both knob pushes.
-3. Turn both encoders. If one counts backwards, swap A and B in the firmware, not on the board.
+Use a key-event viewer on the host (for example evtest or wev on Linux), not an open application: most Edit
+keys are shortcuts. The board starts on the Edit layer of the stock keymap ([keymap.md](keymap.md)). Row 1 is the
+rear row, column 1 the left column. The display is not fitted yet, so the layer shows only in what the keys send.
+
+1. Short each socket's two contacts with tweezers. On Edit every key sends its own report: Esc, Ctrl+Z,
+   Ctrl+Shift+Z, Ctrl+Shift+S; Ctrl+X, Ctrl+C, Ctrl+V, Delete; Shift, Ctrl and Alt (modifier only, no key
+   code), Space; Ctrl+A, Ctrl+F, Tab, Enter.
+2. Push the left knob: Ctrl+S. Push the right knob: Ctrl+0.
+3. Turn both knobs. Left knob to the right: Ctrl+Shift+Z; to the left: Ctrl+Z. Right knob to the right: Ctrl+=;
+   to the left: Ctrl+-. If one is reversed, swap A and B in the firmware, not on the board.
+4. The buttons send no key code; test them by the layer they select. Press the right button once, then row 1,
+   column 2: Up arrow (Nav). Press the right button twice more, then row 1, column 2: Ctrl+Z (Edit again).
+5. Hold the left button, short row 1, column 2 and release both: the board goes to Nav, so row 1, column 2 sends
+   Up arrow. Hold the left button and short row 1, column 1 to return to Edit.
 
 ## 6. Test the display on the bench
 
@@ -66,17 +78,19 @@ USB. Neither has run on a board yet.
 2. Power on: the status screen must show. A flipped image or an 80-line offset is a firmware setting
    ([firmware/README.md](../firmware/README.md)).
 3. Open the latch and take the panel out again; it goes into the top shell first in step 8.
+4. Optional: repeat step 5 items 4 and 5 and watch the layer name in the status bar change.
 
 ## 7. Check the cell
 
 1. Measure the cell plug before it ever touches the board: pin 1 must be positive (power 7.4). Reversed
    plugs exist; the AO3401A protects the board, but do not rely on it.
 2. Measure the lead length: 19 to 60 mm from the PCM to the plug (D28). The value in `board.toml` (50 mm) is
-   a guess. Do not fit a cell whose lead is outside the range.
+   a guess. Do not fit a cell whose lead is outside the range. Plugging it in during step 8 item 9 needs
+   more than the minimum (D39).
 3. Plug it in on the bench, USB unplugged, switch on: the board runs from the cell. Plug USB: /CHG (TP7) goes low and
    the charge current is about 400 mA (362 to 443 mA by the data sheet). Unplug the cell again.
 
-## 8. Build the case (D28)
+## 8. Build the case (D28, D39)
 
 Prepare first: check the CNC parts as in [ordering-case.md](ordering-case.md#when-the-parts-arrive). For the
 FDM print, press the heat-set inserts first ([printing.md](printing.md#inserts-and-screws)).
@@ -89,19 +103,26 @@ FDM print, press the heat-set inserts first ([printing.md](printing.md#inserts-a
 5. Seat the PCB on the G posts; fit G1 and G2 (M2 x 4 pan head) from below.
 6. Turn the assembly deck up onto the insertion jig and press in the 16 switches (D26). Never press a switch
    with the cell under the board.
-7. Deck down on the mat. Lay the 0.3 mm insulating sheet over the sockets, lay the cell on it inside the pocket
-   outline with the PCM end toward +X (toward the connector), plug the lead into J3 and dress the loop in the
-   relief.
-8. Slide the RF insert into the bottom-shell slot from above. Place the foam pad on the pocket floor. Stick the
-   four feet into their pockets.
-9. Lower the bottom shell over the cell. Fit C1 and C2 (M2 x 6) from below.
-10. Deck up. Fit K1 to K4 (M1.6 x 5) from the top, then the keycaps. Put the 1.10 mm shim on the plinth, rest
-    each knob on it under light finger pressure, tighten the M2 set screw lightly on the shaft flat, and pull
-    the shim out. The knob must click and return.
+7. Deck down on the mat. Stick the insulating sheet onto the socket bodies so that it covers the battery
+   pocket outline.
+8. Bottom shell open side up. Slide the RF insert into its slot from above, both keys into their reliefs. Bond
+   the 0.2 mm double-sided foam tape to the pocket floor and peel its liner. Set the cell on it inside the pocket
+   outline, PCM end toward +X (toward the connector) and the lead in the relief. Press it down with a flat hand,
+   never with a fingertip or a tool.
+9. Hold the top assembly deck up over the bottom shell, +X ends together, only as high as the lead allows. Push
+   the plug into J3 along +X. Lower the top assembly and dress the loop in the relief, clear of the split face
+   and the posts. The split faces must meet all round without force; if they do not, lift and dress the lead
+   again. Never press the shells together over the lead. The working height the lead allows is not known; a lead
+   near the 19 mm minimum may be too short for this step (D39, MEASURE on the first build).
+10. Fit K1 to K4 (M1.6 x 5) from the top. Turn the unit underside up on the mat, fit C1 and C2 (M2 x 6) from
+    below and stick the four feet into their pockets.
+11. Deck up. Fit the keycaps. Put the 1.10 mm shim on the plinth, rest each knob on it under light finger
+    pressure, tighten the M2 set screw lightly on the shaft flat, and pull the shim out. The knob must click and
+    return.
 
 ## 9. Final test
 
-1. Every key, both knobs (turn and push), both buttons.
+1. Every key, both knobs (turn and push), both buttons, as in step 5; the display now shows the layer.
 2. USB: the board enumerates; the charge mark shows on the screen.
 3. Bluetooth: pair with one host, then a second profile.
 4. Radio range: the acceptance test of mcu-radio 7.3.4 on the first aluminium unit (README "Before you
@@ -110,6 +131,7 @@ FDM print, press the heat-set inserts first ([printing.md](printing.md#inserts-a
 
 ## To open it again
 
-Run D28 backward. Unit underside up, remove C1 and C2 and lift the bottom shell: the cell stays lying on the PCB.
-**Unplug the cell first**, then anything else. To change a switch, take the cell out and put the top shell with
-the PCB on the insertion jig (D26).
+Run the build backward (D39). Unit underside up, remove C1 and C2; deck up, remove K1 to K4. Lift the top
+assembly only as far as the lead allows: the cell stays bonded in the bottom shell. **Unplug the cell first**,
+then anything else. To change a switch, put the top shell with the PCB on the insertion jig (D26); the cell stays
+in the bottom shell, away from the board.

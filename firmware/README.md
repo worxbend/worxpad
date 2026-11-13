@@ -77,9 +77,10 @@ Pinned revisions: ZMK `4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85` and Zephyr
 ZMK's branch `v4.1.0+zmk-fixes` resolved to on 2026-11-13). The Zephyr modules come from that Zephyr
 manifest, LVGL and the Studio messages by commit from ZMK's; Zephyr SDK 0.16.9 in the image.
 
-Last build, 2026-11-13: passed. FLASH 391,252 B of 811,008 B (48.24 %), RAM 122,242 B of 262,144 B (46.63 %).
+Last build, 2026-11-14: passed. FLASH 391,548 B of 811,008 B (48.28 %), RAM 122,322 B of 262,144 B (46.66 %).
 `firmware/build.sh` also checks that the UF2 carries family 0xADA52840 and starts at 0x26000, as the Adafruit
-bootloader needs. Two warnings, none from worxpad code: the deprecated Kconfig symbol `KSCAN`, set by ZMK, and
+bootloader needs, and that the build configuration has the worxpad screen, the display hook and ZMK's
+blank-on-idle switched on. Two warnings, none from worxpad code: the deprecated Kconfig symbol `KSCAN`, set by ZMK, and
 an implicit declaration of `pm_device_runtime_enable` in ZMK's `kscan_gpio_matrix.c`, which misses an include
 when `CONFIG_PM_DEVICE_RUNTIME` is on. The call links to the real function.
 
@@ -88,7 +89,7 @@ when `CONFIG_PM_DEVICE_RUNTIME` is on. The call links to the real function.
 | Check | Command | What it covers |
 | --- | --- | --- |
 | Pin map | `make pin-check` | every devicetree and pin-control pin against `[pinmap]`; unused nets accounted for; no spare pin used; pulls; sleep states; matrix, transform and physical layout against `[keys]`, `[encoders]`, `[buttons]`; encoder steps; display clock, size and PWM period; bindings per layer |
-| Build | `make firmware` | the board definition, keymap and module code compile and link for the nRF52840; the UF2 family and start address suit the Adafruit bootloader |
+| Build | `make firmware` | the board definition, keymap and module code compile and link for the nRF52840; the UF2 family and start address suit the Adafruit bootloader; the screen, display hook and blank-on-idle options are on |
 
 There are no host unit tests for the screen code.
 

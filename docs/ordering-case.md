@@ -51,7 +51,7 @@ has one paste-ready remark per part and a table of prepared answers. In short:
 | Field | Value | Why |
 |---|---|---|
 | Upload | one STEP per part, a drawing of the same name | JLCCNC cannot quote an assembly; the drawing carries threads and tolerances |
-| Process | CNC milling (shells, insert); CNC turning (knob) | two setups per shell, no undercut (enclosure 5) |
+| Process | CNC milling, 3-axis (shells, insert); CNC turning (knob) | no undercut (enclosure 5). Top shell: two setups. Bottom shell: three; the third holds the 4.89 degree ramp level for the foot pockets, which are square to the ramp ([D40](decisions.md#d40-third-setup-for-the-bottom-shell-foot-pockets)). Expect it in the quote |
 | Material | Aluminium 6061-T6; POM black for the insert | 7075 costs more and anodises less evenly; stiffness, not strength, limits this case (enclosure 4.3) |
 | Surface finish | anodising with bead blasting, black | plain anodising has no blasting; the insert stays bare plastic (radio window) |
 | Anodise type | Type II sulphuric | the switch openings are compensated for Type II growth only; hardcoat (Type III) grows 25 to 100 um (enclosure 5) |
@@ -115,7 +115,8 @@ None of these is in the JLCPCB assembly library.
 ## Cost
 
 The case block of [parts.md, Cost](parts.md#cost). **Guesses scaled from community orders; no live JLCCNC or
-PCBWay quote was made.** A JLCCNC quote needs an account and the STEP files, which now exist.
+PCBWay quote was made.** A JLCCNC quote needs an account and the STEP files, which now exist. The guesses assume
+two setups per shell (enclosure 5 cost levers); the bottom shell's third setup (D40) is not in them.
 
 | Item | 1 set (USD) | 5 sets, total (USD) |
 |---|---|---|

@@ -10,7 +10,8 @@ builder (cad/build.py) writes the STEP files, drawings and hole tables. This scr
 - writes production/README.md (what to order where, every file with its state) and production/manifest.csv
   (size and SHA-256 of every file that exists);
 - fails when a listed file is missing or empty, when the BOM and the placement list name different
-  designators, when the JLCPCB and PCBWay files disagree, when the case checks have a failure, or when a
+  designators, when the JLCPCB and PCBWay files disagree, when the panel Gerber zip lacks a layer or does not
+  span the panel size, when the case checks have a failure, when a CNC copy is stale (draft only), or when a
   hand-written list is malformed.
 
 It writes the index even when it fails, so production/README.md always says what is missing.
@@ -40,6 +41,16 @@ CAD_PRODUCTION = REPO_ROOT / "cad" / "production"
 JLCCNC_DIR = CAD_PRODUCTION / "jlccnc"
 JLCCNC_HAND_WRITTEN = {"ORDER_NOTES.md"}
 LCSC_NUMBER = re.compile(r"^C\d+$")
+# The TF.FileFunction value of every file the panel Gerber zip must hold: 4 copper layers, mask, paste and
+# legend on both faces, the outline, and the plated and non-plated drill files. Exactly these, once each.
+PANEL_FILE_FUNCTIONS = frozenset({
+    "Copper,L1,Top", "Copper,L2,Inr", "Copper,L3,Inr", "Copper,L4,Bot",
+    "Soldermask,Top", "Soldermask,Bot", "Paste,Top", "Paste,Bot", "Legend,Top", "Legend,Bot",
+    "Profile,NP", "Plated,1,4,PTH", "NonPlated,1,4,NPTH",
+})
+FILE_FUNCTION = re.compile(r"TF\.FileFunction,([^*\r\n]+)")
+PANEL_SIZE = re.compile(r"Dimensions \| ([\d.]+) x ([\d.]+) mm \(panel\)")
+PANEL_SIZE_TOLERANCE_MM = 0.01
 
 
 @dataclass(frozen=True)
@@ -59,7 +70,7 @@ CNC_PARTS = (
     CncPart("top_shell", "6061-T6, bead blast, black anodise", 1, True),
     CncPart("bottom_shell", "6061-T6, bead blast, black anodise", 1, True, ("engraving_underside",)),
     CncPart("rf_insert", "black POM, as machined", 1, False),
-    CncPart("knob", "6061-T6 turned, bead blast, black anodise", 2, False),
+    CncPart("knob", "6061-T6 turned, bead blast, black anodise", 2, True),   # M2 set-screw thread
 )
 
 
@@ -108,7 +119,7 @@ def case_orders() -> list[Order]:
                       for suffix, role in ((".step", "geometry"), (".pdf", "drawing"), (".dxf", "2D plan"))]
         cnc_files += [Listed(JLCCNC_DIR / f"{part.order_name}_{extra}.dxf", f"{part.stem}, laser-mark artwork")
                       for extra in part.extra_dxf]
-    cnc_files += [Listed(JLCCNC_DIR / "hole_table.csv", "every tapped and countersunk hole"),
+    cnc_files += [Listed(JLCCNC_DIR / "hole_table.csv", "every tapped and countersunk hole, shells and knob"),
                   Listed(JLCCNC_DIR / "ORDER_NOTES.md", "form settings, remarks, prepared answers")]
     resin, drawings = CAD_EXPORTS / "resin", CAD_EXPORTS / "drawings"
     return [
@@ -184,6 +195,28 @@ def self_check() -> None:
     missing = "Designator,Mid X,Mid Y,Layer,Rotation\nR1,1,1,Bottom,0\n"
     assert check_bom_against_placements(bom, missing, ("bom", "cpl")), "a missing placement must fail"
     assert check_lcsc_numbers(bom.replace("C25744", ""), "bom"), "a line without a number must fail"
+    self_check_gerbers()
+
+
+def fake_panel_zip(functions: list[str], outline: str) -> bytes:
+    """A panel zip with one file per function; the Profile file carries the outline coordinates."""
+    out = io.BytesIO()
+    with zipfile.ZipFile(out, "w") as archive:
+        for index, function in enumerate(functions):
+            body = outline if function == "Profile,NP" else ""
+            archive.writestr(f"layer{index}.gbr", f"G04 #@! TF.FileFunction,{function}*\n%MOMM*%\n{body}")
+    return out.getvalue()
+
+
+def self_check_gerbers() -> None:
+    """The Gerber check must fail on a missing layer, a repeated layer and a wrong outline size."""
+    outline = "%FSLAX46Y46*%\nX0Y0D02*\nX135650000Y0D01*\nX135650000Y95300000D01*\n"
+    good = sorted(PANEL_FILE_FUNCTIONS)
+    assert not check_gerber_zip(fake_panel_zip(good, outline), (135.65, 95.30)), "a full panel must pass"
+    assert check_gerber_zip(fake_panel_zip(good[1:], outline), (135.65, 95.30)), "a missing layer must fail"
+    assert check_gerber_zip(fake_panel_zip(good + good[:1], outline), (135.65, 95.30)), "a repeat must fail"
+    assert check_gerber_zip(fake_panel_zip(good, outline), (135.65, 96.30)), "a wrong size must fail"
+    assert check_gerber_zip(fake_panel_zip(good, outline), None), "an unknown panel size must fail"
 
 
 # --------------------------------------------------------------------------------------------------------
@@ -205,6 +238,7 @@ def check_pcb(pcb_root: Path) -> tuple[list[str], dict[str, int]]:
     problems += check_lcsc_numbers(text["bom.csv"], "JLCPCB bom.csv")
     problems += check_order_zip(jlc)
     problems += same_bytes(jlc / f"{NAME}-panel-gerbers.zip", pcbway / f"{NAME}-panel-gerbers.zip")
+    problems += check_panel_gerbers(jlc)
     counts = {"bom_lines": len(read_rows(text["bom.csv"])), "placements": len(read_rows(text["cpl.csv"]))}
     return problems, counts
 
@@ -221,6 +255,58 @@ def check_order_zip(jlc: Path) -> list[str]:
             elif (jlc / member).is_file() and archive.read(member) != (jlc / member).read_bytes():
                 problems.append(f"{order_zip.name}: {member} differs from the loose file")
     return problems
+
+
+def check_panel_gerbers(jlc: Path) -> list[str]:
+    """Opens the panel zip that is uploaded; the PCBWay copy is checked byte-identical to it."""
+    panel_zip, readme = jlc / f"{NAME}-panel-gerbers.zip", jlc / "README.md"
+    if not panel_zip.is_file() or panel_zip.stat().st_size == 0:
+        return []   # reported by missing_files
+    size = PANEL_SIZE.search(readme.read_text(encoding="utf-8")) if readme.is_file() else None
+    panel = (float(size.group(1)), float(size.group(2))) if size else None
+    return [f"{panel_zip.name}: {problem}" for problem in check_gerber_zip(panel_zip.read_bytes(), panel)]
+
+
+def check_gerber_zip(data: bytes, panel: tuple[float, float] | None) -> list[str]:
+    """Each required layer exactly once, read from the TF.FileFunction header, and an outline that spans the
+    panel. The file names are not trusted."""
+    found: dict[str, list[str]] = {}
+    outline = ""
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        for member in archive.namelist():
+            text = archive.read(member).decode("ascii", errors="replace")
+            match = FILE_FUNCTION.search(text)
+            function = match.group(1).strip() if match else f"no file function ({member})"
+            found.setdefault(function, []).append(member)
+            if function == "Profile,NP":
+                outline = text
+    problems = [f"lacks the {function} file" for function in sorted(PANEL_FILE_FUNCTIONS - found.keys())]
+    problems += [f"unexpected file {', '.join(members)} ({function})"
+                 for function, members in sorted(found.items()) if function not in PANEL_FILE_FUNCTIONS]
+    problems += [f"{function} appears {len(members)} times: {', '.join(members)}"
+                 for function, members in sorted(found.items())
+                 if function in PANEL_FILE_FUNCTIONS and len(members) > 1]
+    if panel is None:
+        return problems + ["panel size not found in README.md (\"Dimensions | W x H mm (panel)\")"]
+    if outline:
+        problems += check_outline_size(outline, panel)
+    return problems
+
+
+def check_outline_size(outline: str, panel: tuple[float, float]) -> list[str]:
+    """Bounding box of every coordinate in the Profile file, in mm, against the panel size."""
+    number_format = re.search(r"%FSLAX(\d)(\d)Y\d\d\*%", outline)
+    if not number_format or "%MOMM*%" not in outline:
+        return ["outline is not in a millimetre FSLA format; size not checked"]
+    scale = 10 ** int(number_format.group(2))
+    points = [(int(x) / scale, int(y) / scale) for x, y in re.findall(r"X(-?\d+)Y(-?\d+)D0[12]\*", outline)]
+    if not points:
+        return ["outline has no coordinates"]
+    xs, ys = [x for x, _ in points], [y for _, y in points]
+    span = (max(xs) - min(xs), max(ys) - min(ys))
+    if all(abs(got - want) <= PANEL_SIZE_TOLERANCE_MM for got, want in zip(span, panel, strict=True)):
+        return []
+    return [f"outline spans {span[0]:.2f} x {span[1]:.2f} mm, the README panel is {panel[0]:.2f} x {panel[1]:.2f} mm"]
 
 
 def same_bytes(first: Path, second: Path) -> list[str]:
@@ -271,6 +357,17 @@ def hole_table() -> bytes:
                 writer.writerow([part.order_name, row["hole"], row["x"], row["y"], row["callout"], row["face"],
                                  row["screw"]])
     return out.getvalue().encode()
+
+
+def stale_copies(files: dict[Path, bytes]) -> list[str]:
+    """Draft mode writes nothing, so it compares the copies on disk with what a full run would write."""
+    problems = [f"{rel(path)} is stale or not yet copied; run make order"
+                for path, content in files.items() if not path.is_file() or path.read_bytes() != content]
+    if JLCCNC_DIR.is_dir():
+        problems += [f"{rel(path)} is no longer backed by cad/exports; run make order"
+                     for path in sorted(JLCCNC_DIR.iterdir())
+                     if path.is_file() and path.name not in JLCCNC_HAND_WRITTEN and path not in files]
+    return problems
 
 
 def check_hole_sources() -> list[str]:
@@ -424,10 +521,13 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     pcb_root = REPO_ROOT / "pcb" / ".build" / "draft" if draft else REPO_ROOT / "pcb"
+    package = cnc_package()
     if not draft:
-        write_cnc_package(cnc_package())
+        write_cnc_package(package)
     orders = pcb_orders(pcb_root) + case_orders()
     problems, counts = collect_problems(pcb_root, orders)
+    if draft:
+        problems += stale_copies(package)
     if not draft:
         INDEX_DIR.mkdir(exist_ok=True)
         (INDEX_DIR / "README.md").write_text(index_markdown(orders, problems, counts), encoding="utf-8")

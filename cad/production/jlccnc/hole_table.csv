@@ -1,16 +1,16 @@
 part,hole,x,y,callout,face,screw
-worxpad_top_shell,C1,120.9,12.0,"M2x0.4-6H, full thread 4.80, drill 1.6 x 5.80 (118 deg point to 6.28), mouth Z -9.95","from the post end, underside up",M2 x 6 DIN 7991
-worxpad_top_shell,C2,120.9,77.0,"M2x0.4-6H, full thread 4.80, drill 1.6 x 5.80 (118 deg point to 6.28), mouth Z -11.65","from the post end, underside up",M2 x 6 DIN 7991
-worxpad_top_shell,G1,120.9,32.0,"M2x0.4-6H, full thread 2.70, drill 1.6 x 3.70 (118 deg point to 4.18), mouth Z -6.2","from the post end, underside up",M2 x 4 ISO 7045 pan head
-worxpad_top_shell,G2,121.25,66.6,"M2x0.4-6H, full thread 2.70, drill 1.6 x 3.70 (118 deg point to 4.18), mouth Z -6.2","from the post end, underside up",M2 x 4 ISO 7045 pan head
+worxpad_top_shell,C1,120.9,12.0,"M2x0.4-6H, plug tap, full thread 4.80, drill 1.6 x 5.80 (118 deg point to 6.28), mouth Z -9.95","from the post end, underside up",M2 x 6 DIN 7991
+worxpad_top_shell,C2,120.9,77.0,"M2x0.4-6H, plug tap, full thread 4.80, drill 1.6 x 5.80 (118 deg point to 6.28), mouth Z -11.65","from the post end, underside up",M2 x 6 DIN 7991
+worxpad_top_shell,G1,120.9,32.0,"M2x0.4-6H, bottoming tap, full thread 3.00, drill 1.6 x 3.50 (118 deg point to 3.98), mouth Z -6.2","from the post end, underside up",M2 x 4 ISO 7045 pan head
+worxpad_top_shell,G2,121.25,66.6,"M2x0.4-6H, bottoming tap, full thread 3.00, drill 1.6 x 3.50 (118 deg point to 3.98), mouth Z -6.2","from the post end, underside up",M2 x 4 ISO 7045 pan head
 worxpad_top_shell,K1,23.525,11.0,"clearance 1.8 thru lip, csk 3.3 x 90 at the plate top (Z -4.0)",deck side,M1.6 x 5 DIN 7991
 worxpad_top_shell,K2,61.625,11.0,"clearance 1.8 thru lip, csk 3.3 x 90 at the plate top (Z -4.0)",deck side,M1.6 x 5 DIN 7991
 worxpad_top_shell,K3,23.525,68.15,"clearance 1.8 thru lip, csk 3.3 x 90 at the plate top (Z -4.0)",deck side,M1.6 x 5 DIN 7991
 worxpad_top_shell,K4,61.625,68.15,"clearance 1.8 thru lip, csk 3.3 x 90 at the plate top (Z -4.0)",deck side,M1.6 x 5 DIN 7991
-worxpad_bottom_shell,K1,23.525,11.0,"M1.6x0.35-6H, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
-worxpad_bottom_shell,K2,61.625,11.0,"M1.6x0.35-6H, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
-worxpad_bottom_shell,K3,23.525,68.15,"M1.6x0.35-6H, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
-worxpad_bottom_shell,K4,61.625,68.15,"M1.6x0.35-6H, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
+worxpad_bottom_shell,K1,23.525,11.0,"M1.6x0.35-6H, plug tap, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
+worxpad_bottom_shell,K2,61.625,11.0,"M1.6x0.35-6H, plug tap, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
+worxpad_bottom_shell,K3,23.525,68.15,"M1.6x0.35-6H, plug tap, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
+worxpad_bottom_shell,K4,61.625,68.15,"M1.6x0.35-6H, plug tap, full thread 4.80, drill 1.25 x 5.60 (118 deg point to 5.98), mouth Z -5.2","from the post top, cavity side",M1.6 x 5 DIN 7991
 worxpad_bottom_shell,C1,120.9,12.0,"clearance 2.2 thru, csk 4.3 x 90 at Z -12.0",underside,M2 x 6 DIN 7991
 worxpad_bottom_shell,C2,120.9,77.0,"spot-face 4.8 to Z -13.7, clearance 2.2 thru, csk 4.3 x 90 at Z -13.7",underside,M2 x 6 DIN 7991
 worxpad_bottom_shell,RESET,88.0,62.0,1.5 thru to Z -9.5,underside,-

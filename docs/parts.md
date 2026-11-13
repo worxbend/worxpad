@@ -76,9 +76,9 @@ fiducials.
 |---|---|---|---|
 | Lofree Ghost switch (Kailh PG1353D class, linear, full POM) | 16 | lofree.co, 106-pack 59.00 in the shop's currency | Fallback: Kailh PG1353 set from kailh.net, only if the retention coupon fails |
 | DisplayModule DM-TFT13-377p24, 1.3 inch 240 x 240 IPS | 1 | DisplayModule, USD 7.90, 60 available | Flex into J2. Buy two for the first unit, ten for five (display 8) |
-| Adafruit 258 LiPo, 1,200 mAh, JST PH | 1 | adafruit.com, USD 9.95 | Bring-up and FDM cell. Measure the lead (19 to 60 mm allowed, D28). Production cell EEMB LP404261-PCM-LD is quotation only |
-| Insulating sheet 0.3 mm, polyimide or PET | 1 | any | Over the sockets at the battery pocket (power 5.2) |
-| Lens adhesive ring 0.13 mm, black tape frame 0.10 mm, display foam pad 3.0 mm, battery foam 0.2 mm | 1 set | not chosen | Product choice open (display 8) |
+| Adafruit 258 LiPo, 1,200 mAh, JST PH | 1 | adafruit.com, USD 9.95 | Bring-up and FDM cell. Measure the lead (19 to 60 mm allowed, D28; D39 may need more to plug it in). Production cell EEMB LP404261-PCM-LD is quotation only |
+| Insulating sheet 0.3 mm overall, polyimide or PET, self-adhesive | 1 | any | Stuck on the sockets at the battery pocket (power 5.2, D39) |
+| Lens adhesive ring 0.13 mm, black tape frame 0.10 mm, display foam pad 3.0 mm, battery double-sided foam tape 0.2 mm | 1 set | not chosen | Product choice open (display 8) |
 
 ## Made case parts
 

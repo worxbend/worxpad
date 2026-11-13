@@ -49,7 +49,7 @@ Guide: [docs/ordering-case.md](../docs/ordering-case.md).
 | [cad/production/jlccnc/worxpad_knob.step](../cad/production/jlccnc/worxpad_knob.step) | knob, geometry | present |
 | cad/production/jlccnc/worxpad_knob.pdf | knob, drawing | missing |
 | cad/production/jlccnc/worxpad_knob.dxf | knob, 2D plan | missing |
-| [cad/production/jlccnc/hole_table.csv](../cad/production/jlccnc/hole_table.csv) | every tapped and countersunk hole | present |
+| [cad/production/jlccnc/hole_table.csv](../cad/production/jlccnc/hole_table.csv) | every tapped and countersunk hole, shells and knob | present |
 | [cad/production/jlccnc/ORDER_NOTES.md](../cad/production/jlccnc/ORDER_NOTES.md) | form settings, remarks, prepared answers | present |
 
 ## Case, CNC, fallback: PCBWay CNC
@@ -106,8 +106,7 @@ Guide: [docs/parts.md](../docs/parts.md).
 - cad/production/jlccnc/worxpad_knob.pdf missing
 - cad/production/jlccnc/worxpad_knob.dxf missing
 - PCB: BOM and placement files missing; designators not compared
-- case check cnc_G1_tip_to_last_full_thread fails: 0.15 mm against 0.4 (deepest tip Z -3.65)
-- case check cnc_G2_tip_to_last_full_thread fails: 0.15 mm against 0.4 (deepest tip Z -3.65)
+- cad/exports/drawings/knob_holes.csv missing
 
 ## Gates the script cannot check
 

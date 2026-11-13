@@ -135,9 +135,9 @@ Mask the thread during anodising. Cosmetic: the outside and the top face.
 |---|---|
 | Thread direction? | All right-hand. |
 | Thread depth? | Drawing table and `hole_table.csv`: drill depth (full diameter; the 118 degree point is extra and modelled) and minimum full thread per hole. |
-| Can the C threads be shallower? | No. An M2 x 6 DIN 7991 engages 3.95 mm and its tip stops 0.40 mm before the last full thread. |
+| Can the C threads be shallower? | No. An M2 x 6 ISO 7046-1 countersunk screw engages 3.95 mm and its tip stops 0.40 mm before the last full thread (computed for a 4.0 head; the 3.8 ISO head sits about 0.1 deeper, being re-checked). |
 | The G threads are short (3.00 mm, bottoming tap). | Intended: the G posts end at the PCB top, and the screw is an M2 x 4 pan head. A plug tap leaves too little thread; a deeper drill leaves under 2.0 mm of metal past the point. Please confirm you can cut 3.00 mm of full thread in a 3.50 mm drill with a bottoming tap. The owner has still to confirm this choice (D6). |
-| K threads are M1.6, small. | Intended (D30): an M1.6 x 5 DIN 7991 engages 3.80 to 4.25 mm; 4.88 mm or more of metal stays beyond the drill point. |
+| K threads are M1.6, small. | Intended (D30): an M1.6 x 5 ISO 7046-1 countersunk screw engages 3.80 to 4.25 mm; 4.88 mm or more of metal stays beyond the drill point. |
 | Why must the G1 and G2 post faces be bare? | They press on a plated ground ring on the PCB and ground the top shell. Anodise insulates. |
 | Thin walls under 0.8 mm? | Only the USB-C skin of the bottom shell (0.60). Everything else is 0.80 or more. |
 | Sharp internal corners? | None. Every concave corner is at or above R = depth/10 + 0.5, checked on the model (0 faults on 26 arcs on the top shell). The display pocket uses T-bones, by our choice. |

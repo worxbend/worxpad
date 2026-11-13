@@ -21,7 +21,7 @@ Nothing has been fabricated, printed or run on hardware. Every document must say
 
 - `board.toml` is the single source of truth for positions, the stack-up, the pin map and the matrix.
   PCB, case and firmware read it; `tools/check_spec.py` checks its arithmetic.
-- `docs/decisions.md` records every design decision (D1 to D37) with context, options, reason and owner.
+- `docs/decisions.md` records every design decision (D1 to D40) with context, options, reason and owner.
 - `research/` is the finished research: decision records per subsystem in `research/components/`, the
   summary in `research/COMPONENTS.md`, the GLYF dossier in `research/DOSSIER.md`. Read it; do not edit it.
 - Builders: the PCB generator in `pcb/gen/` (entry point `pcb/gen/build.py`, run in KiCad through

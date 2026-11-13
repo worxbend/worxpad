@@ -32,3 +32,17 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
   [docs/flashing.md](docs/flashing.md) and [docs/keymap.md](docs/keymap.md).
 - [README.md](README.md) with the status table, gallery, build steps and the list of open points before an
   order.
+
+### Changed
+
+- D39 replaces steps 7 to 10 of the D28 build order. The cell is bonded to the pocket floor with 0.2 mm
+  double-sided foam tape (power 14 rule 1), and the RF insert sits in the open bottom shell until the top shell
+  closes it (enclosure 7.2). The top assembly is lowered deck up onto the bottom shell. Before, the bottom shell
+  was turned over onto the top assembly, and the insert, the foam and the cell had nothing to hold them.
+  [docs/assembly.md](docs/assembly.md), [docs/bom-hand.csv](docs/bom-hand.csv) and [docs/parts.md](docs/parts.md)
+  follow it. The insulating sheet is now self-adhesive.
+- D40 records that the bottom shell needs a third CNC setup for the foot pockets, which are square to the ramp.
+  [docs/ordering-case.md](docs/ordering-case.md) said two setups per shell.
+- [docs/assembly.md](docs/assembly.md) step 5 gives the expected report for every control on the Edit layer. The
+  buttons send no key code, so they are tested by the layer they select.
+- The decision index lists D38 to D40.

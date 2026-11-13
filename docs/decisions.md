@@ -55,6 +55,9 @@ Order of priority used for every choice:
 | [D35](#d35-bottom-face-positions-of-the-power-parts) | Review: power placement rules unchecked | power, usb-io, PCB |
 | [D36](#d36-encoder-rc-filter-footprints) | Review: encoder RC footprints missing | rotary-buttons, PCB |
 | [D37](#d37-usb-c-recess-kept-at-025-mm-pending-a-plug-test) | Review: USB recess against the overmold gap (rejected for now) | usb-io, enclosure |
+| [D38](#d38-backlight-driven-by-display_powerc-not-zmkdisplay-led) | Gap: stock ZMK drives the backlight at 100 % | firmware, display, power |
+| [D39](#d39-cell-bonded-to-the-pocket-floor-top-assembly-lowered-onto-the-bottom-shell) | Review: insert and cell loose in the D28 order | power, enclosure |
+| [D40](#d40-third-setup-for-the-bottom-shell-foot-pockets) | Review: setup count against the foot pockets | enclosure |
 
 ## D1. Body width 128.4 mm
 
@@ -493,6 +496,9 @@ Superseded by D32, which moves G2 again to (121.25, 66.6). The entry stays as th
   shell over it needs only a short lead, which keeps the loop inside the relief.
 - **Consequences.** `board.toml` `[battery]` and `[assembly]` hold the values; `tools/check_spec.py` checks the
   lead exit and the lead length range.
+- **Superseded in part by [D39](#d39-cell-bonded-to-the-pocket-floor-top-assembly-lowered-onto-the-bottom-shell).**
+  Steps 7 to 10, the foam sentence and the disassembly note are replaced there. The cell orientation, the lead exit
+  and steps 1 to 6 stand.
 
 ## D29. Corner radii for JLCCNC
 
@@ -624,3 +630,57 @@ Superseded by D32, which moves G2 again to (121.25, 66.6). The entry stays as th
   duty. (b) has one owner for the LED.
 - **Consequences.** The P0.24 note in `board.toml` `[pinmap]` names the `pwm-leds` node. Request to the display
   record owner: update display 3 and the pin list, which still say `zmk,display-led`. Not measured on a board.
+
+## D39. Cell bonded to the pocket floor, top assembly lowered onto the bottom shell
+
+- **Context.** In the D28 order the RF insert and the foam pad go into the bottom shell open side up; the shell is
+  then turned over and lowered onto the deck-down top assembly. Nothing holds either part. The insert's Ø1.90
+  keys sit in Ø2.00 vertical reliefs open at the split face (enclosure 7.2 items 2 and 3), and the foam pad was
+  not bonded. The cell lay loose with 0.5 mm free in Z and 1.0 mm a side in plan. power 14 rule 1 holds the cell
+  with double-sided foam tape or a foam pad on the floor, and enclosure 7.2 item 3 has the insert go in from
+  above and the top shell close it from above (review finding).
+- **Options.** (a) Build into the open bottom shell: bond the foam tape to the floor and the cell onto it, plug
+  the lead with the top assembly held over the shell, then lower the top assembly deck up. (b) Keep the D28
+  order and hold the insert and the foam with tape or adhesive dots.
+- **Decision.** (a). The build order from D28 step 7 on:
+  7. Top assembly deck down on the mat. Stick the 0.3 mm insulating sheet (self-adhesive, 0.3 mm overall) onto
+     the socket bodies so that it covers the pocket outline.
+  8. Bottom shell open side up. Slide the RF insert into its slot from above, keys into the reliefs. Bond the
+     0.2 mm double-sided foam tape to the pocket floor. Peel its liner, set the cell on it inside the pocket
+     outline with the PCM end to +X and the lead in the relief, and press it down with a flat hand, no point load.
+  9. Hold the top assembly deck up over the bottom shell, +X ends together, only as high as the lead allows. Push
+     the plug into the header along +X. Lower the top assembly and dress the loop in the relief, clear of the
+     split face and the posts. The split faces must meet all round without force.
+  10. Fit K1 to K4 from the top. Underside up on the mat: fit C1 and C2 and stick the feet. Deck up: keycaps,
+      knob shims and knobs.
+  Disassembly: remove C1 and C2 from below and K1 to K4 from the top, lift the top assembly only as far as the
+  lead allows, and unplug the cell first (rule 5). The cell stays bonded in the bottom shell.
+- **Reason.** (a) meets power 14 rule 1: the tape on the floor holds the cell, and nothing clamps it (the 0.5 mm
+  swelling allowance stays free above it). It also builds the insert as enclosure 7.2 item 3 says, with no glue
+  and no fastener. At every step each loose part rests on the part below it. (b) puts an adhesive on the radio
+  window insert, which 7.2 item 3 rules out. Under (b) the cell would also meet the floor tape only by gravity
+  after the unit is turned over, so rule 1 is still not met.
+- **Consequences.** Plugging with the top assembly held over the shell needs more lead than the closed unit. The
+  D28 minimum of 19 mm (9 mm path plus the 10 mm loop) leaves no working gap. The extra length stows in the
+  relief up to the 60 mm limit (guess). Nobody knows the gap a hand needs to push the plug home; the first build
+  measures it (MEASURE). Requests to the `board.toml` owner: a guessed plug working gap in `[battery]` that the
+  lead length check adds to the path, and new `[assembly]` `cell_fitting` text. The insulating sheet is now
+  self-adhesive ([bom-hand.csv](bom-hand.csv)). Not tried on parts.
+
+## D40. Third setup for the bottom-shell foot pockets
+
+- **Context.** The JLCCNC order notes and [ordering-case.md](ordering-case.md) justified 3-axis milling with
+  "two setups per shell" (enclosure 5). The case model cuts the foot pockets square to the 4.89 degree ramp. The
+  bottom-shell drawing calls that the ramp setup, and the CAD checks judge the foot pockets in it. enclosure 5
+  lists the foot pockets in underside setup B and says the ramp needs surfacing or a tilted setup. So the bottom
+  shell needs a third setup, and the quote must include it (review finding).
+- **Options.** (a) Make the foot pockets vertical, cut in level setup B; change the model, the drawing note and
+  the checks. (b) Keep the model and state the third setup in the order documents.
+- **Decision.** (b), until a quote shows what the third setup costs. Top shell: two setups. Bottom shell: three;
+  the third holds the ramp plane level (a 4.89 degree fixture, or 3+2-axis) for the foot pockets, and the shop
+  may cut the ramp face there instead of surfacing it.
+- **Reason.** (b) states what the model, the drawing and the CAD checks already describe. (a) changes geometry
+  whose checks pass, for a cost nobody has quoted.
+- **Consequences.** Request to the owner of `cad/production/jlccnc/ORDER_NOTES.md`: the Process row says two
+  setups per shell; make it match. If the JLCCNC quote for the bottom shell is high because of the third setup,
+  (a) is the next step for the case owner. No quote has been asked for.

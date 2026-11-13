@@ -40,16 +40,16 @@ copied from the last builder run and its report, named in the last column.
 
 | Part | State | How it was checked |
 | --- | --- | --- |
-| Research and decisions | Done. Seven decision records, a parts summary, a reference dossier; 37 design decisions. | Read; [docs/decisions.md](docs/decisions.md) |
-| Specification | Done. `board.toml`: outline, keys, controls, display, module, ports, battery, screws, stack-up, pin map, panel. | Run: `python3 tools/check_spec.py`, 91 of 91 pass |
-| Circuit and schematic | Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). Generated KiCad 10 sheet. ERC: 0 errors, 0 warnings. 309 pins match the circuit. | Run: `make pcb-test`, 62 unit tests pass. ERC from the last `build.py schematic`, [pcb/README.md](pcb/README.md) |
+| Research and decisions | Done. Seven decision records, a parts summary, a reference dossier; 40 design decisions. | Read; [docs/decisions.md](docs/decisions.md) |
+| Specification | Done. `board.toml`: outline, keys, controls, display, module, ports, battery, screws, stack-up, pin map, panel. | Run: `python3 tools/check_spec.py`, 92 of 92 pass |
+| Circuit and schematic | Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). Generated KiCad 10 sheet. ERC: 0 errors, 0 warnings. 309 pins match the circuit. | Run: `make pcb-test`, 63 unit tests pass. ERC from the last `build.py schematic`, [pcb/README.md](pcb/README.md) |
 | Pin map | Circuit and firmware agree with `board.toml`. | Run: `python3 tools/check_pins.py`, 0 circuit failures, 12 of 12 firmware checks |
-| PCB layout | **Not finished.** All 107 parts placed on 4 layers. 1,141 tracks, 164 vias, **36 pads on 25 nets unrouted**. DRC: 0 errors, 39 unconnected, 0 schematic differences. No copper in the antenna keep-out. | Last `build.py place`; `pcb/routing.txt`, [pcb/README.md](pcb/README.md#checks) |
+| PCB layout | **Not finished.** All 107 parts placed on 4 layers. 1,137 tracks, 176 vias, **36 pads on 25 nets unrouted**. DRC: 0 errors, 39 unconnected, 0 schematic differences. No copper in the antenna keep-out. | Last `build.py place`; `pcb/routing.txt`, [pcb/README.md](pcb/README.md#checks) |
 | Board order files | **Not written.** The build refuses an unfinished board. A draft run gave 61 placements in 30 BOM lines and a frame panel with 0 DRC errors. | Last `build.py fab-draft`; [pcb/README.md](pcb/README.md#checks) |
-| Case | Model done, **2 checks fail**: the G1 and G2 screw tips end 0.15 mm short of the last full thread against 0.4 mm. 163 of 165 limit checks pass. 24 of 24 parts valid, 0 clashes in 666 (CNC) and 703 (FDM) part pairs. Self-test 22 of 22. | Last `build.py all` (exit 1); `cad/exports/checks.json`, [cad/README.md](cad/README.md#checks) |
-| Firmware | Builds. ZMK 4dd95d78 on Zephyr 4.1.0. FLASH 391,252 B of 811,008 B (48.24 %), RAM 122,242 B of 262,144 B (46.63 %). UF2 is 782,848 B. | Last `bash firmware/build.sh`; [firmware/README.md](firmware/README.md#build) |
+| Case | Model done. 177 of 177 limit checks pass. G1 and G2 pass (tip 0.45 mm against 0.4) only with a proposed bottoming tap that D6 does not yet record. 24 of 24 parts valid, 0 clashes in 666 (CNC) and 703 (FDM) part pairs. Self-test 26 of 26. | Run: `make cad-check` (exit 0); `cad/exports/checks.json`, [cad/README.md](cad/README.md#checks) |
+| Firmware | Builds. ZMK 4dd95d78 on Zephyr 10ba6d0c (pinned in `west.yml`). FLASH 391,548 B of 811,008 B (48.28 %), RAM 122,322 B of 262,144 B (46.66 %). UF2 is 783,360 B. | Run: `bash firmware/build.sh` (exit 0); [firmware/README.md](firmware/README.md#build) |
 | Pictures | Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures show the unfinished board. | Last `bash tools/render_all.sh`, exit 0 in 907 s |
-| Order package | **Not ready.** Run with `--draft`: 34 files listed, 6 problems: knob and RF insert drawings missing (4), G1 and G2 thread (2). The full run (orders build, same day) also lists 11 missing PCB files. | Run: `python3 tools/order_package.py --draft`, exit 1; [production/README.md](production/README.md) |
+| Order package | **Not ready.** Run with `--draft`: 34 files listed, 5 problems: knob and RF insert drawings missing (4), the knob hole list knob_holes.csv missing (1). The full run lists 17 problems: those 5, 11 missing PCB files, and designators not compared. | Run: `python3 tools/order_package.py --draft`, exit 1; [production/README.md](production/README.md) |
 | Documentation | Every path and anchor named in Markdown exists. | Run: `make docs-check`, see [What is checked](#what-is-checked) |
 | Real hardware | **None.** No board, no print, no flash. | - |
 
@@ -133,7 +133,9 @@ the design files. Expect mistakes.
    Then the CNC shells, knobs and RF insert at JLCCNC, the resin caps at JLC3DP and the lens:
    [docs/ordering-case.md](docs/ordering-case.md).
 5. **Assemble, flash and test.** [docs/assembly.md](docs/assembly.md) follows the build order of
-   [D28](docs/decisions.md#d28-build-order-cell-orientation-and-lead) with a bench test at each step.
+   [D28](docs/decisions.md#d28-build-order-cell-orientation-and-lead) and
+   [D39](docs/decisions.md#d39-cell-bonded-to-the-pocket-floor-top-assembly-lowered-onto-the-bottom-shell) with a
+   bench test at each step.
    Switches go in on the printed insertion jig. [docs/flashing.md](docs/flashing.md): the bootloader once over
    SWD, then `firmware/dist/worxpad.uf2` by drag and drop.
 
@@ -205,7 +207,7 @@ CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `make test`. It
 | Path | Holds |
 | --- | --- |
 | [`board.toml`](board.toml) | Single source of truth: positions, stack-up, pin map, matrix, panel |
-| [`docs/decisions.md`](docs/decisions.md) | Design decisions D1 to D37 |
+| [`docs/decisions.md`](docs/decisions.md) | Design decisions D1 to D40 |
 | [`pcb/`](pcb/README.md) | The board. `gen/` is the generator (`circuit.py` is the circuit, `layout.py` the placement, `route.py` the routing, `fab.py` the order files), `kicad/` the generated KiCad 10 project, `lib/` footprints, symbols and block models |
 | [`cad/`](cad/README.md) | Parametric case (build123d). `worxpad_case/` is the model and its checks, `exports/` holds STEP, STL, 3MF, drawings and `checks.json`, `production/` the JLCCNC package |
 | [`firmware/`](firmware/README.md) | ZMK board, keymap, status screen and display power hook in `zmk/`; `build.sh`; `dist/worxpad.uf2` |
@@ -273,7 +275,12 @@ These are open. None is hidden by a green check.
   skin 0.60 mm (JLCCNC recommends 0.8 mm).
 - **Switches go in on a printed jig** with the bottom shell off, because eight sockets sit over the cell
   ([D26](docs/decisions.md#d26-switches-go-in-on-an-insertion-jig)).
-- **Battery lead.** Lead length (50 mm) and exit position are guesses. Measure the cell before fitting it.
+- **Battery lead.** Lead length (50 mm) and exit position are guesses. Measure the cell before fitting it. The
+  cell is bonded into the bottom shell and plugged with the top assembly held over it
+  ([D39](docs/decisions.md#d39-cell-bonded-to-the-pocket-floor-top-assembly-lowered-onto-the-bottom-shell)); the
+  lead that step needs is not known.
+- **Bottom shell needs a third CNC setup** for the foot pockets, square to the ramp. The cost guesses assume two
+  ([D40](docs/decisions.md#d40-third-setup-for-the-bottom-shell-foot-pockets)).
 - **Coupons first:** switch retention in the anodised lip, keycap stem fit, display flex fold, encoder in its
   plinth pocket, USB-C skin ([docs/printing.md](docs/printing.md#coupons-first)).
 - **FDM supports** are needed under both flank scoops as well as the rear slope.
