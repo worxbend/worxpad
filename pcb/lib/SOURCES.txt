@@ -1,0 +1,51 @@
+Project footprints in worxpad.pretty. Every file is written by pcb/gen/footprints.py; do not edit the files.
+Change the generator and run `pcb/kicad.sh python3 pcb/gen/build.py schematic`, which writes them and loads
+each one back with pcbnew. No third-party footprint file is copied. Nothing here has been checked against a
+real part or a 1:1 print.
+
+BMD-340.kicad_mod
+  u-blox BMD-340 data sheet UBX-19033353 R13: figure 12 (recommended land pads: 0.50 x 0.50 pads, 1.10 pitch,
+  rows at +/-4.40 and 0.90 apart, right-hand columns at 6.85 / 5.95 / 5.05 / 4.15) and figure 2 (pad numbers,
+  top view). Read from research/_cache/mcu-radio-sceptic/ds-03/bmd340.pdf, pages 9 and 23.
+  The 0.90 row step of the two inner rows and the 4.15 column are not dimensioned in figure 12; they were
+  scaled from the drawing (MEASURE) and agree with the 0.90 step between the dimensioned 4.40 and 3.50 rows.
+  RF keep-out rule area on all four copper layers, depth = antenna strip 4.40 + board.toml module.antenna_inset,
+  length board.toml module.keepout.length (D22, D24). Drawn top view with the antenna toward -X; flipped onto
+  the bottom face the antenna points to +X.
+
+FH34SRJ-24S-0.5SH.kicad_mod
+  Hirose FH34SRJ catalogue (research/_cache/display/03-datasheets/FH34SRJ.pdf), recommended PCB mounting
+  pattern: contact pads 0.3 x 0.8 at 0.5 pitch, B = 11.5; mounting pads 0.4 x 0.8 between E = 13.1 and
+  F = 13.9; 3.3 from the contact pad outer end to the mounting pad outer end. Body A = 14.0, depth (3.8).
+  MEASURE: the 0.35 mm from the part's rear extreme to the contact pad outer end is scaled from the drawing.
+  Origin at the rear edge (board.toml display.connector.y_back), FPC entry toward +Y, contact 1 at +X.
+
+USB_C_HRO_TYPE-C-31-M-13C.kicad_mod
+  HRO TYPE-C-31-M-13C drawing (research/_cache/usb-io/ds-03/hro-type-c-31-m-13c.pdf), recommended PCB
+  layout, component side: pads 0.60 (GND, VBUS) and 0.30 wide at +/-3.20, +/-2.40, +/-1.75 ... +/-0.25;
+  pad row from 6.70 to 7.80 from the edge line (2.10 + 4.60 to 2.10 + 5.70); four plated slots 0.60 wide,
+  1.80 long at 2.10 and 1.40 long at 6.10 from the edge line, 11.24 apart. Board notch 9.24 x 6.70 is not in
+  the footprint; it is board outline (board.toml pcb.notches). MEASURE: the 0.20 mm copper ring around each
+  slot is scaled from the hatch. The signal pads end at the notch edge, as the drawing shows.
+
+Choc_V2_Hotswap.kicad_mod
+  Kailh Choc V2 (PG1353) with the CPG135001S30 socket, numbers from board.toml [keys.footprint] and
+  [keys.keepout] (research/components/keys.md 6.1, 6.4: Kailh drawing positions, kiswitch hole diameters; the
+  kiswitch file itself is CC-BY-SA and was not copied). Drawn on the socket face, so X is negated against
+  board.toml's top view. No paste: the sockets are hand-soldered.
+
+PEC12R-4xxxF-S.kicad_mod
+  Bourns PEC12R-4xxxF-Sxxxx drawing REV. 07/21 (research/_cache/rotary-buttons/ds-02/PEC12R.pdf) as recorded
+  in research/components/rotary-buttons.md 6.1 and board.toml [encoders]: A/C/B at 2.5 pitch 7.5 behind the
+  shaft, switch pins 5.0 apart 7.0 in front, holes 1.0 +0.2 (drawn 1.1), legs in slots 2.1 +0.2 x 2.0 +0.2
+  (drawn 2.1 x 2.2) 13.2 apart. Pin pattern as KiCad's stock PEC12R-3x17F footprint turned a quarter turn;
+  only the leg spacing differs (stock 11.2). Courtyard = the 14.8 mm plinth pocket.
+
+Hole_G_M2_Plated.kicad_mod
+  Plated 2.2 mm hole with a 4.6 mm GND ring on both faces, board.toml [holes.g] (D6).
+
+Stock KiCad 10.0.7 footprints used as they are: see FOOTPRINT in pcb/gen/circuit.py.
+
+3d/
+  Block models (boxes and cylinders) written by pcb/gen/models.py: the plain container has no 3D library.
+  They are pictures, not vendor models.

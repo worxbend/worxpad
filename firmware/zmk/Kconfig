@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: MIT
+# worxpad ZMK module options (zephyr/module.yml -> kconfig: firmware/zmk/Kconfig)
+
+config WORXPAD_STATUS_SCREEN
+    bool "worxpad status screen"
+    default y
+    depends on ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    depends on BOARD_WORXPAD
+    select LV_USE_LABEL
+    select LV_FONT_MONTSERRAT_12
+    select LV_FONT_MONTSERRAT_14
+    select LV_FONT_MONTSERRAT_16
+    help
+      Knob functions at the top, a 4 x 4 grid of the active key functions, and a status bar with
+      the layer name, the output or Bluetooth profile and the battery (src/status_screen.c).
+
+config WORXPAD_DISPLAY_POWER
+    bool "worxpad backlight dimming and panel sleep on idle"
+    default y
+    depends on ZMK_DISPLAY && PM_DEVICE && LED
+    depends on BOARD_WORXPAD
+    select ZMK_DISPLAY_BLANK_ON_IDLE
+    help
+      Sets the backlight to WORXPAD_BACKLIGHT_PERCENT, and on idle switches it off and sends the
+      panel to sleep-in (SLPIN); on activity it wakes the panel and restores the backlight.
+      Selects ZMK's blank-on-idle, which stops the LVGL tick while idle and sends DISPOFF/DISPON.
+      mcu-radio record 7.7, hooks 1 and 2.
+
+config WORXPAD_BACKLIGHT_PERCENT
+    int "Backlight PWM duty in percent"
+    range 1 100
+    default 40
+    depends on WORXPAD_DISPLAY_POWER
+    help
+      power record 15 asks for a default near 25 to 50 %. Not checked on a panel.

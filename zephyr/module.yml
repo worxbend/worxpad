@@ -1,0 +1,8 @@
+# worxpad as a Zephyr module: ZMK finds the board in firmware/zmk/boards and builds the code in firmware/zmk.
+# firmware/build.sh passes the repository root to ZMK as ZMK_EXTRA_MODULES.
+name: zmk-keyboard-worxpad
+build:
+  cmake: firmware/zmk
+  kconfig: firmware/zmk/Kconfig
+  settings:
+    board_root: firmware/zmk

@@ -1,0 +1,9 @@
+# Hardware model v2 board: worxpad, one nRF52840 (u-blox BMD-340), ZMK variant. Build target: worxpad//zmk.
+board:
+  name: worxpad
+  full_name: worxpad macropad
+  vendor: worxbend
+  socs:
+    - name: nrf52840
+      variants:
+        - name: zmk

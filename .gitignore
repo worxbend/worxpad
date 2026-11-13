@@ -1,0 +1,22 @@
+# Vendor media and downloads kept for measurement only. Never committed.
+research/_cache/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# KiCad and build scratch
+.build/
+*-backups/
+*.lck
+fp-info-cache
+
+# KiCad editor leftovers
+*.kicad_prl
+_autosave-*
+
+# Build output
+target/
+*.egg-info/
+firmware/build/

@@ -1,0 +1,33 @@
+* text=auto eol=lf
+
+# Generated trees: diff them, but mark them as generated for review tools. Adapted from worxboard.
+pcb/kicad/**       linguist-generated=true
+pcb/fab/**         linguist-generated=true
+pcb/production/**  linguist-generated=true
+pcb/lib/3d/**      linguist-generated=true
+pcb/netlist.txt    linguist-generated=true
+pcb/routing.txt    linguist-generated=true
+cad/exports/**     linguist-generated=true
+cad/production/**  linguist-generated=true
+docs/images/**     linguist-generated=true
+firmware/dist/**   linguist-generated=true
+
+# KiCad
+*.kicad_pcb text -diff
+*.kicad_sch text -diff
+*.kicad_sym text
+*.kicad_mod text
+
+# CAD
+*.step text -diff
+*.stl  binary
+*.3mf  binary
+*.dxf  text -diff
+
+# Binaries
+*.zip  binary
+*.uf2  binary
+*.jpg  binary
+*.png  binary
+*.gif  binary
+*.pdf  binary

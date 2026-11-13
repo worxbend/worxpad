@@ -1,0 +1,24 @@
+[project]
+name = "worxpad-case"
+version = "0.1.0"
+description = "Parametric case for worxpad (build123d): CNC and FDM shells, small parts, fit checks, exports, drawings, renders"
+requires-python = ">=3.12,<3.13"
+# Pinned to the versions the sibling macropad case runs on (research/raw/conventions.md 3.2).
+dependencies = [
+    "build123d==0.13.0",
+    "trimesh==5.2.1",
+    "numpy==2.5.4",
+    "scipy==1.18.1",
+    "pillow==13.0.0",
+    "matplotlib==3.11.2",  # only for the DejaVu font it ships, used for the laser-mark text
+]
+
+[tool.setuptools]
+packages = ["worxpad_case"]
+
+[tool.ruff]
+line-length = 120
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

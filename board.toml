@@ -1,0 +1,813 @@
+# worxpad: single source of truth for the mechanical layout, the stack-up and the pin map.
+# The PCB generator, the case model, the firmware pin check and tools/check_spec.py read this file.
+# Nothing here has been built or measured on a real part.
+#
+# Units: millimetres. Frame: origin at the rear-left outer corner of the body, seen from the top (key side).
+# X grows to the right (toward the knobs), Y grows toward the front (toward the user).
+# Z is height above the deck (the top face of the top shell); negative is downward.
+#
+# The research records give plan positions as X from the right outer face ("x_right"). Converted here as
+# x = body.width - x_right; the comment on each converted value quotes the record's number.
+#
+# Source tags:
+#   "keys 6.3"   = research/components/keys.md section 6.3 (same for mcu-radio, display, power, usb-io,
+#                  rotary-buttons, enclosure = enclosure-manufacturing).
+#   "geometry"   = research/raw/geometry.md (GLYF measured from images).
+#   "D7"         = entry D7 in docs/decisions.md.
+#   MEASURE      = taken from a datasheet, a drawing or a GLYF image, not from a caliper. Measure on a real part.
+#   guess        = chosen with nothing to check it against.
+
+[meta]
+name = "worxpad"
+revision = "A"
+status = "design files only; nothing fabricated, printed or run on hardware"
+
+# ---------------------------------------------------------------------------------------------------------
+# Case limits used by the checks
+# ---------------------------------------------------------------------------------------------------------
+[case]
+min_floor = 1.5             # aluminium floor under a pocket (power 5.2, enclosure 5)
+min_metal_wall = 0.8        # JLCCNC recommended metal wall (enclosure 5)
+post_to_void = 1.2          # wall from a screw post to a pocket or hole in plan (enclosure 6.5)
+pcb_gap_min = 0.30          # PCB edge to inner wall (family pcb_gap, conventions 3.6; D21)
+copper_to_edge = 0.30       # copper pad to board edge. guess (common JLCPCB routed-edge value, not re-read)
+bed = 180.0                 # Bambu A1 mini bed, X, Y and Z (conventions 5.1)
+cavity_corner_radius = 1.5  # inner vertical corners of both shell cavities (enclosure 5 table: R 1.5 to 10 mm deep; D29)
+plinth_wall = 1.3           # plinth wall around each encoder pocket in plan, corners included (rotary-buttons 6.3; D25)
+fdm_insert_wall = 1.3       # CNC Kitchen M2 x 3 heat-set insert, hole 3.2, minimum wall (enclosure 6.3)
+fdm_insert_hole = 3.2
+fdm_bridge_max = 15.0       # longest unsupported FDM bridge (enclosure 8.2, macropad checks)
+seam_clearance = 0.3        # bottom-shell wall top to the plate edge (enclosure 6.1; D34)
+
+# ---------------------------------------------------------------------------------------------------------
+# Body (outer case)
+# ---------------------------------------------------------------------------------------------------------
+[body]
+width = 128.4               # GLYF 120.4 (MEASURE, geometry 4.1) plus 8.0 on the right for the RF bay (mcu-radio 7.3.3, D1)
+depth = 85.2                # MEASURE, geometry 4.1
+corner_radius = 2.0         # vertical corners, MEASURE, geometry 4.1
+top_chamfer = 1.0           # MEASURE, geometry 4.1
+bottom_chamfer = 0.4        # guess (geometry 4.1 marks it guess)
+wall = 3.5                  # both shells, MEASURE, geometry 4.1 and 4.6
+split_z = -5.0              # shell split plane, MEASURE, geometry 4.2
+# The CNC plate lip hangs 0.15 below the split plane. Along the key-well walls (left wall, and the rear and front
+# walls for X up to keys.well_x1) the top of the bottom-shell wall is thinned: [depth below the split, wall].
+# enclosure 6.1; D34.
+bottom_wall_step = [0.5, 3.0]
+
+[wedge]
+# Underside profile as body thickness (deck to underside) along Y. Two planes meet at the apex.
+# GLYF: 12.0 / 19.2 at Y 12.7 / 13.0 (MEASURE, geometry 5). worxpad is 1.6 mm deeper at the front so the
+# battery pocket gets its depth (D4). Ramp slope (20.6 - 14.6) / 70.2 = 4.89 degrees, GLYF 4.95.
+rear_height = 12.0          # thickness at the rear face, MEASURE (GLYF value kept)
+apex_y = 15.0               # D4 (GLYF 12.7)
+apex_height = 20.6          # D4 (GLYF 19.2)
+front_height = 14.6         # D4 (GLYF 13.0)
+
+[wedge.scoops]
+# Flank scoops: the underside stays at Z -12.0 near both side faces at the rear (geometry 4.7).
+width = 13.0                # per side, MEASURE, geometry 4.7
+end_y = 35.0                # scoops reach full ramp depth by Y 35 (enclosure 7.3, D2)
+underside_z = -12.0
+
+[feet]
+# 3M Bumpon SJ5076 in milled pockets (enclosure 6.3, 6.5). X copies the GLYF foot centres measured from
+# each side face (geometry 4.7: rear 26.4 from the sides, front 14.7 from the sides); front Y 5.6 from the
+# front face. Rear Y moves from the GLYF 18.2 to 20.5 so each pocket lies wholly on the ramp plane, 1.3 mm in
+# front of the apex (D31). guess: the GLYF feet are 22.5 mm stadiums, these are round.
+part = "3M Bumpon SJ5076"
+diameter = 8.0
+height = 2.79
+pocket_diameter = 8.4
+pocket_depth = 0.8
+apex_margin = 1.0           # pocket edge to the wedge apex line, in plan (D31)
+positions = [[26.4, 20.5], [102.0, 20.5], [14.7, 79.6], [113.7, 79.6]]
+
+# ---------------------------------------------------------------------------------------------------------
+# PCB
+# ---------------------------------------------------------------------------------------------------------
+[pcb]
+thickness = 1.6             # keys 6.1 (Kailh socket drawing)
+layers = 4                  # mcu-radio 8 (LGA escape, USB pair)
+top_z = -6.20               # keys 6.3
+bottom_z = -7.80            # keys 6.3
+# Main outline. Right edge 3.95 from the right face (mcu-radio 7.3: antenna end at the board edge,
+# 0.45 from the inner wall). Rear and front 3.95 (usb-io 6.1, enclosure 6.5). Left edge 3.80, 0.30 from the
+# inner wall, so the column-0 socket pads keep 0.425 mm to the edge (D21).
+x0 = 3.80
+x1 = 124.45
+y0 = 3.95
+y1 = 81.25
+corner_radius = 2.0         # guess; check_spec tests it against case.cavity_corner_radius and the left gap
+outline_tolerance = 0.2     # routed outline, JLCPCB standard, about +/-0.2 (usb-io risk 1; not re-read). D24
+
+[[pcb.tongues]]
+# Local tongue for the USB-C receptacle (usb-io 6.1: x_right 21.1 to 34.1, reaching D 0.95).
+name = "usb"
+x0 = 94.3
+x1 = 107.3
+y0 = 0.95
+
+[[pcb.tongues]]
+# Local tongue for the slide switch (usb-io 6.7: x_right 41.0 to 50.0, edge at D 1.90).
+name = "power_switch"
+x0 = 78.4
+x1 = 87.4
+y0 = 1.90
+
+[[pcb.notches]]
+# Board notch for the mid-mount receptacle: 9.24 wide, centred on the receptacle, to D 6.95 (usb-io 6.1).
+name = "usb"
+x0 = 96.18
+x1 = 105.42
+y0 = 0.95
+y1 = 6.95
+
+# ---------------------------------------------------------------------------------------------------------
+# Assembly panel (D23). JLCPCB needs edge rails for assembly; the module sits under the 2.5 mm body-to-edge
+# rule on the right and the USB-C shell overhangs its tongue at the rear, so the board ships in a frame.
+# ---------------------------------------------------------------------------------------------------------
+[panel]
+layout = "one board in a frame of four rails"
+rail_width = 5.0            # JLCPCB minimum (mcu-radio 4, edge-rail article)
+routed_gap = 2.5            # board outline to rail, every edge; follows the R2.0 corners and the tongues (D23)
+body_to_panel_edge_min = 2.5    # JLCPCB assembly terms (mcu-radio 4, likely)
+vcut_copper_min = 0.4       # copper to a V-cut centre line (mcu-radio 4, likely); applies only to "vcut" edges
+overhang_margin = 0.5       # free gap left in front of a part that overhangs the board edge. guess
+tab_width = 5.0             # mouse-bite tab along the edge. guess (common practice)
+tab_hole = 0.5              # perforation drill, centres 0.25 inside the board outline so the nub stays inside. guess
+tab_hole_pitch = 0.8
+tab_to_antenna_min = 10.0   # mcu-radio 8, PCB row (guess there)
+tab_to_copper_min = 1.0     # tab span to known copper on that edge. guess
+edges = { left = "routed", right = "routed", rear = "routed", front = "routed" }
+# Tabs as [edge, centre]: centre is Y on the left and right edges, X on the rear and front edges.
+tabs = [["right", 15.0], ["right", 75.0], ["left", 27.0], ["left", 65.5],
+        ["rear", 40.0], ["rear", 115.0], ["front", 40.0], ["front", 100.0]]
+
+# ---------------------------------------------------------------------------------------------------------
+# Keys: 4 x 4 Kailh Choc V2 (PG1353 footprint), hot-swap sockets on the PCB bottom
+# ---------------------------------------------------------------------------------------------------------
+[keys]
+columns = 4
+rows = 4
+pitch = 19.05               # MEASURE (confirmed in geometry 4.1), keys 5
+first_x = 14.0              # centre of column 0, MEASURE: GLYF rear-left key 14.00 from the left face (geometry 4.1)
+first_y = 14.0              # centre of row 0, MEASURE: 14.02 from the rear face (geometry 4.1)
+switch = "Kailh Choc V2 PG1353D class (Lofree Ghost); fallback PG1353"   # keys 5
+housing = 13.95             # switch body below the flange, keys 6.2
+flange = 15.0               # keys 6.2
+collar_z = -0.50            # collar rim above the deck, keys 6.3
+cap_base = 18.20            # project keycap, keys 6.5
+cap_top = 15.60
+cap_height = 4.40           # cap top at Z +4.40
+cap_skirt_pressed_z = -3.05 # worst case with PG1353D travel, keys 6.3
+cap_to_well_min = 0.8       # keys 6.5
+well_x0 = 3.5               # key well lip to lip 78.15 (MEASURE, geometry 4.1), wall 3.5
+well_x1 = 81.65
+well_y0 = 3.5
+well_y1 = 81.65
+well_corner_radius = 1.5    # enclosure 6.2 (GLYF 1.0, MEASURE, geometry 4.1); D29
+plate_opening = 14.00       # +0.05/-0 after anodising, FIT-CRITICAL (keys 6.2)
+plate_lip = 1.15            # +/-0.05 after anodising, CNC (keys 6.2); FDM 1.0 or 1.2 from the coupon
+
+[keys.footprint]
+# Top-view key frame: origin at the switch centre, x right, y toward the front (keys 6.1). The socket is
+# mirrored onto the bottom copper by the generator.
+centre_hole = 5.05                                  # NPTH
+barrel_holes = [[0.0, 6.00], [-5.00, 3.80]]         # NPTH 3.05
+barrel_hole_diameter = 3.05
+third_hole = [5.00, -5.15]                          # PG1353 third leg, 1.6 round
+third_hole_diameter = 1.6
+socket_pads = [[3.50, 6.00], [-8.50, 3.80]]         # bottom copper, 2.55 x 2.50
+socket_pad_size = [2.55, 2.50]
+
+[keys.keepout]
+# Bottom face, key frame (keys 6.4).
+socket_zone = [-10.1, 1.0, 5.1, 8.7]                # x0, y0, x1, y1; nothing but the socket inside
+socket_depth = 2.15                                 # clear depth below the PCB bottom
+centre_post_diameter = 5.5
+centre_post_depth = 1.70
+third_leg_diameter = 3.0
+third_leg_depth = 1.40
+top_clear = 14.6                                    # top face: no part inside this square (keys 6.4)
+
+[keys.diode]
+part = "1N4148W SOD-123"    # C81598, keys 5
+offset = [-3.0, -6.5]       # key frame, horizontal, behind the centre post (keys 6.4 item 5)
+size = [3.85, 1.65]
+height = 1.15
+
+# ---------------------------------------------------------------------------------------------------------
+# Matrix: 5 columns (outputs) x 4 rows (inputs), col2row, one diode per position (keys 6.6)
+# ---------------------------------------------------------------------------------------------------------
+[matrix]
+diode_direction = "col2row" # anode on the column side, cathode toward the row
+row_pull = "down"           # internal pull-down on the row inputs
+rows = ["P1.12", "P1.13", "P1.14", "P1.15"]
+columns = ["P0.02", "P0.25", "P0.27", "P1.05", "P1.06"]
+# C0 to C3 x R0 to R3 are the keys: key (row r, column c) sits at R r, C c. Row 0 is the rear row,
+# column 0 the left column. Column C4 carries the knob pushes and the round buttons (keys 6.6, D20).
+c4 = ["encoder_right_push", "encoder_left_push", "button_right", "button_left"]
+
+# ---------------------------------------------------------------------------------------------------------
+# Rotary encoders with push, knobs and the knob plinth (rotary-buttons 6)
+# ---------------------------------------------------------------------------------------------------------
+[encoders]
+part = "Bourns PEC12R-4215F-S0024"   # C22385080, 24 detents, both contacts open at detent
+body = [12.4, 13.4]         # X x Y in plan (rotary-buttons 6.2), MEASURE; +/-0.5
+tab_span = 14.0             # across the mounting tabs, along X (rotary-buttons 6.3 item 5), MEASURE
+tab_tolerance = 0.5
+body_top_z = 0.20           # max; nominal -0.10 (rotary-buttons 6.3)
+pin_row_rear_y = 7.60       # A/C/B row (rotary-buttons 6.2)
+pin_row_front_y = 22.10     # push-switch pins
+pin_half_span = 2.5         # pins at x centre +/- 2.5 in both rows
+leg_offset = 6.6            # mounting legs 13.2 apart on the axis between the rows
+pin_depth = 2.0             # keep clear below the PCB bottom (1.9 proud before trimming)
+steps = 96                  # ZMK alps,ec11 steps (24 pulses x 4)
+triggers_per_rotation = 24
+
+[encoders.filter]
+# Optional RC filter: one 10 nF 0402 from each of A and B to GND, footprints placed, parts not fitted
+# (rotary-buttons 6.2 and 9). Offsets from the encoder centre on the bottom face, just in front of the A/C/B
+# pin row. guess
+value = "10 nF X7R 0402"
+package = "0402"
+populate = false
+size = [1.0, 0.5]
+height = 0.5
+offsets = [[-2.5, -5.5], [2.5, -5.5]]
+
+[encoders.right]
+x = 110.13                  # x_right 18.27, Y 15.10 (rotary-buttons 6.2)
+y = 15.10
+gpio_a = "P0.29"            # rotary-buttons 2 and mcu-radio 7.2 (D20)
+gpio_b = "P0.31"
+matrix = "C4R0"
+
+[encoders.left]
+x = 91.44                   # x_right 36.96
+y = 15.10
+gpio_a = "P0.28"            # rotary-buttons 2 and mcu-radio 7.2 (D20)
+gpio_b = "P0.30"
+matrix = "C4R1"
+
+[knobs]
+diameter = 10.50            # MEASURE GLYF 10.5 (geometry 4.4); rotary-buttons 6.5
+height = 9.10
+rim_z = 2.90                # rim underside at rest, set with a 1.10 shim on the plinth
+rim_pressed_z = 2.10        # at 0.8 mm maximum push travel
+top_z = 12.00               # GLYF 11.8 (11.5 to 12.1)
+shim = 1.10
+
+[plinth]
+# One rounded plinth over both encoders replaces the GLYF's two bosses (rotary-buttons 6.3, D3). Rounded
+# rectangle, not a stadium: R2.8 keeps the 1.3 mm wall round the R1.5 pocket corners (D25).
+x0 = 82.74                  # x_right 45.66
+x1 = 118.83                 # x_right 9.57
+y0 = 6.40
+y1 = 23.80
+corner_radius = 2.8         # D25 (rotary-buttons 6.3 gave 8.7, which opens the pocket corners)
+top_z = 1.80
+pocket = 14.8               # square pocket from below per encoder
+pocket_corner_radius = 1.5
+pocket_ceiling_z = 0.25
+shaft_hole = 8.40
+
+# ---------------------------------------------------------------------------------------------------------
+# Round buttons (rotary-buttons 6.6)
+# ---------------------------------------------------------------------------------------------------------
+[buttons]
+part = "Omron B3FS-1000P"   # C271750, top face
+switch_body = [6.0, 6.0]    # MEASURE, B3FS outline
+switch_top_z = -3.10
+pad_span = [9.6, 6.4]
+cap_diameter = 12.30
+cap_top_z = 1.00
+cap_flange = 15.0
+cap_bottom_z = -3.10        # nub resting on the plunger
+hole = 12.50
+counterbore = 17.0          # underside counterbore to Z -1.50
+
+[buttons.right]
+x = 110.13                  # x_right 18.27, Y 71.20 (rotary-buttons 6.2); GLYF 14.0 from the front face
+y = 71.20
+matrix = "C4R2"
+
+[buttons.left]
+x = 91.44
+y = 71.20
+matrix = "C4R3"
+
+# ---------------------------------------------------------------------------------------------------------
+# Display (display 6)
+# ---------------------------------------------------------------------------------------------------------
+[display]
+panel = "DisplayModule DM-TFT13-377p24 (LH133T-IF05), 1.3 inch 240 x 240 IPS, ST7789VW"
+width_px = 240
+height_px = 240
+bus = "SPIM3"
+spi_mhz = 16                # mcu-radio 7.5: 8 MHz in spec, 16 MHz 6 % over the write-cycle spec; test on board 1
+orientation = "upright, flex toward the front; check MADCTL and the 80-line offset on board 1"
+
+[display.lens]
+size = 31.2                 # MEASURE (GLYF supplier drawing, geometry 4.5)
+corner_radius = 2.0
+thickness = 1.0             # cast PMMA, underside painted, window ablated (display 6.4)
+window = 24.4               # mask window
+x0 = 85.2                   # x_right 43.2 to 12.0 (display 6.5)
+x1 = 116.4
+y0 = 27.0
+y1 = 58.2
+recess = 31.4               # square, R2.1
+recess_depth = 1.15
+
+[display.web]
+thickness = 0.80            # D10 (display record asked 0.60, enclosure asked 0.80)
+window = 24.8
+underside_z = -1.95         # recess floor -1.15 minus 0.80
+
+[display.module]
+size = [26.16, 29.22]       # MEASURE, panel drawing (display 6.1); +/-0.2
+thickness = 1.5
+x0 = 87.72                  # x_right 40.68 to 14.52 (display 6.5)
+x1 = 113.88
+y0 = 29.57
+y1 = 58.79
+top_z = -2.05               # web underside -1.95 minus the 0.10 tape frame (D10)
+back_z = -3.55
+
+[display.pocket]
+# Cut 3.05 deep from the split face. Rear corners get T-bone reliefs that run along -Y; the front corners,
+# 3 mm clear of the module, get plain radii (D33).
+x0 = 87.4                   # x_right 41.0 (display 6.5)
+x1 = 114.05                 # display 6.5 gave x_right 14.2 (X 114.2); 0.17 off the module so the RF wall keeps 0.80 (D33)
+y0 = 29.4
+y1 = 59.1
+bend_y1 = 61.8              # open to Y 61.8 for the flex bend
+rear_relief_diameter = 2.1  # T-bone for a 2.0 mm tool, centred on the rear edge, 1.05 in from the side
+front_corner_radius = 1.0   # meets H/10 + 0.5 = 0.81; under the R1.5 table value (D33)
+module_tolerance = 0.1      # per side, from the +/-0.2 module outline (display 6.1)
+
+[display.flex]
+# Flex leaves the module toward the front and folds back 180 degrees under it (display 6.5).
+x0 = 97.4                   # x_right 31.0 to 18.5
+x1 = 109.9
+y0 = 58.8
+y1 = 61.0
+bottom_z = -5.65
+
+[display.connector]
+part = "Hirose FH34SRJ-24S-0.5SH(50)"   # C324726, top face, top and bottom contacts
+face = "top"
+x0 = 96.6                   # x_right 31.8 to 17.8, centre x_right 24.8 (display 6.5)
+x1 = 110.6
+y_back = 48.0               # body back
+y_entry = 51.8              # entry face; set on a fold mock-up (display risk 3). MEASURE
+entry_faces = "+Y"
+pin1_x = 110.6              # pin 1 (LEDA) at the end nearest the right face
+top_z = -5.20
+
+[display.fpc_pins]
+# Connector pin = net (display 6.2). Nets named in [pinmap] carry the module pad.
+1 = "BL_A"                  # LEDA, 3V3 through 15 Ohm
+2 = "BL_K"                  # LEDK, AO3400A drain
+3 = "GND"
+4 = "3V3"                   # VDD, 1 uF + 100 nF at the connector
+5 = "3V3"                   # VDDIO
+6 = "3V3"                   # IM1/2: 4-line SPI
+7 = "LCD_RESET"
+8 = "LCD_CS"
+9 = "LCD_SCK"               # labelled D/C on the parallel bus
+10 = "LCD_DC"               # labelled WR on the parallel bus
+11 = "GND"                  # RD
+12 = "LCD_MOSI"             # SDA
+13 = "GND"
+14 = "GND"
+15 = "GND"
+16 = "GND"
+17 = "GND"
+18 = "GND"
+19 = "GND"
+20 = "GND"                  # 13 to 20: DB0 to DB7
+21 = "LCD_TE"               # test pad only
+22 = "NC"
+23 = "GND"
+24 = "GND"
+
+[display.backlight]
+switch = "AO3400A"          # C20917, low side, gate on BL_PWM, 100k gate pull-down
+resistor = 15.0             # Ohm, 1 %, 3V3 to LEDA
+pwm_period_us = 100
+
+# ---------------------------------------------------------------------------------------------------------
+# Radio module and the RF path (mcu-radio 7.1, 7.3; enclosure 7)
+# ---------------------------------------------------------------------------------------------------------
+[module]
+part = "u-blox BMD-340-A-R"  # C5456944, nRF52840, LGA 68 pads
+face = "bottom"
+length = 15.0               # along X, antenna end toward +X (right board edge)
+width = 10.2
+height = 2.0                # 1.9 +/-0.1
+antenna_strip = 4.40        # last 4.40 of the length; the first pad column starts here (data sheet figure 12)
+antenna_inset = 0.2         # antenna end inside the drawn board edge (D24)
+inset_window = [0.0, 0.4]   # allowed real inset after the outline tolerance: never overhang, at most 0.4 (D24)
+centre_y = 53.0             # mcu-radio 7.3.3 item 3
+
+[module.keepout]
+# Copper keep-out on all layers, 20.2 along the board edge (mcu-radio A3). Depth = antenna_strip +
+# antenna_inset, so the keep-out runs from the board edge to the edge of the first pad column and no
+# further (D22). check_spec enforces both.
+depth = 4.6
+length = 20.2
+
+[rf_bay]
+# No metal and no parts except FR4, the module and the insert (mcu-radio A4 to A8).
+inset = 9.6                 # from the board edge: antenna_inset + strip 4.4 + margin (A4). D24
+margin = 5.0                # metal-free margin past the antenna strip (A4; guess there)
+top_pocket_corner_radius = 1.5  # top-shell pocket over the bay, 2.2 deep from the split face
+length = 20.2
+top_z = -2.80               # top shell over the bay pocketed from below to here (A7, D11)
+floor_top_z = -13.30        # A8
+
+[rf_window]
+# Right-wall slot in the bottom shell closed by a black POM insert (enclosure 7.2, D2).
+y0 = 38.0
+y1 = 68.0
+top_z = -5.0                # notch from the split face (A9 asks Z -5.20 or higher)
+bottom_z = -11.70
+insert = [29.90, 3.45, 6.65]    # length, thickness, height
+key_diameter = 1.90
+relief_diameter = 2.00
+relief_depth = 6.7
+antenna_pocket_length = 14.2
+antenna_pocket_z = [-6.00, -10.50]
+
+# ---------------------------------------------------------------------------------------------------------
+# Icon flash and crystal (mcu-radio 7.4)
+# ---------------------------------------------------------------------------------------------------------
+[flash]
+part = "Winbond W25Q128JVSIQ SOIC-8 208 mil"   # C97521, basic
+face = "bottom"
+x = 103.0                   # control column, left of the module, outside the key-field floor (D8). guess
+y = 53.0
+size = [7.90, 5.28]         # lead span x body
+height = 2.16               # max
+
+[crystal]
+part = "Epson Q13FC1350000400 32.768 kHz"   # C32346; 2 x 20 pF C0G (C1554), within a few mm of P0.00/P0.01
+face = "bottom"
+
+# ---------------------------------------------------------------------------------------------------------
+# USB-C, power switch, reset, SWD (usb-io 6)
+# ---------------------------------------------------------------------------------------------------------
+[usb]
+part = "HRO TYPE-C-31-M-13C"    # C2848620, mid-mount, 1.60 mm sink
+face = "bottom"
+x = 100.8                   # x_right 27.6
+front_y = 0.25              # shell front 0.25 behind the rear face (D 0.25); kept, see D37
+front_y_band = [0.0, 0.3]   # usb-io U3 (0.3 is judgement there); a plug test gates the case order (D37)
+signal_pad_end_y = 8.05     # outer end of the signal pad row, bottom face (usb-io 6.1)
+length = 6.50
+width = 8.94
+top_z = -6.20
+bottom_z = -9.36
+contact_z = -7.82
+notch_x = [95.8, 105.8]     # rear-wall notch from the split face, x_right 32.6 to 22.6
+notch_z = [-5.00, -9.90]
+pocket_x = [94.0, 107.6]    # inner pocket leaving a 0.6 skin, x_right 34.4 to 20.8
+pocket_z = [-5.00, -8.60]
+pocket_y = [0.60, 3.50]
+
+[power_switch]
+part = "Shouhan MSK12C02"   # C431540, SPDT on the LDO EN pin (power 8)
+face = "bottom"
+x = 82.9                    # x_right 45.5
+body = [6.7, 2.8]
+body_y0 = 1.90              # body front on the tongue edge
+actuator = [1.3, 1.6]       # width, reach past the body (1.4 to 1.6, usb-io 6.7)
+height = 1.5
+actuator_z = -8.55
+notch_x = [77.9, 87.9]      # x_right 50.5 to 40.5
+notch_z = [-5.00, -9.90]
+
+[reset]
+part = "XKB TS-1187A-B-A-B" # C318884, basic, pressed through a floor pinhole
+face = "bottom"
+x = 88.0                    # guess; any bottom-face spot outside the keep-outs works
+y = 62.0
+body = [5.2, 5.2]           # guess from the 7.0 pad span (usb-io 6.6)
+height = 1.5
+pinhole = 1.5
+floor_top_z = -9.50
+
+[swd]
+footprint = "Tag-Connect TC2030-NL"
+face = "bottom"
+x = 92.0                    # guess
+y = 76.0
+size = [9.6, 5.0]           # guess, pad field with locating holes
+low_zone = 3.0              # no part taller than 1.0 mm within this distance (usb-io 6.5)
+
+# ---------------------------------------------------------------------------------------------------------
+# Battery (power 5, 11, 14; D4, D5)
+# ---------------------------------------------------------------------------------------------------------
+[battery]
+cell = "Adafruit 258 class: 1,200 mAh LiPo with PCM, JST PH 2-pin, pin 1 positive"   # D4
+cell_size = [62.0, 34.0, 5.0]   # X, Y, Z (cell lies with its long side along X)
+swelling = 0.5              # 10 % of 5.0 (power 14 rule 2)
+insulation = 0.3            # polyimide or PET over the sockets (power 5.2)
+foam = 0.2
+pocket_clearance = 1.0      # per side in plan (power 5.2)
+pocket_x = [14.5, 78.5]     # 64 long, under key columns 0 to 3; left wall 1.5 from the left scoop (D4)
+pocket_y = [14.5, 50.5]     # 36 deep; rear edge clear of the K1/K2 bottom keep-out (Y 11.0 + 3.3) (D4)
+pocket_corner_radius = 2.0  # 10.95 deep from the split face: JLCCNC table R2.0 to 15 mm (enclosure 5; D29)
+pocket_floor_top_z = -15.95 # power 5.2, 5.0 mm class
+# Cell orientation and lead (D28). The PCM end with the lead faces +X, toward the connector relief.
+pcm_end = "+X"
+lead_exit_y = 37.5          # where the lead leaves the PCM end. guess; MEASURE on the cell
+lead_length = 50.0          # Adafruit 258 lead, not recorded in power 5.1. guess; MEASURE before fitting
+lead_length_max = 60.0      # longest lead whose loop still fits the relief. guess
+lead_loop_min = 10.0        # free loop (power 14 rule 4)
+plug_protrusion = 4.0       # JST PH plug body standing out of the header mouth when mated. guess
+
+[battery.connector]
+part = "JST S2B-PH-SM4-TB"  # C295747, side entry, 5.5 below the PCB
+face = "bottom"
+x = 93.5                    # D5. guess within the rules of power 11
+y = 37.5
+body = [6.0, 7.9]           # X (depth, toward the mouth) x Y
+height = 5.5
+mouth = "-X"                # faces the pocket
+mouth_clear = 12.0          # free length in front of the mouth for plug and wire bend (power 11)
+pin1 = "positive"
+
+[battery.relief]
+# Wire and connector relief in the floor between the pocket and the connector (D5).
+x = [78.5, 97.0]
+y = [31.5, 43.5]
+floor_top_z = -13.60        # power 11: floor 0.3 below the connector underside
+corner_radius = 1.5         # 8.6 deep from the split face (enclosure 5)
+
+# ---------------------------------------------------------------------------------------------------------
+# Screws and holes (enclosure 6.4; D6, D7)
+# ---------------------------------------------------------------------------------------------------------
+[holes.k]
+# From the top through the plate, into bottom-shell posts. Countersunk heads flush in the cap gaps.
+# M1.6 instead of M2 so the plate keeps 0.8 mm of metal to the switch openings (D30).
+screw = "M1.6 x 5 DIN 7991"     # head 3.0 (D30); thread and drill depths to be recomputed by the case owner
+pcb_hole = 4.0              # NPTH
+keepout_top = 4.6
+keepout_bottom = 6.6
+post = 3.6
+post_top_z = -5.20
+countersink = 3.30          # head 3.0 sits 0.15 below the plate top (D30)
+clearance_hole = 1.80
+# On the column boundaries 1-2 and 3-4, 3.0 behind the rear-row and front-row key centres.
+positions = [[23.525, 11.0], [61.625, 11.0], [23.525, 68.15], [61.625, 68.15]]
+
+[holes.c]
+# From below into blind tapped top-shell posts, right side.
+screw = "M2 x 6 DIN 7991"
+pcb_hole = 4.0              # NPTH
+keepout = 4.6
+post = 3.6
+positions = [[120.9, 12.0], [120.9, 77.0]]   # x_right 7.5 (enclosure 6.4 item 2)
+post_bottom_z = [-9.95, -11.65]
+countersink = 4.30
+local_floor = 2.0           # floor at each countersink (enclosure 6.4 item 2)
+# C2 sits on the D4 ramp (underside Z -15.30). A flat spot-face from below brings its seat back to the
+# enclosure's Z -13.70 so the 2.0 mm floor and the M2 x 6 screw stay (D31). Index into positions, 0-based.
+spot_face = { index = 1, diameter = 4.8, floor_z = -13.70 }
+foot_wall_min = 1.0         # spot-face or countersink to a foot pocket (D31). guess
+
+[holes.g]
+# PCB to top shell, case ground. Two screws (D6). G2 moved from (120.9, 70.0) to (121.25, 66.6) (D32).
+screw = "M2 x 4 ISO 7045 pan head"
+pcb_hole = 2.2              # plated, GND ring 4.6 on both faces
+ring = 4.6
+keepout_top = 5.2
+post = 4.6
+post_bottom_z = -6.20       # post end face bare, seats the PCB top
+head = 4.0
+head_bottom_z = -9.40
+positions = [[120.9, 32.0], [121.25, 66.6]]
+
+# ---------------------------------------------------------------------------------------------------------
+# Floors under the PCB (bottom shell)
+# ---------------------------------------------------------------------------------------------------------
+[floors]
+key_field_top_z = -9.95     # 0.3 under the socket undersides (keys 6.3)
+control_column_top_z = -10.30   # 2.5 under the module and flash (mcu-radio 7.4, D8); x from the well wall to the right wall
+control_column_x0 = 81.65
+
+# ---------------------------------------------------------------------------------------------------------
+# Assembly (D26, D28). The numbered build order is in docs/decisions.md D28.
+# ---------------------------------------------------------------------------------------------------------
+[assembly]
+switch_insertion = "jig"    # switches go in only on the printed insertion jig, bottom shell off, cell unplugged (D26)
+jig_support_gap = 0.2       # jig rib top below each socket underside (keys 6.4: 0.2 to 0.4 below the socket)
+jig_support_gap_max = 0.3   # keys 6.4: support within 0.3 mm
+cell_fitting = "unit upside down, cell laid on the insulated PCB bottom, plugged, then the bottom shell lowered over it"
+
+# ---------------------------------------------------------------------------------------------------------
+# FDM print variant (enclosure 8; D27)
+# ---------------------------------------------------------------------------------------------------------
+[print.bottom_shell]
+orientation = "ramp plane on the bed, one piece with the wedge"
+supports = "under the rear slope (Y 0 to apex_y) and both flank scoops (scoop width, Y 0 to end_y)"
+fdm_floor = 1.5             # plastic floor, recommended (enclosure 5)
+
+# ---------------------------------------------------------------------------------------------------------
+# Power (power 6 to 10, D13, D14)
+# ---------------------------------------------------------------------------------------------------------
+[power]
+charger = "TI BQ24072RGTR"  # C140288, USB500, ISET 2.2k: 362 / 405 / 443 mA
+ldo = "TI TPS7A0233PDBVR"   # C2887324, 3.3 V, +/-1.5 % over temperature (D13)
+gauge = "ADI MAX17048G+T10" # C2682616, I2C 0x36
+reverse_fet = "AO3401A"     # C15127
+rail_3v3_cap_max_derated_uf = 22.0  # TPS7A02 COUT limit, a derated value (TI SBVS277C table 6.3 note 2)
+# Nominal capacitance on 3V3 (D14): module internal 4.7 at VCC and 4.7 at VCCH (data sheet pin table, pads 17
+# and 65), module bulk 10, LDO out 1, flash 0.1, panel 1 + 0.1. Nominal values bound the derated ones from above.
+rail_3v3_caps_uf = [4.7, 4.7, 10.0, 1.0, 0.1, 1.0, 0.1]
+charger_to_pocket_min = 10.0    # plan distance, charger IC to the battery pocket (power 6.4, 14 rule 6)
+charger_to_ldo_min = 5.0        # "not next to each other" (power 6.4); 5.0 is a guess
+ptc_to_charger_min = 10.0       # usb-io 6.3 (judgement there)
+cc_to_receptacle_max = 5.0      # usb-io 6.3
+esd_to_connector_max = 3.0      # usb-io 6.3, to the connector pads
+
+[power.parts]
+# Bottom-face positions for the layout to hold (D35). All positions are guesses inside these rules; sizes are
+# package outlines, heights from power 12 (maximum values).
+charger = { x = 106.0, y = 32.0, size = [3.0, 3.0], height = 1.0 }      # BQ24072 VQFN-16 3 x 3
+ldo = { x = 108.0, y = 45.0, size = [3.0, 3.0], height = 1.45 }         # TPS7A02 SOT-23-5 with leads
+gauge = { x = 100.0, y = 30.0, size = [2.0, 2.0], height = 0.8 }        # MAX17048 DFN, 2 x 2 guess
+ntc = { x = 43.5, y = 25.0, size = [2.0, 1.25], height = 1.25 }         # 0805, over the cell (power 6.4)
+ptc = { x = 100.8, y = 18.5, size = [3.2, 1.6], height = 0.75 }         # 1206L075THYR
+esd = { x = 100.8, y = 10.0, size = [3.0, 3.0], height = 1.45 }         # USBLC6-2SC6 SOT-23-6 with leads
+cc1 = { x = 95.6, y = 9.5, size = [1.0, 0.5], height = 0.4 }            # 5.1k 0402
+cc2 = { x = 106.0, y = 9.5, size = [1.0, 0.5], height = 0.4 }
+
+# ---------------------------------------------------------------------------------------------------------
+# Vertical stack-up. Z from the deck, listed from top to bottom. tools/check_spec.py checks the order.
+# ---------------------------------------------------------------------------------------------------------
+[stack]
+knob_top = 12.00            # rotary-buttons 6.3
+keycap_top = 4.40           # keys 6.3
+knob_rim = 2.90             # rotary-buttons 6.3
+plinth_top = 1.80
+button_cap_top = 1.00
+deck = 0.00                 # lens top flush; keycap skirt bottom at rest
+lens_underside = -1.00      # display 6.4
+lens_recess_floor = -1.15
+button_counterbore_top = -1.50
+web_underside = -1.95       # 0.80 web (D10)
+display_module_top = -2.05
+rf_bay_top = -2.80          # mcu-radio A5, A7
+display_module_back = -3.55
+plate_top = -4.00           # keys 6.3
+split = -5.00               # geometry 4.2
+plate_underside = -5.15
+fpc_connector_top = -5.20
+k_post_top = -5.20
+display_flex_bottom = -5.65
+pcb_top = -6.20
+pcb_bottom = -7.80
+usb_contact_centre = -7.82  # usb-io 6.1
+power_switch_actuator = -8.55
+switch_pin_tips = -9.20     # keys 6.3
+g_head_underside = -9.40    # enclosure 6.4
+socket_underside = -9.65    # keys 6.3
+module_bottom = -9.80       # mcu-radio 7.3, maximum
+usb_notch_bottom = -9.90    # usb-io 6.2
+key_field_floor_top = -9.95
+flash_bottom = -9.96        # mcu-radio 7.4
+insulation_bottom = -10.25  # power 5.2
+control_column_floor_top = -10.30
+rf_slot_bottom = -11.70     # enclosure 7.2
+scoop_underside = -12.00    # geometry 4.7
+rf_bay_floor_top = -13.30   # mcu-radio A8
+battery_connector_bottom = -13.30   # power 11
+battery_relief_floor_top = -13.60
+front_underside = -14.60    # D4
+cell_bottom = -15.75        # with swelling
+pocket_floor_top = -15.95
+pocket_underside_needed = -17.45
+apex_underside = -20.60     # D4
+
+# ---------------------------------------------------------------------------------------------------------
+# Module pads (BMD-340 data sheet UBX-19033353 R13, pin table; mcu-radio 7.1). Fact table, not a choice.
+# ---------------------------------------------------------------------------------------------------------
+[module.pads]
+"P0.00" = 13
+"P0.01" = 14
+"P0.02" = 15
+"P0.03" = 19
+"P0.04" = 20
+"P0.05" = 21
+"P0.06" = 22
+"P0.07" = 23
+"P0.08" = 24
+"P0.09" = 25
+"P0.10" = 26
+"P0.11" = 27
+"P0.12" = 28
+"P0.13" = 31
+"P0.14" = 32
+"P0.15" = 33
+"P0.16" = 34
+"P0.17" = 35
+"P0.18" = 39
+"P0.19" = 37
+"P0.20" = 38
+"P0.21" = 36
+"P0.22" = 40
+"P0.23" = 41
+"P0.24" = 42
+"P0.25" = 6
+"P0.26" = 7
+"P0.27" = 8
+"P0.28" = 9
+"P0.29" = 10
+"P0.30" = 11
+"P0.31" = 12
+"P1.00" = 56
+"P1.01" = 57
+"P1.02" = 58
+"P1.03" = 59
+"P1.04" = 60
+"P1.05" = 48
+"P1.06" = 49
+"P1.07" = 50
+"P1.08" = 51
+"P1.09" = 52
+"P1.10" = 53
+"P1.11" = 54
+"P1.12" = 61
+"P1.13" = 62
+"P1.14" = 63
+"P1.15" = 64
+VCC = 17
+VCCH = 65
+VBUS = 66
+"D-" = 67
+"D+" = 68
+SWCLK = 43
+SWDIO = 44
+GND = [1, 2, 3, 4, 5, 16, 18, 29, 30, 45, 46, 47, 55]
+
+[module.low_frequency]
+# Standard drive, below 10 kHz only (data sheet pin table). Fast buses must not use these.
+pins = ["P0.02", "P0.03", "P0.09", "P0.10", "P0.28", "P0.29", "P0.30", "P0.31",
+        "P1.01", "P1.02", "P1.03", "P1.04", "P1.05", "P1.06", "P1.07",
+        "P1.10", "P1.11", "P1.12", "P1.13", "P1.14", "P1.15"]
+
+# ---------------------------------------------------------------------------------------------------------
+# Pin map: module pin = [net, function]. Allocation from mcu-radio 7.2 with power 6.3 (P0.04 /PGOOD).
+# "fast" marks a net that must sit on a full-speed pin.
+# ---------------------------------------------------------------------------------------------------------
+[pinmap]
+"P0.19" = ["QSPI_SCK", "flash clock", "fast"]
+"P0.17" = ["QSPI_CSN", "flash chip select", "fast"]
+"P0.20" = ["QSPI_IO0", "flash data 0", "fast"]
+"P0.21" = ["QSPI_IO1", "flash data 1", "fast"]
+"P0.22" = ["QSPI_IO2", "flash data 2", "fast"]
+"P0.23" = ["QSPI_IO3", "flash data 3", "fast"]
+"P0.13" = ["LCD_SCK", "display SPIM3 clock", "fast"]
+"P0.15" = ["LCD_MOSI", "display SPIM3 data", "fast"]
+"P0.14" = ["LCD_CS", "display chip select", "fast"]
+"P0.16" = ["LCD_DC", "display data/command", "fast"]
+"P1.00" = ["LCD_RESET", "display reset, static", "fast"]
+"P0.24" = ["BL_PWM", "backlight PWM, pwm-leds driven by firmware/zmk/src/display_power.c (D38)", "fast"]
+"P0.07" = ["I2C_SDA", "gauge I2C data, 4.7k to 3V3", "fast"]
+"P0.11" = ["I2C_SCL", "gauge I2C clock, 4.7k to 3V3", "fast"]
+"P0.03" = ["CHG_N", "charger /CHG, input, pull-up", "slow"]
+"P0.04" = ["PGOOD_N", "charger /PGOOD, input, pull-up", "slow"]
+"P0.26" = ["GAUGE_ALRT_N", "gauge alert, input, pull-up", "slow"]
+"P0.28" = ["ENC_L_A", "left encoder A", "slow"]
+"P0.30" = ["ENC_L_B", "left encoder B", "slow"]
+"P0.29" = ["ENC_R_A", "right encoder A", "slow"]
+"P0.31" = ["ENC_R_B", "right encoder B", "slow"]
+"P1.12" = ["ROW0", "matrix row 0, input, pull-down", "slow"]
+"P1.13" = ["ROW1", "matrix row 1, input, pull-down", "slow"]
+"P1.14" = ["ROW2", "matrix row 2, input, pull-down", "slow"]
+"P1.15" = ["ROW3", "matrix row 3, input, pull-down", "slow"]
+"P0.02" = ["COL0", "matrix column 0, output", "slow"]
+"P0.25" = ["COL1", "matrix column 1, output", "slow"]
+"P0.27" = ["COL2", "matrix column 2, output", "slow"]
+"P1.05" = ["COL3", "matrix column 3, output", "slow"]
+"P1.06" = ["COL4", "matrix column 4, output", "slow"]
+"P0.00" = ["XL1", "32.768 kHz crystal", "fast"]
+"P0.01" = ["XL2", "32.768 kHz crystal", "fast"]
+"P0.18" = ["RESET_N", "pin reset (gpio-as-nreset), button and SWD", "slow"]
+VCC = ["3V3", "LV mode supply", "power"]
+VCCH = ["3V3", "LV mode supply, tied to VCC", "power"]
+VBUS = ["VBUS_SYS", "USB PHY supply after ESD and PTC (D12)", "power"]
+"D-" = ["USB_DN", "USB D-, 90 Ohm pair", "usb"]
+"D+" = ["USB_DP", "USB D+, 90 Ohm pair", "usb"]
+SWCLK = ["SWCLK", "TC2030 pin 4", "debug"]
+SWDIO = ["SWDIO", "TC2030 pin 2", "debug"]
+GND = ["GND", "ground pads", "power"]
+
+[pinmap_spare]
+pins = ["P0.05", "P0.06", "P0.08", "P0.09", "P0.10", "P0.12", "P1.01", "P1.02", "P1.03", "P1.04",
+        "P1.07", "P1.08", "P1.09", "P1.10", "P1.11"]

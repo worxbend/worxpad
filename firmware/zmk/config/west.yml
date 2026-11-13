@@ -1,0 +1,43 @@
+# ZMK pinned to the commit the mcu-radio record measured (research/components/mcu-radio.md 1, item 6).
+# It is the commit worxboard pins. ZMK's own app/west.yml takes Zephyr from the moving branch
+# v4.1.0+zmk-fixes, so Zephyr is pinned here to the commit that branch resolved to on 2026-11-13. A project in
+# this file wins over the ZMK import of the same name, so the entry repeats ZMK's import name-blocklist.
+# Imports resolve in file order and the first definition of a name wins, so ZMK comes first: its LVGL pin must
+# win over the LVGL entry in Zephyr's manifest.
+# It also repeats ZMK's group-filter, because Zephyr's own filter turns the optional group off and nanopb, which
+# ZMK Studio needs, is in that group. LVGL and the Studio messages stay pinned by commit in ZMK's manifest.
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: 4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85
+      import: app/west.yml
+    - name: zephyr
+      remote: zmkfirmware
+      revision: 10ba6d0cb38bc3d258775d27982f707599320085
+      clone-depth: 1
+      import:
+        name-blocklist:
+          - ci-tools
+          - hal_altera
+          - hal_cypress
+          - hal_infineon
+          - hal_microchip
+          - hal_nxp
+          - hal_openisa
+          - hal_xtensa
+          - hal_st
+          - hal_ti
+          - loramac-node
+          - mcuboot
+          - mcumgr
+          - net-tools
+          - openthread
+          - edtt
+          - trusted-firmware-m
+  group-filter: [+optional]
+  self:
+    path: config

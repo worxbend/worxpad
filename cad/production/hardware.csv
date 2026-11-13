@@ -1,0 +1,6 @@
+item,qty_per_unit,spec,where,note
+M1.6x5 countersunk screw,4,"M1.6x0.35, length 5 incl. head, DIN 7991 hex socket, head dia. 3.0, black A2 or black 10.9 steel","K1, K2, K3, K4: from the deck through the plate lip into the bottom-shell posts","engages 3.80 to 4.25 mm, tip 0.55 mm before the last full thread (D30); a longer screw runs out of thread"
+M2x6 countersunk screw,2,"M2x0.4, length 6 incl. head, DIN 7991 hex socket, head dia. 4.0, black A2 or black 10.9 steel","C1, C2: from the underside into the top-shell posts","engages 3.95 mm, tip 0.40 mm before the last full thread; C2 sits in a dia. 4.8 spot-face (D31)"
+M2x4 pan head screw,2,"M2x0.4, length 4, ISO 7045 or ISO 14583 pan head, plain A2 or zinc-plated steel; must conduct","G1, G2: from the PCB bottom into the top-shell G posts","case ground through the plated G hole (D6). Thread margin under review: the case check for G1 and G2 fails (0.15 mm against 0.4 mm)"
+M2x3 set screw,2,"M2x0.4, length 3, cup point, ISO 4029, hex socket","one per knob, on the encoder shaft flat","rotary-buttons 6.5; tighten lightly, the shaft is plastic"
+Rubber foot,4,"3M Bumpon SJ5076, black polyurethane, dia. 8.00 x 2.79, self-adhesive","foot pockets dia. 8.4 x 0.8 in the bottom shell","DigiKey 570288, pack of 56 covers 14 units"

@@ -1,0 +1,289 @@
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * worxpad: u-blox BMD-340 (nRF52840) in LV mode, 4 x 4 keys plus a fifth matrix column for the knob
+ * pushes and the round buttons, two EC11-class encoders, a 240 x 240 ST7789V panel on SPIM3, a W25Q128JV
+ * on QSPI, a MAX17048 gauge and the BQ24072 status lines. Pins come from [pinmap] in board.toml and are
+ * checked by tools/check_pins.py. Partition layout as ZMK's nice_nano board (Adafruit nRF52 UF2
+ * bootloader with SoftDevice S140 v6 area; mcu-radio 7.7). Nothing here has run on a worxpad board.
+ */
+
+/dts-v1/;
+
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
+#include "worxpad-pinctrl.dtsi"
+
+/ {
+    model = "worxpad";
+    compatible = "worxbend,worxpad";
+
+    chosen {
+        zephyr,code-partition = &code_partition;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zephyr,display = &lcd;
+        zmk,kscan = &kscan;
+        zmk,physical-layout = &layout;
+        zmk,battery = &fuel_gauge;
+    };
+
+    /*
+     * col2row: the columns drive, the rows read through the internal pull-downs (keys 6.6).
+     * Rows R0 to R3 and columns C0 to C4 in board.toml order.
+     */
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        diode-direction = "col2row";
+        row-gpios = <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        col-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>,
+                    <&gpio0 25 GPIO_ACTIVE_HIGH>,
+                    <&gpio0 27 GPIO_ACTIVE_HIGH>,
+                    <&gpio1 5 GPIO_ACTIVE_HIGH>,
+                    <&gpio1 6 GPIO_ACTIVE_HIGH>;
+    };
+
+    /*
+     * Keymap position order: the 16 keys row by row from the rear-left, then the left knob push (C4R1),
+     * the right knob push (C4R0), the left button (C4R3) and the right button (C4R2).
+     */
+    transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <4>;
+        columns = <5>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3)
+            RC(1,4) RC(0,4) RC(3,4) RC(2,4)
+        >;
+    };
+
+    /*
+     * Positions in 1/100 key units, top-left corner of a 1u square, key 0 at (0, 0). The knobs and
+     * buttons sit at their board.toml centres, converted with the 19.05 mm pitch (check_pins checks it).
+     */
+    layout: physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "worxpad";
+        kscan = <&kscan>;
+        transform = <&transform>;
+        keys
+            = <&key_physical_attrs 100 100   0   0 0 0 0>
+            , <&key_physical_attrs 100 100 100   0 0 0 0>
+            , <&key_physical_attrs 100 100 200   0 0 0 0>
+            , <&key_physical_attrs 100 100 300   0 0 0 0>
+            , <&key_physical_attrs 100 100   0 100 0 0 0>
+            , <&key_physical_attrs 100 100 100 100 0 0 0>
+            , <&key_physical_attrs 100 100 200 100 0 0 0>
+            , <&key_physical_attrs 100 100 300 100 0 0 0>
+            , <&key_physical_attrs 100 100   0 200 0 0 0>
+            , <&key_physical_attrs 100 100 100 200 0 0 0>
+            , <&key_physical_attrs 100 100 200 200 0 0 0>
+            , <&key_physical_attrs 100 100 300 200 0 0 0>
+            , <&key_physical_attrs 100 100   0 300 0 0 0>
+            , <&key_physical_attrs 100 100 100 300 0 0 0>
+            , <&key_physical_attrs 100 100 200 300 0 0 0>
+            , <&key_physical_attrs 100 100 300 300 0 0 0>
+            , <&key_physical_attrs 100 100 407   6 0 0 0>
+            , <&key_physical_attrs 100 100 505   6 0 0 0>
+            , <&key_physical_attrs 100 100 407 300 0 0 0>
+            , <&key_physical_attrs 100 100 505 300 0 0 0>
+            ;
+    };
+
+    /* Bourns PEC12R-4215F-S0024: 24 detents, 24 pulses, both contacts open at detent (rotary-buttons). */
+    encoder_left: encoder_left {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <96>;
+        status = "okay";
+    };
+
+    encoder_right: encoder_right {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <96>;
+        status = "okay";
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder_left &encoder_right>;
+        triggers-per-rotation = <24>;
+    };
+
+    /* Backlight PWM. Driven by firmware/zmk/src/display_power.c, which dims it (power 15). */
+    backlight_leds: backlight_leds {
+        compatible = "pwm-leds";
+        backlight: backlight {
+            pwms = <&pwm0 0 PWM_USEC(100) PWM_POLARITY_NORMAL>;
+        };
+    };
+
+    mipi_dbi {
+        compatible = "zephyr,mipi-dbi-spi";
+        spi-dev = <&spi3>;
+        dc-gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio1 0 GPIO_ACTIVE_LOW>;
+        write-only;
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        /*
+         * DM-TFT13-377p24 (LH133T-IF05, ST7789VW). 16 MHz from board.toml display.spi_mhz. The panel
+         * register values are the ones the mcu-radio RAM probe built with (Zephyr's 240 x 240 ST7789V
+         * example set); they are not checked against the DisplayModule init sequence. MADCTL 0x00 and
+         * zero offsets assume the flex-toward-the-front mounting; display 6.5 says to check MADCTL and
+         * the 80-line RAM offset on board 1.
+         */
+        lcd: st7789v@0 {
+            compatible = "sitronix,st7789v";
+            reg = <0>;
+            mipi-max-frequency = <16000000>;
+            mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+            width = <240>;
+            height = <240>;
+            x-offset = <0>;
+            y-offset = <0>;
+            vcom = <0x19>;
+            gctrl = <0x35>;
+            vrhs = <0x12>;
+            vdvs = <0x20>;
+            mdac = <0x00>;
+            gamma = <0x01>;
+            colmod = <0x05>;
+            lcm = <0x2c>;
+            porch-param = [0c 0c 00 33 33];
+            cmd2en-param = [5a 69 02 01];
+            pwctrl1-param = [a4 a1];
+            pvgam-param = [d0 04 0d 11 13 2b 3f 54 4c 18 0d 0b 1f 23];
+            nvgam-param = [d0 04 0c 11 13 2c 3f 44 51 2f 1f 1f 20 23];
+            ram-param = [00 f0];
+            rgb-param = [cd 08 14];
+        };
+    };
+
+    /*
+     * BQ24072 open-drain status lines, read by the status screen (power 6.3). Both low-active with the
+     * internal pull-up. The gauge ALRT line (P0.26) is wired but unused: the ZMK MAX17048 driver polls.
+     */
+    zephyr,user {
+        chg-gpios = <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        pgood-gpios = <&gpio0 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+};
+
+/* LV mode: VCC and VCCH tied to 3V3, REG0 unused. REG1 DC/DC on (inductor on the module, mcu-radio 7.7). */
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+/* P0.18 is the reset line to the reset button and the TC2030 pads (usb-io 6.6). */
+&uicr {
+    gpio-as-nreset;
+};
+
+&gpiote {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+&spi3 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
+};
+
+&i2c0 {
+    status = "okay";
+    compatible = "nordic,nrf-twim";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_FAST>;
+
+    fuel_gauge: max17048@36 {
+        compatible = "zmk,maxim-max17048";
+        reg = <0x36>;
+    };
+};
+
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&pwm0_default>;
+    pinctrl-1 = <&pwm0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+/*
+ * W25Q128JVSIQ. No file system yet: the node exists so that runtime PM keeps the part in deep power-down
+ * (mcu-radio 7.7 hook 3) until the icon store is written.
+ */
+&qspi {
+    status = "okay";
+    pinctrl-0 = <&qspi_default>;
+    pinctrl-1 = <&qspi_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    icon_flash: w25q128jv@0 {
+        compatible = "nordic,qspi-nor";
+        reg = <0>;
+        writeoc = "pp4io";
+        readoc = "read4io";
+        sck-frequency = <32000000>;
+        jedec-id = [ef 40 18];
+        size = <134217728>;
+        quad-enable-requirements = "S2B1v4";
+        has-dpd;
+        t-enter-dpd = <3000>;
+        t-exit-dpd = <30000>;
+        zephyr,pm-device-runtime-auto;
+    };
+};
+
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        sd_partition: partition@0 {
+            reg = <0x00000000 0x00026000>;
+        };
+        code_partition: partition@26000 {
+            reg = <0x00026000 0x000c6000>;
+        };
+        storage_partition: partition@ec000 {
+            reg = <0x000ec000 0x00008000>;
+        };
+        boot_partition: partition@f4000 {
+            reg = <0x000f4000 0x0000c000>;
+        };
+    };
+};

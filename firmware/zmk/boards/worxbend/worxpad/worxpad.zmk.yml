@@ -1,0 +1,14 @@
+file_format: "1"
+id: worxpad
+name: worxpad
+type: board
+arch: arm
+url: https://github.com/w0rxbend/worxpad
+outputs:
+  - usb
+  - ble
+features:
+  - keys
+  - encoder
+  - display
+  - studio

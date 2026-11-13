@@ -1,0 +1,7 @@
+# Pinned container images. Format: <tag> <repo digest>
+# Digests copied from the sibling worxboard/tools/images.lock and matched against `docker images --digests`
+# on 2026-11-13. The ZMK image is present locally only by digest; pull_images.sh gives it the tag below.
+# Refresh: docker pull <tag> && docker image inspect <tag> --format '{{index .RepoDigests 0}}'
+kicad/kicad:10.0.7                 kicad/kicad@sha256:3224d1bf143185ecc1bd3a1082a36f37f0f4e59d707983a16515a845e3737fc6
+kicad/kicad:10.0.7-full            kicad/kicad@sha256:347d5b7d5d88207ba4217cdf594eeccd142279600d023e7a7e426f8599c77708
+zmkfirmware/zmk-build-arm:stable   zmkfirmware/zmk-build-arm@sha256:edb1c953438c6f720ddb79c3762f3972013b7fbbaf4fff3592fc869983e7afc5

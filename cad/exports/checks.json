@@ -1,0 +1,2113 @@
+{
+  "status": "model checks only; nothing printed, milled or fitted",
+  "self_test": [
+    {
+      "name": "overlap_found",
+      "found": 8700.0,
+      "expected": "more than 0.05",
+      "ok": true
+    },
+    {
+      "name": "thin_wall_found",
+      "found": 0.5,
+      "expected": "less than 0.8",
+      "ok": true
+    },
+    {
+      "name": "sharp_corners_found",
+      "found": 4.0,
+      "expected": "equal to 4",
+      "ok": true
+    },
+    {
+      "name": "sound_pocket_has_no_sharp_corner",
+      "found": 0.0,
+      "expected": "equal to 0",
+      "ok": true
+    },
+    {
+      "name": "radius_below_depth_rule_found",
+      "found": 4.0,
+      "expected": "equal to 4",
+      "ok": true
+    },
+    {
+      "name": "radius_on_depth_rule_passes",
+      "found": 0.0,
+      "expected": "equal to 0",
+      "ok": true
+    },
+    {
+      "name": "radius_below_table_found",
+      "found": 4.0,
+      "expected": "equal to 4",
+      "ok": true
+    },
+    {
+      "name": "undercut_found",
+      "found": 160.0,
+      "expected": "more than 5.0",
+      "ok": true
+    },
+    {
+      "name": "sound_pocket_has_no_undercut",
+      "found": 0.041,
+      "expected": "less than 5.0",
+      "ok": true
+    },
+    {
+      "name": "sharp_corner_not_cut",
+      "found": 0.6,
+      "expected": "more than 0.3",
+      "ok": true
+    },
+    {
+      "name": "narrow_slot_not_cut",
+      "found": 20.0,
+      "expected": "more than 0.3",
+      "ok": true
+    },
+    {
+      "name": "sound_pocket_is_cut",
+      "found": 0.0,
+      "expected": "less than 0.3",
+      "ok": true
+    },
+    {
+      "name": "long_bridge_found",
+      "found": 19.4,
+      "expected": "more than 15.0",
+      "ok": true
+    },
+    {
+      "name": "bridge_is_no_long_cantilever",
+      "found": 0.8,
+      "expected": "less than 1.500001",
+      "ok": true
+    },
+    {
+      "name": "cantilever_found",
+      "found": 3.7,
+      "expected": "more than 1.5",
+      "ok": true
+    },
+    {
+      "name": "supported_shelf_prints",
+      "found": 0.0,
+      "expected": "less than 1.5",
+      "ok": true
+    },
+    {
+      "name": "short_ledge_is_no_bridge",
+      "found": 0.0,
+      "expected": "less than 15.0",
+      "ok": true
+    },
+    {
+      "name": "flat_slope_found",
+      "found": 2.8,
+      "expected": "more than 1.5",
+      "ok": true
+    },
+    {
+      "name": "slope_of_45_degrees_prints",
+      "found": 0.0,
+      "expected": "less than 0.5",
+      "ok": true
+    },
+    {
+      "name": "loose_pieces_found",
+      "found": 1.0,
+      "expected": "more than 0",
+      "ok": true
+    },
+    {
+      "name": "one_box_is_sound",
+      "found": 0.0,
+      "expected": "equal to 0",
+      "ok": true
+    },
+    {
+      "name": "part_too_big_for_the_bed_found",
+      "found": 185.0,
+      "expected": "more than 180.0",
+      "ok": true
+    },
+    {
+      "name": "point_inside_hull_has_its_margin",
+      "found": 4.0,
+      "expected": "equal to 4.0",
+      "ok": true
+    },
+    {
+      "name": "point_outside_hull_found",
+      "found": -2.0,
+      "expected": "less than 0.0",
+      "ok": true
+    },
+    {
+      "name": "sharp_rim_has_no_setback",
+      "found": 0.0,
+      "expected": "less than 0.01",
+      "ok": true
+    },
+    {
+      "name": "rounded_rim_has_its_setback",
+      "found": 0.286,
+      "expected": "more than 0.26",
+      "ok": true
+    }
+  ],
+  "validity": [
+    {
+      "name": "cnc_top_shell",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 19335.4
+    },
+    {
+      "name": "cnc_bottom_shell",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 65524.1
+    },
+    {
+      "name": "cnc_lens",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 970.0
+    },
+    {
+      "name": "cnc_knob_left",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 565.8
+    },
+    {
+      "name": "cnc_knob_right",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 565.8
+    },
+    {
+      "name": "cnc_button_cap_left",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 482.1
+    },
+    {
+      "name": "cnc_button_cap_right",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 482.1
+    },
+    {
+      "name": "cnc_rf_insert",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 580.0
+    },
+    {
+      "name": "print_top_shell",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 18766.9
+    },
+    {
+      "name": "print_bottom_shell",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 66548.0
+    },
+    {
+      "name": "print_lens",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 970.0
+    },
+    {
+      "name": "print_knob_left",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 568.8
+    },
+    {
+      "name": "print_knob_right",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 568.8
+    },
+    {
+      "name": "print_button_cap_left",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 494.6
+    },
+    {
+      "name": "print_button_cap_right",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 494.6
+    },
+    {
+      "name": "print_g_spacers",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 29.9
+    },
+    {
+      "name": "coupon_plate_1_0",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 739.0
+    },
+    {
+      "name": "coupon_plate_1_2",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 886.8
+    },
+    {
+      "name": "coupon_knob_bore",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 1255.1
+    },
+    {
+      "name": "coupon_usb",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 735.3
+    },
+    {
+      "name": "coupon_lens",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 4164.8
+    },
+    {
+      "name": "keycap",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 583.7
+    },
+    {
+      "name": "coupon_stem",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 1275.0
+    },
+    {
+      "name": "insertion_jig",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "faults",
+      "ok": true,
+      "volume_mm3": 30123.5
+    }
+  ],
+  "interference": [
+    {
+      "variant": "cnc",
+      "parts": 37,
+      "pairs": 666,
+      "clashes": [],
+      "press_fits": [],
+      "limit_mm3": 0.05
+    },
+    {
+      "variant": "print",
+      "parts": 38,
+      "pairs": 703,
+      "clashes": [],
+      "press_fits": [
+        {
+          "a": "knob_left",
+          "b": "encoder_shafts",
+          "volume_mm3": 0.451,
+          "allowed_mm3": 0.451,
+          "ok": true
+        },
+        {
+          "a": "knob_right",
+          "b": "encoder_shafts",
+          "volume_mm3": 0.451,
+          "allowed_mm3": 0.451,
+          "ok": true
+        }
+      ],
+      "limit_mm3": 0.05
+    }
+  ],
+  "clearances": [
+    {
+      "name": "cnc_keycap_to_well_wall",
+      "value": 1.4,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "caps at rest to the top shell (keys 6.5)"
+    },
+    {
+      "name": "cnc_keycap_gap",
+      "value": 0.85,
+      "limit": 0.45,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "neighbouring caps; 0.45 is the gap left at the +/-0.2 resin tolerance (keys 6.5)"
+    },
+    {
+      "name": "cnc_pressed_keycap_to_shell_and_k_heads",
+      "value": 0.95,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "caps pressed 3.05 mm (PG1353D travel plus tolerance) to the plate, well and K heads"
+    },
+    {
+      "name": "cnc_pressed_keycap_to_switch",
+      "value": 0.35,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pressed caps to the flange, housing and collar (keys 6.3 item 4)"
+    },
+    {
+      "name": "cnc_k_head_below_plate_top",
+      "value": 0.15,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "keys 6.3 item 3: heads flush or recessed"
+    },
+    {
+      "name": "cnc_knob_rim_to_plinth_pressed",
+      "value": 0.3,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "knobs pushed 0.80 mm (maximum travel)"
+    },
+    {
+      "name": "cnc_knob_ceiling_to_collar_pressed",
+      "value": 1.4,
+      "limit": 0.75,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "counterbore ceiling at maximum travel over the nominal collar top; the limit holds a maximum collar on the lowest plinth (rotary-buttons 6.3 item 2)"
+    },
+    {
+      "name": "cnc_knob_to_collar_pressed",
+      "value": 0.585,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "measured on the solids: the counterbore round the collar (collar diameter a guess)"
+    },
+    {
+      "name": "cnc_knob_to_top_shell_at_rest",
+      "value": 1.1,
+      "limit": 1.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "rim over the plinth top: the 1.10 mm shim (rotary-buttons 6.5), less 0.1 mm"
+    },
+    {
+      "name": "cnc_knob_bore_bottom_over_longest_shaft",
+      "value": 0.5,
+      "limit": 0.35,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "arithmetic on the model levels: bore bottom against the shaft tip at +0.5 (rotary-buttons 6.3 item 3)"
+    },
+    {
+      "name": "cnc_cell_to_pocket_walls",
+      "value": 1.0,
+      "limit": 1.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "swollen cell (power 14) to the pocket walls in plan"
+    },
+    {
+      "name": "cnc_cell_to_pocket_floor",
+      "value": 0.2,
+      "limit": 0.2,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "room for the foam pad under the swollen cell"
+    },
+    {
+      "name": "cnc_cell_to_sockets",
+      "value": 0.6,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "swollen cell to the socket undersides: room for the insulation sheet"
+    },
+    {
+      "name": "cnc_display_module_to_top_shell",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "module top to the web underside: the 0.10 mm tape frame (D10)"
+    },
+    {
+      "name": "cnc_display_module_to_pocket_walls",
+      "value": 0.17,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "module outline in its pocket (D33)"
+    },
+    {
+      "name": "cnc_lens_to_recess",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "conventions 3.6"
+    },
+    {
+      "name": "cnc_display_flex_to_pocket_walls",
+      "value": 0.8,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "flex bend in the pocket opened to Y 61.8 (display 6.5), in plan; 0.3 mm a guess"
+    },
+    {
+      "name": "cnc_pcb_outline_to_bottom_shell",
+      "value": 0.3,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "PCB outline and tongues to the walls and the USB pocket (D21)"
+    },
+    {
+      "name": "cnc_posts_in_pcb_holes",
+      "value": 0.2,
+      "limit": 0.15,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "K and C posts through the 4.0 mm NPTH (enclosure 6.4); the G post ends seat on the board by design"
+    },
+    {
+      "name": "cnc_usb_receptacle_to_bottom_shell",
+      "value": 0.53,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "usb-io 6.2 item 1 draws 0.53 mm at the sides"
+    },
+    {
+      "name": "cnc_power_switch_to_bottom_shell",
+      "value": 0.6,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "actuator in its notch; 0.3 mm a guess"
+    },
+    {
+      "name": "cnc_usb_c_skin",
+      "value": 0.6,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "usb-io 6.2 item 3; JLCCNC recommends 0.8 mm, absolute minimum 0.5 mm; a skin 0.6 mm thick needs the JLCCNC DFM check and a first article"
+    },
+    {
+      "name": "cnc_rear_face_clear_of_plug",
+      "value": 12.9,
+      "limit": 6.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "nearest other rear opening to the USB-C centre (usb-io 6.2 item 7)"
+    },
+    {
+      "name": "cnc_button_left_flange_to_ceiling_nominal",
+      "value": 0.6,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "flange top to the counterbore ceiling at nominal heights, measured on the solid"
+    },
+    {
+      "name": "cnc_button_left_flange_to_ceiling_worst",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "less 0.50: switch +0.2, cap +0.2, counterbore -0.1 (ISO 2768-m)"
+    },
+    {
+      "name": "cnc_button_right_flange_to_ceiling_nominal",
+      "value": 0.6,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "flange top to the counterbore ceiling at nominal heights, measured on the solid"
+    },
+    {
+      "name": "cnc_button_right_flange_to_ceiling_worst",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "less 0.50: switch +0.2, cap +0.2, counterbore -0.1 (ISO 2768-m)"
+    },
+    {
+      "name": "cnc_encoder_left_body_to_pocket_ceiling",
+      "value": 0.05,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pocket depth +0.10/-0.00 on the drawing; a ceiling on the body bends the PCB away from the G posts"
+    },
+    {
+      "name": "cnc_encoder_right_body_to_pocket_ceiling",
+      "value": 0.05,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pocket depth +0.10/-0.00 on the drawing; a ceiling on the body bends the PCB away from the G posts"
+    },
+    {
+      "name": "cnc_cell_pocket_rim_setback",
+      "value": 0.283,
+      "limit": 0.262,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "smallest of 9 rim edges; R0.5 gives 0.282 at 0.05 below the rim (power 14 rule 3)"
+    },
+    {
+      "name": "print_keycap_to_well_wall",
+      "value": 1.4,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "caps at rest to the top shell (keys 6.5)"
+    },
+    {
+      "name": "print_keycap_gap",
+      "value": 0.85,
+      "limit": 0.45,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "neighbouring caps; 0.45 is the gap left at the +/-0.2 resin tolerance (keys 6.5)"
+    },
+    {
+      "name": "print_pressed_keycap_to_shell_and_k_heads",
+      "value": 0.95,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "caps pressed 3.05 mm (PG1353D travel plus tolerance) to the plate, well and K heads"
+    },
+    {
+      "name": "print_pressed_keycap_to_switch",
+      "value": 0.35,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pressed caps to the flange, housing and collar (keys 6.3 item 4)"
+    },
+    {
+      "name": "print_k_head_below_plate_top",
+      "value": 0.15,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "keys 6.3 item 3: heads flush or recessed"
+    },
+    {
+      "name": "print_knob_rim_to_plinth_pressed",
+      "value": 0.3,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "knobs pushed 0.80 mm (maximum travel)"
+    },
+    {
+      "name": "print_knob_ceiling_to_collar_pressed",
+      "value": 1.4,
+      "limit": 0.75,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "counterbore ceiling at maximum travel over the nominal collar top; the limit holds a maximum collar on the lowest plinth (rotary-buttons 6.3 item 2)"
+    },
+    {
+      "name": "print_knob_to_collar_pressed",
+      "value": 0.585,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "measured on the solids: the counterbore round the collar (collar diameter a guess)"
+    },
+    {
+      "name": "print_knob_to_top_shell_at_rest",
+      "value": 1.1,
+      "limit": 1.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "rim over the plinth top: the 1.10 mm shim (rotary-buttons 6.5), less 0.1 mm"
+    },
+    {
+      "name": "print_knob_bore_bottom_over_longest_shaft",
+      "value": 0.5,
+      "limit": 0.35,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "arithmetic on the model levels: bore bottom against the shaft tip at +0.5 (rotary-buttons 6.3 item 3)"
+    },
+    {
+      "name": "print_cell_to_pocket_walls",
+      "value": 1.0,
+      "limit": 1.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "swollen cell (power 14) to the pocket walls in plan"
+    },
+    {
+      "name": "print_cell_to_pocket_floor",
+      "value": 0.2,
+      "limit": 0.2,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "room for the foam pad under the swollen cell"
+    },
+    {
+      "name": "print_cell_to_sockets",
+      "value": 0.6,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "swollen cell to the socket undersides: room for the insulation sheet"
+    },
+    {
+      "name": "print_display_module_to_top_shell",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "module top to the web underside: the 0.10 mm tape frame (D10)"
+    },
+    {
+      "name": "print_display_module_to_pocket_walls",
+      "value": 0.17,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "module outline in its pocket (D33)"
+    },
+    {
+      "name": "print_lens_to_recess",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "conventions 3.6"
+    },
+    {
+      "name": "print_display_flex_to_pocket_walls",
+      "value": 0.8,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "flex bend in the pocket opened to Y 61.8 (display 6.5), in plan; 0.3 mm a guess"
+    },
+    {
+      "name": "print_pcb_outline_to_bottom_shell",
+      "value": 0.3,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "PCB outline and tongues to the walls and the USB pocket (D21)"
+    },
+    {
+      "name": "print_posts_in_pcb_holes",
+      "value": 0.2,
+      "limit": 0.15,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "K and C posts through the 4.0 mm NPTH (enclosure 6.4); the G post ends seat on the board by design"
+    },
+    {
+      "name": "print_usb_receptacle_to_bottom_shell",
+      "value": 0.53,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "usb-io 6.2 item 1 draws 0.53 mm at the sides"
+    },
+    {
+      "name": "print_power_switch_to_bottom_shell",
+      "value": 0.6,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "actuator in its notch; 0.3 mm a guess"
+    },
+    {
+      "name": "print_usb_c_skin",
+      "value": 0.0,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "no skin in print: usb-io 6.2 item 5 fallback (parts.usb_skin)"
+    },
+    {
+      "name": "print_rear_face_clear_of_plug",
+      "value": 12.9,
+      "limit": 6.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "nearest other rear opening to the USB-C centre (usb-io 6.2 item 7)"
+    },
+    {
+      "name": "print_button_left_flange_to_ceiling_nominal",
+      "value": 0.6,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "flange top to the counterbore ceiling at nominal heights, measured on the solid"
+    },
+    {
+      "name": "print_button_left_flange_to_ceiling_worst",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "less 0.50: switch +0.2, cap +0.2, counterbore -0.1 (ISO 2768-m)"
+    },
+    {
+      "name": "print_button_right_flange_to_ceiling_nominal",
+      "value": 0.6,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "flange top to the counterbore ceiling at nominal heights, measured on the solid"
+    },
+    {
+      "name": "print_button_right_flange_to_ceiling_worst",
+      "value": 0.1,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "less 0.50: switch +0.2, cap +0.2, counterbore -0.1 (ISO 2768-m)"
+    },
+    {
+      "name": "print_encoder_left_body_to_pocket_ceiling",
+      "value": 0.05,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pocket depth +0.10/-0.00 on the drawing; a ceiling on the body bends the PCB away from the G posts"
+    },
+    {
+      "name": "print_encoder_right_body_to_pocket_ceiling",
+      "value": 0.05,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "pocket depth +0.10/-0.00 on the drawing; a ceiling on the body bends the PCB away from the G posts"
+    },
+    {
+      "name": "print_cell_pocket_rim_setback",
+      "value": 0.283,
+      "limit": 0.262,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "smallest of 9 rim edges; R0.5 gives 0.282 at 0.05 below the rim (power 14 rule 3)"
+    },
+    {
+      "name": "cnc_K1_engagement",
+      "value": 3.8,
+      "limit": 2.4000000000000004,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M1.6 x 5 DIN 7991: 3.80 to 4.25 mm in M1.6x0.35-6H, full thread 4.8 from Z -5.2 to -10.00"
+    },
+    {
+      "name": "cnc_K1_tip_to_last_full_thread",
+      "value": 0.55,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -9.45"
+    },
+    {
+      "name": "cnc_K1_metal_beyond_drill_point",
+      "value": 7.131,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.25 to shoulder Z -10.80, point Z -11.18; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_K2_engagement",
+      "value": 3.8,
+      "limit": 2.4000000000000004,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M1.6 x 5 DIN 7991: 3.80 to 4.25 mm in M1.6x0.35-6H, full thread 4.8 from Z -5.2 to -10.00"
+    },
+    {
+      "name": "cnc_K2_tip_to_last_full_thread",
+      "value": 0.55,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -9.45"
+    },
+    {
+      "name": "cnc_K2_metal_beyond_drill_point",
+      "value": 7.131,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.25 to shoulder Z -10.80, point Z -11.18; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_K3_engagement",
+      "value": 3.8,
+      "limit": 2.4000000000000004,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M1.6 x 5 DIN 7991: 3.80 to 4.25 mm in M1.6x0.35-6H, full thread 4.8 from Z -5.2 to -10.00"
+    },
+    {
+      "name": "cnc_K3_tip_to_last_full_thread",
+      "value": 0.55,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -9.45"
+    },
+    {
+      "name": "cnc_K3_metal_beyond_drill_point",
+      "value": 4.882,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.25 to shoulder Z -10.80, point Z -11.18; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_K4_engagement",
+      "value": 3.8,
+      "limit": 2.4000000000000004,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M1.6 x 5 DIN 7991: 3.80 to 4.25 mm in M1.6x0.35-6H, full thread 4.8 from Z -5.2 to -10.00"
+    },
+    {
+      "name": "cnc_K4_tip_to_last_full_thread",
+      "value": 0.55,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -9.45"
+    },
+    {
+      "name": "cnc_K4_metal_beyond_drill_point",
+      "value": 4.882,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.25 to shoulder Z -10.80, point Z -11.18; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_C1_engagement",
+      "value": 3.95,
+      "limit": 3.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 6 DIN 7991: 3.95 to 4.40 mm in M2x0.4-6H, full thread 4.8 from Z -9.95 to -5.15"
+    },
+    {
+      "name": "cnc_C1_tip_to_last_full_thread",
+      "value": 0.4,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -5.55"
+    },
+    {
+      "name": "cnc_C1_metal_beyond_drill_point",
+      "value": 3.669,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.6 to shoulder Z -4.15, point Z -3.67; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_C2_engagement",
+      "value": 3.95,
+      "limit": 3.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 6 DIN 7991: 3.95 to 4.40 mm in M2x0.4-6H, full thread 4.8 from Z -11.65 to -6.85"
+    },
+    {
+      "name": "cnc_C2_tip_to_last_full_thread",
+      "value": 0.4,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -7.25"
+    },
+    {
+      "name": "cnc_C2_metal_beyond_drill_point",
+      "value": 5.369,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.6 to shoulder Z -5.85, point Z -5.37; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_G1_engagement",
+      "value": 2.25,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 4 ISO 7045 pan head: 2.25 to 2.55 mm in M2x0.4-6H, full thread 3.0 from Z -6.2 to -3.20"
+    },
+    {
+      "name": "cnc_G1_tip_to_last_full_thread",
+      "value": 0.45,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -3.65"
+    },
+    {
+      "name": "cnc_G1_metal_beyond_drill_point",
+      "value": 2.219,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.6 to shoulder Z -2.70, point Z -2.22; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "cnc_G2_engagement",
+      "value": 2.25,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 4 ISO 7045 pan head: 2.25 to 2.55 mm in M2x0.4-6H, full thread 3.0 from Z -6.2 to -3.20"
+    },
+    {
+      "name": "cnc_G2_tip_to_last_full_thread",
+      "value": 0.45,
+      "limit": 0.4,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "deepest tip Z -3.65"
+    },
+    {
+      "name": "cnc_G2_metal_beyond_drill_point",
+      "value": 2.219,
+      "limit": 2.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "tap drill 1.6 to shoulder Z -2.70, point Z -2.22; measured on the solid (enclosure 5)"
+    },
+    {
+      "name": "print_k_self_tap_engagement",
+      "value": 3.9,
+      "limit": 3.2,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M1.6 x 8 self-tapping (D30) into the 6.0 mm boss: 3.90 to 4.35 mm"
+    },
+    {
+      "name": "print_c_insert_engagement",
+      "value": 2.8,
+      "limit": 2.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 10 from the Z -12.2 seats into the M2 x 3 insert"
+    },
+    {
+      "name": "print_c_tip_to_insert_hole_end",
+      "value": 0.25,
+      "limit": 0.1,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "insert hole 3.5 mm deep, deepest tip Z -1.75"
+    },
+    {
+      "name": "print_g_insert_engagement",
+      "value": 1.05,
+      "limit": 1.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "M2 x 4 through the 1.2 mm spacer into the insert; holds the PCB only, no grounding (guess limit)"
+    },
+    {
+      "name": "display_mask_parallax_at_30_deg",
+      "value": 0.308,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "active area hidden under the mask edge, mm: 1.40 mm of depth x tan(angle) less the 0.50 mm window margin. Estimate; check on the lens coupon"
+    },
+    {
+      "name": "display_mask_parallax_at_45_deg",
+      "value": 0.9,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "active area hidden under the mask edge, mm: 1.40 mm of depth x tan(angle) less the 0.50 mm window margin. Estimate; check on the lens coupon"
+    }
+  ],
+  "cnc": [
+    {
+      "name": "cnc_top_shell_corner_radius_rule_faults",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "arcs",
+      "ok": true,
+      "note": "R >= depth/10 + 0.5 on 26 concave arcs; smallest margin 0.195 mm; arcs of 180 degrees or more are drilled or plunged and left out"
+    },
+    {
+      "name": "cnc_top_shell_table_radius_faults",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "arcs",
+      "ok": true,
+      "note": "R 1.5 in pockets deeper than 3 mm (D29); waived: D33: display pocket front corners R1.0, 3.05 deep, 2.0 mm tool"
+    },
+    {
+      "name": "cnc_top_shell_sharp_internal_corners",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "edges",
+      "ok": true
+    },
+    {
+      "name": "cnc_top_shell_thinnest_wall",
+      "value": 0.8,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "3000 sampled points; JLCCNC absolute minimum, recommended 0.8"
+    },
+    {
+      "name": "cnc_top_shell_undercut_area",
+      "value": 0.633,
+      "limit": 5.0,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": ""
+    },
+    {
+      "name": "cnc_top_shell_not_cut_from_above",
+      "value": 0.0,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "a 2.0 mm flat end mill run over a 0.1 mm height map"
+    },
+    {
+      "name": "cnc_top_shell_not_cut_from_below",
+      "value": 0.0,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": ""
+    },
+    {
+      "name": "cnc_top_shell_tool_reach",
+      "value": 1.75,
+      "limit": 5.0,
+      "kind": "max",
+      "unit": "x D",
+      "ok": true,
+      "note": "deepest concave arc over the diameter of the tool that cuts it"
+    },
+    {
+      "name": "cnc_bottom_shell_corner_radius_rule_faults",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "arcs",
+      "ok": true,
+      "note": "R >= depth/10 + 0.5 on 23 concave arcs; smallest margin 0.470 mm; arcs of 180 degrees or more are drilled or plunged and left out"
+    },
+    {
+      "name": "cnc_bottom_shell_table_radius_faults",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "arcs",
+      "ok": true,
+      "note": "R 1.5 in pockets deeper than 3 mm (D29); waived: none"
+    },
+    {
+      "name": "cnc_bottom_shell_sharp_internal_corners",
+      "value": 0.0,
+      "limit": 0,
+      "kind": "max",
+      "unit": "edges",
+      "ok": true
+    },
+    {
+      "name": "cnc_bottom_shell_thinnest_wall",
+      "value": 0.6,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "3000 sampled points; JLCCNC absolute minimum, recommended 0.8"
+    },
+    {
+      "name": "cnc_bottom_shell_undercut_area",
+      "value": 3.829,
+      "limit": 5.0,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "tool straight down or up; the foot pockets are judged in the ramp setup"
+    },
+    {
+      "name": "cnc_bottom_shell_not_cut_from_above",
+      "value": 0.0,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "a 2.0 mm flat end mill run over a 0.1 mm height map"
+    },
+    {
+      "name": "cnc_bottom_shell_not_cut_from_below",
+      "value": 0.0,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "level setup; the foot pockets belong to the ramp setup"
+    },
+    {
+      "name": "cnc_bottom_shell_tool_reach",
+      "value": 1.767,
+      "limit": 5.0,
+      "kind": "max",
+      "unit": "x D",
+      "ok": true,
+      "note": "deepest concave arc over the diameter of the tool that cuts it"
+    },
+    {
+      "name": "cnc_bottom_shell_foot_pockets_undercut_ramp_setup",
+      "value": 1.414,
+      "limit": 5.0,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "the four foot pockets with the ramp plane level"
+    },
+    {
+      "name": "cnc_bottom_shell_foot_pockets_not_cut_ramp_setup",
+      "value": 0.0,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm^2",
+      "ok": true,
+      "note": "the four foot pockets with the ramp plane level"
+    },
+    {
+      "name": "cnc_bottom_shell_thinnest_floor",
+      "value": 1.616,
+      "limit": 1.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "vertical, over every floor seen from below; thinnest at X 51.15, Y 50.5"
+    },
+    {
+      "name": "cnc_wall_display_web",
+      "value": 0.8,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "D10"
+    },
+    {
+      "name": "cnc_wall_display_pocket_to_rf_pocket",
+      "value": 0.8,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "D33 (pocket edge X 114.05, RF pocket X 114.85)"
+    },
+    {
+      "name": "cnc_wall_k_countersink_to_switch_opening",
+      "value": 0.876,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "D30, at the plate top"
+    },
+    {
+      "name": "cnc_wall_plate_lip",
+      "value": 1.15,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "keys 6.2: 1.15 +/-0.05 after anodise"
+    }
+  ],
+  "fdm": [
+    {
+      "name": "print_top_shell_largest_extent",
+      "value": 128.4,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_top_shell_longest_bridge",
+      "value": 14.2,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (85.8, -20.7, 5.3); with print aids"
+    },
+    {
+      "name": "print_top_shell_deepest_cantilever",
+      "value": 1.3,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (121.2, -66.6, 3.7)"
+    },
+    {
+      "name": "print_top_shell_thinnest_wall",
+      "value": 0.8,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_top_shell_height_over_narrow_side",
+      "value": 0.08,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_top_shell_bed_contact",
+      "value": 5829.027,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_bottom_shell_largest_extent",
+      "value": 128.4,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_bottom_shell_longest_bridge",
+      "value": 7.8,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (14.5, -78.6, 0.9)"
+    },
+    {
+      "name": "print_bottom_shell_deepest_cantilever",
+      "value": 0.8,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (14.1, -81.1, 0.9); supports under the rear slope (Y 0 to apex) and both flank scoops"
+    },
+    {
+      "name": "print_bottom_shell_thinnest_wall",
+      "value": 0.897,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_bottom_shell_height_over_narrow_side",
+      "value": 0.197,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_bottom_shell_bed_contact",
+      "value": 8190.609,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_knob_largest_extent",
+      "value": 10.5,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_knob_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (85.8, 9.5, 7.9)"
+    },
+    {
+      "name": "print_knob_deepest_cantilever",
+      "value": 0.1,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (90.6, 10.4, 0.3)"
+    },
+    {
+      "name": "print_knob_thinnest_wall",
+      "value": 0.99,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_knob_height_over_narrow_side",
+      "value": 0.867,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_button_cap_largest_extent",
+      "value": 15.0,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_button_cap_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (83.6, 63.4, 3.9)"
+    },
+    {
+      "name": "print_button_cap_deepest_cantilever",
+      "value": 1.131,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (86.0, 76.4, 3.3)"
+    },
+    {
+      "name": "print_button_cap_thinnest_wall",
+      "value": 0.8,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_button_cap_height_over_narrow_side",
+      "value": 0.273,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_g_spacer_largest_extent",
+      "value": 4.6,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_g_spacer_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (118.2, -34.6, 0.1)"
+    },
+    {
+      "name": "print_g_spacer_deepest_cantilever",
+      "value": 0.0,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (118.2, -34.6, 0.1)"
+    },
+    {
+      "name": "print_g_spacer_thinnest_wall",
+      "value": 1.147,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_g_spacer_height_over_narrow_side",
+      "value": 0.261,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_plate_1_0_largest_extent",
+      "value": 60.2,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_plate_1_0_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -22.4, 0.1)"
+    },
+    {
+      "name": "print_coupon_plate_1_0_deepest_cantilever",
+      "value": 0.0,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -22.4, 0.1)"
+    },
+    {
+      "name": "print_coupon_plate_1_0_thinnest_wall",
+      "value": 1.0,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_coupon_plate_1_0_height_over_narrow_side",
+      "value": 0.045,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_plate_1_0_bed_contact",
+      "value": 738.966,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_plate_1_2_largest_extent",
+      "value": 60.2,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_plate_1_2_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -22.4, 0.1)"
+    },
+    {
+      "name": "print_coupon_plate_1_2_deepest_cantilever",
+      "value": 0.0,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -22.4, 0.1)"
+    },
+    {
+      "name": "print_coupon_plate_1_2_thinnest_wall",
+      "value": 1.2,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_coupon_plate_1_2_height_over_narrow_side",
+      "value": 0.054,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_plate_1_2_bed_contact",
+      "value": 738.966,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_knob_bore_largest_extent",
+      "value": 42.0,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_knob_bore_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -12.8, 5.9)"
+    },
+    {
+      "name": "print_coupon_knob_bore_deepest_cantilever",
+      "value": 0.0,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (-0.4, -12.8, 5.9)"
+    },
+    {
+      "name": "print_coupon_knob_bore_thinnest_wall",
+      "value": 1.0,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_coupon_knob_bore_height_over_narrow_side",
+      "value": 0.48,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_knob_bore_bed_contact",
+      "value": 320.01,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_usb_largest_extent",
+      "value": 25.6,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_usb_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (87.6, -14.3, 3.5)"
+    },
+    {
+      "name": "print_coupon_usb_deepest_cantilever",
+      "value": 0.1,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (88.0, -12.1, 0.3)"
+    },
+    {
+      "name": "print_coupon_usb_thinnest_wall",
+      "value": 3.5,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_coupon_usb_height_over_narrow_side",
+      "value": 0.667,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_lens_largest_extent",
+      "value": 45.3,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_coupon_lens_longest_bridge",
+      "value": 10.2,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (108.2, -64.8, 3.7); with print aids"
+    },
+    {
+      "name": "print_coupon_lens_deepest_cantilever",
+      "value": 1.265,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "at bed (120.8, -32.1, 3.7)"
+    },
+    {
+      "name": "print_coupon_lens_thinnest_wall",
+      "value": 0.8,
+      "limit": 0.8,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "finished part, print aids removed"
+    },
+    {
+      "name": "print_coupon_lens_height_over_narrow_side",
+      "value": 0.125,
+      "limit": 6.0,
+      "kind": "max",
+      "unit": "ratio",
+      "ok": true,
+      "note": "above 6 a brim is needed (macropad)"
+    },
+    {
+      "name": "print_coupon_lens_bed_contact",
+      "value": 707.104,
+      "limit": 100.0,
+      "kind": "min",
+      "unit": "mm^2",
+      "ok": true
+    },
+    {
+      "name": "print_insertion_jig_largest_extent",
+      "value": 128.4,
+      "limit": 180.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_insertion_jig_longest_bridge",
+      "value": 0.0,
+      "limit": 15.0,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "print_insertion_jig_deepest_cantilever",
+      "value": 0.0,
+      "limit": 1.5,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true
+    },
+    {
+      "name": "resin_keycap_thinnest_wall",
+      "value": 0.44,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "JLC3DP resin recommends over 0.8 mm; the post wall at the cross slot is 0.55 mm by design (keys 6.5), so the stem coupon decides"
+    },
+    {
+      "name": "resin_coupon_stem_thinnest_wall",
+      "value": 0.337,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "JLC3DP resin recommends over 0.8 mm; the post wall at the cross slot is 0.55 mm by design (keys 6.5), so the stem coupon decides"
+    }
+  ],
+  "rf": [
+    {
+      "name": "rf_metal_within_margin_of_antenna",
+      "value": 0.0,
+      "limit": 0.05,
+      "kind": "max",
+      "unit": "mm^3",
+      "ok": true,
+      "note": "both CNC shells within 5.0 mm of the antenna strip in plan (mcu-radio A4), from Z -13.30 to -2.80 (A5, A7, A8), inside the inner wall (D11)"
+    },
+    {
+      "name": "rf_metal_in_bay_rectangle_corners",
+      "value": 5.022,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm^3",
+      "ok": null,
+      "note": "the R1.5 corners of the two bay pockets, all more than the margin from the strip"
+    },
+    {
+      "name": "rf_metal_over_window",
+      "value": 0.0,
+      "limit": 0.05,
+      "kind": "max",
+      "unit": "mm^3",
+      "ok": true,
+      "note": "right wall over the keep-out length, from the slot bottom to the split face"
+    },
+    {
+      "name": "rf_insert_covers_keepout",
+      "value": 5.85,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "insert Y 37.05 to 68.95 against the keep-out Y 42.90 to 63.10"
+    },
+    {
+      "name": "rf_window_below_module",
+      "value": 1.9,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "slot bottom below the module underside"
+    },
+    {
+      "name": "rf_window_top_at_or_above_a9",
+      "value": 0.2,
+      "limit": 0.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "mcu-radio A9: from Z -5.20 or higher"
+    },
+    {
+      "name": "rf_insert_to_pcb",
+      "value": 0.5,
+      "limit": 0.3,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "nothing of the insert enters the cavity (enclosure 7.2 item 3)"
+    },
+    {
+      "name": "rf_antenna_end_to_insert_plastic",
+      "value": 2.7,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "air from the antenna end to the POM (enclosure 7.2 item 4 gives 2.45 to 2.65); not quantified for RF"
+    },
+    {
+      "name": "print_rf",
+      "value": 0.0,
+      "limit": null,
+      "kind": "info",
+      "unit": "mm",
+      "ok": null,
+      "note": "the FDM shells are plastic: no RF rule applies, and they predict nothing for RF"
+    }
+  ],
+  "jig": [
+    {
+      "name": "jig_rib_to_socket_min",
+      "value": 0.2,
+      "limit": 0.2,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "D26, keys 6.4"
+    },
+    {
+      "name": "jig_rib_to_socket_max",
+      "value": 0.2,
+      "limit": 0.3,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "support within 0.3 mm (keys 6.4)"
+    },
+    {
+      "name": "jig_clash_with_shell_and_pcb",
+      "value": 0.0,
+      "limit": 0.05,
+      "kind": "max",
+      "unit": "mm^3",
+      "ok": true,
+      "note": "CNC top shell, PCB and every part on it, deck up on the jig"
+    },
+    {
+      "name": "jig_ribs_inside_socket_zones",
+      "value": 1.2,
+      "limit": 0.5,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "rib footprint to the socket-zone edge, smallest of 32"
+    },
+    {
+      "name": "jig_rim_at_split_face",
+      "value": 0.0,
+      "limit": 0.001,
+      "kind": "max",
+      "unit": "mm",
+      "ok": true,
+      "note": "the top shell rests on the rim, not on the PCB"
+    },
+    {
+      "name": "jig_centroid_inside_support",
+      "value": 41.088,
+      "limit": 5.0,
+      "kind": "min",
+      "unit": "mm",
+      "ok": true,
+      "note": "CNC top shell (2.7 g/cm^3) plus PCB and parts (1.85, a guess), deck up: distance in plan from the centroid to the edge of the rim's convex hull"
+    }
+  ],
+  "pcb_step": [
+    {
+      "name": "pcb_step_present",
+      "value": 0.0,
+      "limit": null,
+      "kind": "info",
+      "unit": "files",
+      "ok": null,
+      "note": "worxpad-pcb.step not found; the clash and clearance checks use the PCB drawn from board.toml"
+    }
+  ]
+}

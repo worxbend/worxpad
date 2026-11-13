@@ -1,0 +1,12 @@
+# Nets routed before the others, first line first.
+# Written by `build.py order`; seeded by hand with the key matrix. Run `build.py order` again after moving
+# parts or pins, when `build.py place` reports unrouted pads.
+ROW0
+ROW1
+ROW2
+ROW3
+COL0
+COL1
+COL2
+COL3
+COL4

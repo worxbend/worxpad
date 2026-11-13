@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: MIT
+# worxpad board options (mcu-radio 7.7). User-facing options are in Kconfig.defconfig and firmware/zmk/Kconfig.
+
+CONFIG_ARM_MPU=y
+CONFIG_GPIO=y
+CONFIG_PINCTRL=y
+
+# Adafruit nRF52 UF2 bootloader: application from 0x26000, UF2 output
+CONFIG_USE_DT_CODE_PARTITION=y
+CONFIG_BUILD_OUTPUT_UF2=y
+
+# Settings in the internal storage partition (bonds, Studio keymap changes)
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_SETTINGS_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y
+
+CONFIG_ZMK_USB=y
+CONFIG_ZMK_BLE=y
+
+# 32.768 kHz crystal on P0.00/P0.01 (Epson Q13FC1350000400, +/-20 ppm; mcu-radio 7.4)
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_XTAL=y
+
+# Four host profiles, as the reference device (mcu-radio R1). ZMK wants both values equal.
+CONFIG_BT_MAX_CONN=4
+CONFIG_BT_MAX_PAIRED=4
+
+# +8 dBm, the module maximum, for the aluminium body (mcu-radio 7.7). Range in the case is not measured.
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+
+# USB test IDs from pid.codes, as macropad uses; not for distribution (mcu-radio 7.7)
+CONFIG_USB_DEVICE_VID=0x1209
+CONFIG_USB_DEVICE_PID=0x0001
+CONFIG_USB_DEVICE_MANUFACTURER="worxbend"
+CONFIG_USB_DEVICE_PRODUCT="worxpad"
+
+# Fuel gauge and battery level (power 15)
+CONFIG_I2C=y
+CONFIG_ZMK_BATTERY_REPORTING=y
+
+# Display, panel sleep and flash deep power-down (mcu-radio 7.7 hooks 1 to 3)
+CONFIG_ZMK_DISPLAY=y
+CONFIG_PM_DEVICE=y
+CONFIG_PM_DEVICE_RUNTIME=y
+# Runtime PM turns system-managed PM off by default, and ZMK's deep-sleep suspend (app/src/pm.c) needs it
+CONFIG_PM_DEVICE_SYSTEM_MANAGED=y
+CONFIG_LED=y
+CONFIG_PWM=y
+
+# Deep sleep after ZMK's default 15 minutes without input, skipped on USB power
+CONFIG_ZMK_SLEEP=y

@@ -1,0 +1,28 @@
+# Checks that need neither Docker nor hardware: the arithmetic check of board.toml and the Markdown paths.
+# Not run here, because the scripts do not exist yet: the PCB build and DRC (Docker), the case checks
+# (cad/.venv) and the firmware build. Add each one when its script lands.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spec-and-docs:
+    name: Specification check, documentation paths
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # The runner's own Python 3.12 is enough: both scripts use the standard library only.
+      - run: make test
