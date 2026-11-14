@@ -7,9 +7,9 @@ panel. The hot-swap sockets, the display, the cell and the case are separate ord
 [ordering-pcbway.md](ordering-pcbway.md).
 
 > **Nobody has placed this order, and the board cannot be ordered yet.** On 2026-11-14 the board is placed and
-> routed with a clean DRC ([pcb/README.md](../pcb/README.md#routing)), but the fab step has not been run on it,
-> so the order files do not exist yet. The settings below come from the files that `pcb/gen/build.py fab-draft`
-> wrote from the earlier, unfinished board: 61 placements (56 on the bottom), 30 BOM lines, panel 135.65 x 95.30 mm. Re-read the
+> routed with a clean DRC ([pcb/README.md](../pcb/README.md#routing)), and `make pcb-fab` wrote the order files
+> from it: 61 placements (56 on the bottom), 30 BOM lines, panel 135.65 x 95.30 mm. The gates in the
+> [README](../README.md#before-you-order) are still open. Re-read the
 > generated README in pcb/production/jlcpcb/ when the real package exists; where it and this page disagree,
 > the generated README wins, because it is written from the board.
 

@@ -6,8 +6,8 @@ part numbers and KiCad's own centroid file. Never send it the JLCPCB `cpl.csv`: 
 table and body centres in it. The JLCPCB page is [ordering.md](ordering.md); read it first, because the board
 options and the gates are the same.
 
-> **Nobody has placed this order, and the board cannot be ordered yet** (routed on 2026-11-14, order files not yet
-> written; see [ordering.md](ordering.md)). This page follows the draft files of `pcb/gen/build.py fab-draft`. PCBWay's
+> **Nobody has placed this order, and the board cannot be ordered yet** (routed on 2026-11-14, order files written,
+> gates open; see [ordering.md](ordering.md)). This page follows the files `make pcb-fab` wrote. PCBWay's
 > current form, rules and prices were not checked.
 
 ## What you upload

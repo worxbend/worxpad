@@ -4,11 +4,10 @@ The case is four orders: the machined parts at [JLCCNC](https://jlccnc.com) (PCB
 resin keycaps and button caps at [JLC3DP](https://jlc3dp.com), the lens at a laser-cutting shop, and screws and
 feet from any hardware shop. The FDM prototype is printed at home: [printing.md](printing.md).
 
-> **Nothing has been milled, printed or cut, and the CNC order is not ready.** On 2026-11-13 the case model
-> passes 163 of its 165 limit checks. The two that fail are the G1 and G2 threads (0.15 mm from the screw tip to
-> the last full thread, against 0.4 mm), and they need a decision by the owner before any shell is ordered
-> ([cad/README.md](../cad/README.md#open-items)). The knob and the RF insert have no drawing yet. The
-> order index [production/README.md](../production/README.md) lists every file and what is missing.
+> **Nothing has been milled, printed or cut, and the CNC order is not ready.** On 2026-11-14 the case model
+> passes 177 of its 177 limit checks, but G1 and G2 pass only with a proposed bottoming tap that needs a
+> decision by the owner before any shell is ordered ([cad/README.md](../cad/README.md#open-items)). The
+> order index [production/README.md](../production/README.md) lists every file.
 
 ## Contents
 
@@ -43,8 +42,8 @@ has one paste-ready remark per part and a table of prepared answers. In short:
 |---|---|---|---|
 | Top shell | `cad/production/jlccnc/worxpad_top_shell.step`, `.pdf`, `.dxf` | 1 | 6061-T6, bead blast, Type II black anodise, Strict |
 | Bottom shell | `cad/production/jlccnc/worxpad_bottom_shell.step`, `.pdf`, `.dxf`, engraving DXF | 1 | same, laser mark on the ramp |
-| RF window insert | `cad/production/jlccnc/worxpad_rf_insert.step` (drawing missing) | 1 | black POM, as machined |
-| Knob | `cad/production/jlccnc/worxpad_knob.step` (drawing missing) | 2 | 6061-T6 turned, same finish and batch as the shells |
+| RF window insert | `cad/production/jlccnc/worxpad_rf_insert.step`, `worxpad_rf_insert.pdf` | 1 | black POM, as machined |
+| Knob | `cad/production/jlccnc/worxpad_knob.step`, `worxpad_knob.pdf` | 2 | 6061-T6 turned, same finish and batch as the shells |
 
 ### Form settings, field by field
 

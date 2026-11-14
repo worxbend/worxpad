@@ -16,11 +16,11 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
 - PCB generator in `pcb/gen/` for KiCad 10.0.7 by digest: circuit (107 parts, 74 nets), six project
   footprints, a generated schematic with ERC at 0 errors and 0 warnings, placement of every part on four
   layers, a router, DRC with schematic parity, an RF keep-out copper check, the D23 frame panel and the JLCPCB
-  and PCBWay order files. The board is routed (see Changed); its order files are not written yet.
+  and PCBWay order files. The board is routed (see Changed) and its order files are written.
 - `tools/check_pins.py` and `tools/check_pins_firmware.py`: the pin map against the circuit and the firmware.
 - Case package `cad/worxpad_case` (build123d 0.13.0): CNC and FDM shells, RF insert, knobs, button caps,
-  keycap, lens, switch insertion jig, coupons, exports, drawings and checks. Two checks fail: the G1 and G2
-  thread margin (D6).
+  keycap, lens, switch insertion jig, coupons, exports, drawings and checks. The G1 and G2 thread checks pass
+  only with a proposed bottoming tap (D6).
 - ZMK firmware in `firmware/zmk` with `firmware/build.sh`: four layers, four Bluetooth profiles, ZMK Studio,
   own status screen and a display power hook.
 - Renders: `tools/render_all.sh` and `tools/render/` write the stills and the turntable in
@@ -53,3 +53,7 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
   or the crystal), a 3.3 V via cut off from its plane is moved, the USB D- gets a meander to match D+ within
   2 mm, ripped-up nets keep their escapes, junctions are cut into track ends, and J2's and J3's solder tabs are
   joined. The diagnosis of the old failures is in [pcb/README.md](pcb/README.md#routing). Nothing was built.
+- `make pcb-fab` wrote pcb/fab and pcb/production from the routed board: 61 placements in 30 BOM lines, panel
+  DRC 0 errors, board STEP 1.616 mm. `tools/order_package.py` exits 0 with 34 files and 0 problems.
+- Knob and RF insert drawings (SVG, PDF, DXF) and `knob_holes.csv`, generated from the model by
+  `cad/worxpad_case/small_drawings.py` and copied into the JLCCNC package.

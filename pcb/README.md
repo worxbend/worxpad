@@ -9,8 +9,7 @@ footprints and symbols, and the pictures from two inputs, `board.toml` (position
 
 State on 2026-11-14: circuit, footprints, symbols and schematic are done (PCB part 1). The board is placed
 and **routed**: `make pcb-place` reports no unrouted pad, and `make pcb-check` finds 0 violations, 0 unconnected
-items and 0 schematic parity issues. The fab step has not been run on the routed board yet, so pcb/fab and
-pcb/production are still not written. See [Board](#board-pcb-part-2) and [Routing](#routing).
+items and 0 schematic parity issues. `make pcb-fab` wrote pcb/fab and pcb/production from it (2026-11-14). See [Board](#board-pcb-part-2) and [Routing](#routing).
 
 <a href="../docs/images/pcb/schematic.pdf"><img src="../docs/images/pcb/schematic.svg" alt="schematic, one A2 sheet"></a>
 
@@ -110,7 +109,7 @@ area, FH34SRJ-24S, TYPE-C-31-M-13C, Choc V2 hot-swap, PEC12R-4 and the plated G 
 | Stack-up written and kept by pcbnew, layers and thicknesses as `layout.STACKUP`, sum within 0.01 mm of `pcb.thickness` | `layout.check_stackup`, `layout.stackup_text` | pass (2026-11-14). A copy with the core changed failed |
 | `+` nearer J3 pin 1, `-` nearer pin 2; no silk overlap (DRC) | `layout.check_polarity_marks` | pass (2026-11-14) |
 | Board STEP envelope equals `pcb.thickness` within 0.02 mm | `fab.check_step_thickness` | pass on `fab-draft`: 1.616 mm. Without the mask skins it is 1.562 mm and fails |
-| Order files from the board | `build.py fab` | not run on the routed board. Earlier `fab-draft` on the unfinished board: 61 placements, 30 BOM lines, panel DRC 0 errors and that board's 39 unconnected, nearest tab 14.4 mm from the antenna strip, STEP with 22 model types |
+| Order files from the board | `build.py fab` | pass (2026-11-14): 61 placements (56 on the bottom), 30 BOM lines, 280 vias of 0.300 mm, panel 8 slot pieces and 48 mouse-bite holes, panel DRC 0 errors, nearest tab 14.4 mm from the antenna strip, STEP 1.616 mm with 22 model types |
 
 ERC runs with KiCad's default rule settings, which ignore four checks: single global label, four-way junction,
 simulation model and footprint filter. Any other error fails the build, and so does any warning that is not

@@ -27,9 +27,9 @@ Nothing has been fabricated, printed or run on hardware. Every document must say
 - Builders: the PCB generator in `pcb/gen/` (entry point `pcb/gen/build.py`, run in KiCad through
   `pcb/kicad.sh`), the build123d case in `cad/` (`cad/build.py`), the ZMK firmware (`firmware/build.sh`),
   the renders (`tools/render_all.sh`) and the order index (`tools/order_package.py`).
-- State on 2026-11-13: the PCB is placed but 36 pads on 25 nets are unrouted, so pcb/fab and
-  pcb/production are not written (the fab step refuses an unfinished board; `fab-draft` writes to
-  `pcb/.build/draft`). The case check fails on the G1 and G2 thread (D6). The firmware builds. The status
+- State on 2026-11-14: the PCB is routed (0 unrouted pads, DRC 0 violations, 0 unconnected, 0 parity) and
+  pcb/fab and pcb/production are written; `tools/order_package.py` exits 0. The case checks pass, G1 and G2
+  only with a bottoming tap D6 does not yet record. The firmware builds. The renders predate routing. The status
   table in `README.md` holds the numbers.
 
 ## Commands
@@ -41,12 +41,12 @@ make spec-check  # tools/check_spec.py on board.toml
 make docs-check  # every file, picture and anchor named in a Markdown file exists
 make pin-check   # tools/check_pins.py: pin map against circuit.py and the firmware
 make pcb-test    # circuit self-check and generator unit tests, no Docker (not yet part of `make test`)
-make pcb         # place, route, DRC, order files (Docker, kicad/kicad:10.0.7); fails while pads are unrouted
+make pcb         # place, route, DRC, order files (Docker, kicad/kicad:10.0.7); fab refuses an unfinished board
 make cad         # case checks, exports, drawings, quick pictures (cad/.venv, about 7 min)
 make cad-check   # case checks only
 make firmware    # ZMK build in zmkfirmware/zmk-build-arm by digest -> firmware/dist/worxpad.uf2
 make renders     # tools/render_all.sh -> docs/images/renders/ (Blender and FreeCAD flatpaks, about 15 min)
-make order       # tools/order_package.py; exits 1 until the PCB is routed and the case checks pass
+make order       # tools/order_package.py; exits 1 on any missing or disagreeing order file
 pcb/kicad.sh python3 pcb/gen/build.py place      # the same PCB steps, image pinned by digest
 bash tools/pull_images.sh kicad/kicad:10.0.7     # pull a pinned image by digest and tag it
 ```

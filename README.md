@@ -44,11 +44,11 @@ copied from the last builder run and its report, named in the last column.
 | Circuit and schematic | Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). Generated KiCad 10 sheet. ERC: 0 errors, 0 warnings. 309 pins match the circuit. | Run: `make pcb-test`, 73 unit tests pass. ERC from the last `build.py schematic`, [pcb/README.md](pcb/README.md) |
 | Pin map | Circuit and firmware agree with `board.toml`. | Run: `python3 tools/check_pins.py`, 0 circuit failures, 12 of 12 firmware checks |
 | PCB layout | Routed. All 107 parts placed on 4 layers. 1,980 tracks, 280 vias, 0 pads unrouted; short signal hops on both inner layers. DRC: 0 errors, 0 unconnected, 0 schematic differences. No copper in the antenna keep-out. | Run: `make pcb-place` and `make pcb-check`, exit 0 (2026-11-14); `pcb/routing.txt`, [pcb/README.md](pcb/README.md#routing) |
-| Board order files | **Not written.** `make pcb-fab` has not been run on the routed board. A draft run gave 61 placements in 30 BOM lines and a frame panel with 0 DRC errors. | Last `build.py fab-draft`; [pcb/README.md](pcb/README.md#checks) |
+| Board order files | Written. JLCPCB and PCBWay packages, 61 placements in 30 BOM lines (56 on the bottom), panel 135.65 x 95.30 mm with 0 DRC errors, board STEP 1.616 mm thick. | Run: `make pcb-fab`, exit 0 (2026-11-14); [pcb/README.md](pcb/README.md#checks) |
 | Case | Model done. 177 of 177 limit checks pass. G1 and G2 pass (tip 0.45 mm against 0.4) only with a proposed bottoming tap that D6 does not yet record. 24 of 24 parts valid, 0 clashes in 666 (CNC) and 703 (FDM) part pairs. Self-test 26 of 26. | Run: `make cad-check` (exit 0); `cad/exports/checks.json`, [cad/README.md](cad/README.md#checks) |
 | Firmware | Builds. ZMK 4dd95d78 on Zephyr 10ba6d0c (pinned in `west.yml`). FLASH 391,548 B of 811,008 B (48.28 %), RAM 122,322 B of 262,144 B (46.66 %). UF2 is 783,360 B. | Run: `bash firmware/build.sh` (exit 0); [firmware/README.md](firmware/README.md#build) |
-| Pictures | Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures in `docs/images/pcb/` show the routed board; the renders in `docs/images/renders/` were made before routing was finished. | Last `bash tools/render_all.sh`, exit 0 in 907 s |
-| Order package | **Not ready.** Run with `--draft`: 34 files listed, 5 problems: knob and RF insert drawings missing (4), the knob hole list knob_holes.csv missing (1). The full run lists 17 problems: those 5, 11 missing PCB files, and designators not compared. | Run: `python3 tools/order_package.py --draft`, exit 1; [production/README.md](production/README.md) |
+| Pictures | Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures in `docs/images/pcb/` show the routed board; the renders in `docs/images/renders/` were made before routing was finished and have not been redone. | Last `bash tools/render_all.sh`, exit 0 in 907 s |
+| Order package | Files complete. 34 files listed, 0 problems; 30 BOM lines, 61 placements. The gates in [Before you order](#before-you-order) are still open. | Run: `python3 tools/order_package.py`, exit 0 (2026-11-14); [production/README.md](production/README.md) |
 | Documentation | Every path and anchor named in Markdown exists. | Run: `make docs-check`, see [What is checked](#what-is-checked) |
 | Real hardware | **None.** No board, no print, no flash. | - |
 
@@ -119,7 +119,7 @@ Quick pictures from the case package. The lens is drawn opaque here. More views 
 
 ## Build one
 
-Nobody has done this yet, and it cannot be done today: the board's order files are not written and gates
+Nobody has done this yet, and it should not be done today: the order files exist, but gates
 below are open. The guides are written from the design files. Expect mistakes.
 
 1. **Read [Before you order](#before-you-order).** Every gate there must be closed.
@@ -171,33 +171,33 @@ Images are pinned by digest in `tools/images.lock`; `bash tools/pull_images.sh <
 
 Run `make help` for this list.
 
-| Command | Does | State on 2026-11-13 |
+| Command | Does | State on 2026-11-14 |
 | --- | --- | --- |
 | `make test` | spec-check, docs-check, pin-check: everything checkable without Docker or hardware | exits 0 |
 | `make pcb-test` | Circuit self-check and generator unit tests, no Docker | exits 0, 73 tests (2026-11-14) |
 | `make pcb-place` | Schematic, placed and routed board, DRC, keep-out copper check, PCB pictures | exits 0 (2026-11-14) |
-| `make pcb-fab` | Gerbers, drills, panel, JLCPCB and PCBWay files, board STEP | not run on the routed board |
-| `make cad` | Case checks, STEP/STL/3MF exports, drawings, quick pictures (about 7 minutes) | exits 1 on the G1 and G2 checks |
+| `make pcb-fab` | Gerbers, drills, panel, JLCPCB and PCBWay files, board STEP | exits 0 |
+| `make cad` | Case checks, STEP/STL/3MF exports, drawings, quick pictures (about 7 minutes) | exits 0 |
 | `make firmware` | ZMK build into `firmware/dist/worxpad.uf2` | exits 0 |
 | `make renders` | Product renders into `docs/images/renders/` (about 15 minutes) | exits 0 |
-| `make order` | Order index and CNC package, cross-checks of every order file | exits 1 by design until the gates close |
+| `make order` | Order index and CNC package, cross-checks of every order file | exits 0; the gates it cannot check stay open |
 
 Rules for changing the design are in [CLAUDE.md](CLAUDE.md): change `board.toml` first, never hand-edit a
 generated file, never weaken a check.
 
 ## What is checked
 
-| Area | Check | Result (2026-11-13) |
+| Area | Check | Result (2026-11-14) |
 | --- | --- | --- |
 | Specification | `tools/check_spec.py`: keys on pitch, holes and parts inside the outline, no overlapping bodies in a shared Z range, pocket floors against the wedge, stack-up order, RF bay and keep-out, screw-post walls, pin map against the module pad table, 3V3 capacitance, panel and tabs, corner radii for JLCCNC, FDM bed fit | 91 of 91 pass |
 | Circuit | `make pcb-test`: circuit self-check, router, schematic writer, footprints, pin map | 73 tests pass |
 | Pins | `tools/check_pins.py`: 41 pin map entries, 15 spares and 24 FPC pins against the circuit; GPIOs, pulls, matrix, encoders, display bus and binding counts against the firmware | 0 failures; 12 of 12 |
 | Schematic | `kicad-cli sch erc --severity-all`; KiCad's netlist against the circuit | 0 errors, 0 warnings; 309 pins match |
 | PCB | `kicad-cli pcb drc --severity-all --schematic-parity`; copper in the antenna keep-out | 0 errors, 0 unconnected, 0 parity; no copper (2026-11-14) |
-| Case | `cad/build.py check`: self-test, validity, interference, clearances, CNC rules, FDM rules, RF metal, insertion jig | **163 of 165** limit checks pass; G1 and G2 thread fail |
+| Case | `cad/build.py check`: self-test, validity, interference, clearances, CNC rules, FDM rules, RF metal, insertion jig | 177 of 177 limit checks pass; G1 and G2 only with a proposed bottoming tap (D6) |
 | Firmware | `firmware/build.sh`: build, UF2 family 0xADA52840 at 0x26000 | pass |
-| Orders | `tools/order_package.py`: files present, BOM against CPL, JLCPCB against PCBWay, case checks, hole list | **6 problems** with `--draft` |
-| Docs | `make docs-check`: files, pictures and anchors named in Markdown exist | 652 paths in 46 Markdown files exist (2026-11-14) |
+| Orders | `tools/order_package.py`: files present, BOM against CPL, JLCPCB against PCBWay, case checks, hole list | 0 problems, 34 files |
+| Docs | `make docs-check`: files, pictures and anchors named in Markdown exist | 674 paths in 48 Markdown files exist (2026-11-14) |
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `make test`. It has not run on GitHub yet.
 
@@ -229,19 +229,20 @@ These are open. None is hidden by a green check.
 
 **Gates: do not order until each is closed**
 
-1. **PCB order files.** The board is routed and DRC clean (2026-11-14), but `make pcb` has not yet written the
-   order files. Review the signal hops on the inner layers and the vias under the module first
-   ([pcb/README.md](pcb/README.md#what-a-person-still-has-to-look-at)).
+1. **PCB review.** The board is routed, DRC clean and its order files are written (2026-11-14). A person must
+   review the signal hops on the inner layers, the ground island under the module and the vias under the
+   module before ordering ([pcb/README.md](pcb/README.md#what-a-person-still-has-to-look-at)).
 2. **VBUS on module pad 66 while 3V3 is off** is not read in the nRF52840 Product Specification
    ([D12](docs/decisions.md#d12-vbus-on-module-pad-66-while-the-rail-is-off)).
-3. **G1 and G2 thread.** With 2.7 mm of thread and an M2 x 4 screw the tip ends 0.15 mm short of the last full
-   thread, against 0.4 mm. A longer thread breaks the 2.0 mm metal rule. Needs a decision
+3. **G1 and G2 thread.** The check passes (tip 0.45 mm against 0.4) only with a proposed bottoming tap that D6
+   does not yet record. Needs a decision by the owner
    ([D6](docs/decisions.md#d6-two-ground-screws-with-the-enclosure-numbers), [cad/README.md](cad/README.md#open-items)).
-4. **Knob and RF insert drawings** do not exist. The insert needs its length tolerance on paper, or it may come
-   out longer than its slot.
+4. **Knob and RF insert tolerances.** The drawings exist; their insert and bore tolerances are proposals that
+   nobody has milled or measured.
 5. **USB-C plug test.** Plugs with large overmolds may not seat in the 0.25 mm recess. A plug test gates the
    case order ([D37](docs/decisions.md#d37-usb-c-recess-kept-at-025-mm-pending-a-plug-test)).
-6. **`make order` exits 0.** It cross-checks every file the vendors receive.
+6. **`make order` exits 0** (it does on 2026-11-14). Run it again after any change; it cross-checks every
+   file the vendors receive.
 
 **Electrical**
 
