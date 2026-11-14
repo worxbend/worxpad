@@ -16,7 +16,7 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
 - PCB generator in `pcb/gen/` for KiCad 10.0.7 by digest: circuit (107 parts, 74 nets), six project
   footprints, a generated schematic with ERC at 0 errors and 0 warnings, placement of every part on four
   layers, a router, DRC with schematic parity, an RF keep-out copper check, the D23 frame panel and the JLCPCB
-  and PCBWay order files. The board is not fully routed: 36 pads on 25 nets remain.
+  and PCBWay order files. The board is routed (see Changed); its order files are not written yet.
 - `tools/check_pins.py` and `tools/check_pins_firmware.py`: the pin map against the circuit and the firmware.
 - Case package `cad/worxpad_case` (build123d 0.13.0): CNC and FDM shells, RF insert, knobs, button caps,
   keycap, lens, switch insertion jig, coupons, exports, drawings and checks. Two checks fail: the G1 and G2
@@ -46,3 +46,10 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
 - [docs/assembly.md](docs/assembly.md) step 5 gives the expected report for every control on the Edit layer. The
   buttons send no key code, so they are tested by the layer they select.
 - The decision index lists D38 to D40.
+- The PCB is routed: `make pcb-place` reports 0 unrouted pads (36 on 25 nets before) and `make pcb-check` 0
+  violations, 0 unconnected items and 0 parity issues; 1,980 tracks, 280 vias. The router changed, the
+  placement did not. Module pads escape to vias (deep pads under the module's middle), the flash and backlight
+  FET pins escape to vias, signals may hop on both inner layers (never the supply nets, never under the USB pair
+  or the crystal), a 3.3 V via cut off from its plane is moved, the USB D- gets a meander to match D+ within
+  2 mm, ripped-up nets keep their escapes, junctions are cut into track ends, and J2's and J3's solder tabs are
+  joined. The diagnosis of the old failures is in [pcb/README.md](pcb/README.md#routing). Nothing was built.

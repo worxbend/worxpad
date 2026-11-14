@@ -14,8 +14,7 @@ name, artwork, firmware or files is used. Where worxpad differs, and why, is in
 *A render of the case model, not a photo. The screen shows a drawing of what the firmware should display.*
 
 > **Status: design files only. Nothing has been built, and the design is not finished.**
-> The PCB is placed but not fully routed: 36 pads on 25 nets have no track. Two case checks fail. No order
-> files for the board exist. No board has been ordered, no case printed or milled, and the firmware has never
+> The PCB is placed and routed (DRC clean), but its order files have not been written yet. Two case checks fail. No board has been ordered, no case printed or milled, and the firmware has never
 > run on a chip. Every number below is what the design files and their automatic checks say. Read
 > [Before you order](#before-you-order) first.
 
@@ -42,13 +41,13 @@ copied from the last builder run and its report, named in the last column.
 | --- | --- | --- |
 | Research and decisions | Done. Seven decision records, a parts summary, a reference dossier; 40 design decisions. | Read; [docs/decisions.md](docs/decisions.md) |
 | Specification | Done. `board.toml`: outline, keys, controls, display, module, ports, battery, screws, stack-up, pin map, panel. | Run: `python3 tools/check_spec.py`, 92 of 92 pass |
-| Circuit and schematic | Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). Generated KiCad 10 sheet. ERC: 0 errors, 0 warnings. 309 pins match the circuit. | Run: `make pcb-test`, 63 unit tests pass. ERC from the last `build.py schematic`, [pcb/README.md](pcb/README.md) |
+| Circuit and schematic | Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). Generated KiCad 10 sheet. ERC: 0 errors, 0 warnings. 309 pins match the circuit. | Run: `make pcb-test`, 73 unit tests pass. ERC from the last `build.py schematic`, [pcb/README.md](pcb/README.md) |
 | Pin map | Circuit and firmware agree with `board.toml`. | Run: `python3 tools/check_pins.py`, 0 circuit failures, 12 of 12 firmware checks |
-| PCB layout | **Not finished.** All 107 parts placed on 4 layers. 1,137 tracks, 176 vias, **36 pads on 25 nets unrouted**. DRC: 0 errors, 39 unconnected, 0 schematic differences. No copper in the antenna keep-out. | Last `build.py place`; `pcb/routing.txt`, [pcb/README.md](pcb/README.md#checks) |
-| Board order files | **Not written.** The build refuses an unfinished board. A draft run gave 61 placements in 30 BOM lines and a frame panel with 0 DRC errors. | Last `build.py fab-draft`; [pcb/README.md](pcb/README.md#checks) |
+| PCB layout | Routed. All 107 parts placed on 4 layers. 1,980 tracks, 280 vias, 0 pads unrouted; short signal hops on both inner layers. DRC: 0 errors, 0 unconnected, 0 schematic differences. No copper in the antenna keep-out. | Run: `make pcb-place` and `make pcb-check`, exit 0 (2026-11-14); `pcb/routing.txt`, [pcb/README.md](pcb/README.md#routing) |
+| Board order files | **Not written.** `make pcb-fab` has not been run on the routed board. A draft run gave 61 placements in 30 BOM lines and a frame panel with 0 DRC errors. | Last `build.py fab-draft`; [pcb/README.md](pcb/README.md#checks) |
 | Case | Model done. 177 of 177 limit checks pass. G1 and G2 pass (tip 0.45 mm against 0.4) only with a proposed bottoming tap that D6 does not yet record. 24 of 24 parts valid, 0 clashes in 666 (CNC) and 703 (FDM) part pairs. Self-test 26 of 26. | Run: `make cad-check` (exit 0); `cad/exports/checks.json`, [cad/README.md](cad/README.md#checks) |
 | Firmware | Builds. ZMK 4dd95d78 on Zephyr 10ba6d0c (pinned in `west.yml`). FLASH 391,548 B of 811,008 B (48.28 %), RAM 122,322 B of 262,144 B (46.66 %). UF2 is 783,360 B. | Run: `bash firmware/build.sh` (exit 0); [firmware/README.md](firmware/README.md#build) |
-| Pictures | Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures show the unfinished board. | Last `bash tools/render_all.sh`, exit 0 in 907 s |
+| Pictures | Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures in `docs/images/pcb/` show the routed board; the renders in `docs/images/renders/` were made before routing was finished. | Last `bash tools/render_all.sh`, exit 0 in 907 s |
 | Order package | **Not ready.** Run with `--draft`: 34 files listed, 5 problems: knob and RF insert drawings missing (4), the knob hole list knob_holes.csv missing (1). The full run lists 17 problems: those 5, 11 missing PCB files, and designators not compared. | Run: `python3 tools/order_package.py --draft`, exit 1; [production/README.md](production/README.md) |
 | Documentation | Every path and anchor named in Markdown exists. | Run: `make docs-check`, see [What is checked](#what-is-checked) |
 | Real hardware | **None.** No board, no print, no flash. | - |
@@ -101,8 +100,8 @@ reference slab, because the finished board STEP does not exist yet. Turntable as
 
 <img src="docs/images/pcb/bare-bottom.png" alt="Bare board, bottom face" width="48%"> <img src="docs/images/pcb/assembled-underside.png" alt="Populated board, underside with the machine-placed parts" width="48%">
 
-These show the **unfinished, partly routed** board. Parts are block models with nominal heights, not the
-makers' 3D models.
+These show the routed board (2026-11-14). Parts are block models with nominal heights, not the makers' 3D
+models.
 
 <a href="docs/images/pcb/schematic.pdf"><img src="docs/images/pcb/schematic.svg" alt="Schematic, one A2 sheet" width="100%"></a>
 
@@ -120,8 +119,8 @@ Quick pictures from the case package. The lens is drawn opaque here. More views 
 
 ## Build one
 
-Nobody has done this yet, and it cannot be done today: the board is not routed. The guides are written from
-the design files. Expect mistakes.
+Nobody has done this yet, and it cannot be done today: the board's order files are not written and gates
+below are open. The guides are written from the design files. Expect mistakes.
 
 1. **Read [Before you order](#before-you-order).** Every gate there must be closed.
 2. **Check the order package.** `make order` must exit 0. Its index is
@@ -175,9 +174,9 @@ Run `make help` for this list.
 | Command | Does | State on 2026-11-13 |
 | --- | --- | --- |
 | `make test` | spec-check, docs-check, pin-check: everything checkable without Docker or hardware | exits 0 |
-| `make pcb-test` | Circuit self-check and generator unit tests, no Docker | exits 0, 62 tests |
-| `make pcb-place` | Schematic, placed and routed board, DRC, keep-out copper check, PCB pictures | exits 1 while pads are unrouted |
-| `make pcb-fab` | Gerbers, drills, panel, JLCPCB and PCBWay files, board STEP | refuses the unfinished board |
+| `make pcb-test` | Circuit self-check and generator unit tests, no Docker | exits 0, 73 tests (2026-11-14) |
+| `make pcb-place` | Schematic, placed and routed board, DRC, keep-out copper check, PCB pictures | exits 0 (2026-11-14) |
+| `make pcb-fab` | Gerbers, drills, panel, JLCPCB and PCBWay files, board STEP | not run on the routed board |
 | `make cad` | Case checks, STEP/STL/3MF exports, drawings, quick pictures (about 7 minutes) | exits 1 on the G1 and G2 checks |
 | `make firmware` | ZMK build into `firmware/dist/worxpad.uf2` | exits 0 |
 | `make renders` | Product renders into `docs/images/renders/` (about 15 minutes) | exits 0 |
@@ -191,14 +190,14 @@ generated file, never weaken a check.
 | Area | Check | Result (2026-11-13) |
 | --- | --- | --- |
 | Specification | `tools/check_spec.py`: keys on pitch, holes and parts inside the outline, no overlapping bodies in a shared Z range, pocket floors against the wedge, stack-up order, RF bay and keep-out, screw-post walls, pin map against the module pad table, 3V3 capacitance, panel and tabs, corner radii for JLCCNC, FDM bed fit | 91 of 91 pass |
-| Circuit | `make pcb-test`: circuit self-check, router, schematic writer, footprints, pin map | 62 tests pass |
+| Circuit | `make pcb-test`: circuit self-check, router, schematic writer, footprints, pin map | 73 tests pass |
 | Pins | `tools/check_pins.py`: 41 pin map entries, 15 spares and 24 FPC pins against the circuit; GPIOs, pulls, matrix, encoders, display bus and binding counts against the firmware | 0 failures; 12 of 12 |
 | Schematic | `kicad-cli sch erc --severity-all`; KiCad's netlist against the circuit | 0 errors, 0 warnings; 309 pins match |
-| PCB | `kicad-cli pcb drc --severity-all --schematic-parity`; copper in the antenna keep-out | 0 errors, **39 unconnected**, 0 parity; no copper |
+| PCB | `kicad-cli pcb drc --severity-all --schematic-parity`; copper in the antenna keep-out | 0 errors, 0 unconnected, 0 parity; no copper (2026-11-14) |
 | Case | `cad/build.py check`: self-test, validity, interference, clearances, CNC rules, FDM rules, RF metal, insertion jig | **163 of 165** limit checks pass; G1 and G2 thread fail |
 | Firmware | `firmware/build.sh`: build, UF2 family 0xADA52840 at 0x26000 | pass |
 | Orders | `tools/order_package.py`: files present, BOM against CPL, JLCPCB against PCBWay, case checks, hole list | **6 problems** with `--draft` |
-| Docs | `make docs-check`: files, pictures and anchors named in Markdown exist | 627 paths in 46 Markdown files exist |
+| Docs | `make docs-check`: files, pictures and anchors named in Markdown exist | 652 paths in 46 Markdown files exist (2026-11-14) |
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `make test`. It has not run on GitHub yet.
 
@@ -230,8 +229,9 @@ These are open. None is hidden by a green check.
 
 **Gates: do not order until each is closed**
 
-1. **PCB routing.** 36 pads on 25 nets are unrouted (list in `pcb/routing.txt`). The bottleneck is the control
-   column between the charger, the flash and the module. Then `make pcb` must write the order files.
+1. **PCB order files.** The board is routed and DRC clean (2026-11-14), but `make pcb` has not yet written the
+   order files. Review the signal hops on the inner layers and the vias under the module first
+   ([pcb/README.md](pcb/README.md#what-a-person-still-has-to-look-at)).
 2. **VBUS on module pad 66 while 3V3 is off** is not read in the nRF52840 Product Specification
    ([D12](docs/decisions.md#d12-vbus-on-module-pad-66-while-the-rail-is-off)).
 3. **G1 and G2 thread.** With 2.7 mm of thread and an M2 x 4 screw the tip ends 0.15 mm short of the last full
@@ -257,7 +257,8 @@ These are open. None is hidden by a green check.
 - **Copper at the board edge.** J1's signal pads and SW18's shield tabs touch the routed edge under a -0.1 mm
   clearance exception. Confirm with JLCPCB.
 - **Fine rules.** 0.10 mm track and space everywhere (JLCPCB's 4-layer limit is 0.09 mm), vias under the
-  module. The USB pair (D+ 56.2 mm, D- 54.0 mm) has no impedance calculation.
+  module, short signal hops on both inner planes. The USB pair (D+ 60.58 mm, D- 60.52 mm, matched by a meander)
+  has no impedance calculation.
 - **Placement rotations.** Only two rows of the JLCPCB rotation table come from a sibling; the rest are
   community values. Check every designator in JLCPCB's placement preview. Confirm the fiducials sit at least
   3.85 mm from the panel edge.

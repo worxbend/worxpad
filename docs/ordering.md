@@ -6,10 +6,10 @@ panel. The hot-swap sockets, the display, the cell and the case are separate ord
 [parts.md](parts.md) and [ordering-case.md](ordering-case.md). The PCBWay fallback is
 [ordering-pcbway.md](ordering-pcbway.md).
 
-> **Nobody has placed this order, and the board cannot be ordered yet.** On 2026-11-13 the board is placed but
-> 36 pads on 25 nets are unrouted ([pcb/README.md](../pcb/README.md)), so the fab step refuses to write the
-> order files. The settings below come from the files that `pcb/gen/build.py fab-draft` wrote from the
-> unfinished board: 61 placements (56 on the bottom), 30 BOM lines, panel 135.65 x 95.30 mm. Re-read the
+> **Nobody has placed this order, and the board cannot be ordered yet.** On 2026-11-14 the board is placed and
+> routed with a clean DRC ([pcb/README.md](../pcb/README.md#routing)), but the fab step has not been run on it,
+> so the order files do not exist yet. The settings below come from the files that `pcb/gen/build.py fab-draft`
+> wrote from the earlier, unfinished board: 61 placements (56 on the bottom), 30 BOM lines, panel 135.65 x 95.30 mm. Re-read the
 > generated README in pcb/production/jlcpcb/ when the real package exists; where it and this page disagree,
 > the generated README wins, because it is written from the board.
 
@@ -66,8 +66,9 @@ On jlcpcb.com, open the instant quote and upload worxpad-panel-gerbers.zip. JLCP
 and about **135.65 x 95.30 mm** (the panel). If it reads about 120.65 x 80.30 mm, you uploaded the bare board.
 
 In the Gerber viewer, inner layer 1 (In1.Cu) is the ground plane and inner layer 2 (In2.Cu) the 3.3 V plane,
-both nearly solid. The right-hand strip of the board, over the radio module's antenna, has no copper on any
-layer. Compare with [the copper pictures](images/pcb/copper-top.svg); they show the unfinished board.
+both nearly solid, with short signal tracks on each where the outer layers are full. The right-hand strip of
+the board, over the radio module's antenna, has no copper on any layer. Compare with
+[the copper pictures](images/pcb/copper-top.svg); they show the routed board of 2026-11-14.
 
 ## 2. PCB options
 

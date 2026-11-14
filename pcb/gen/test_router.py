@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import unittest
 
-from router import BACK, BOTH_LAYERS, FRONT, Pad, Router, Rules, Track, Via
+from router import BACK, BOTH_LAYERS, FRONT, INNER, Pad, Router, Rules, Track, Via
 
 RULES = Rules()
 
@@ -205,12 +205,30 @@ class RouterTest(unittest.TestCase):
         pin, far = pad("U.1", "N", 10.0, 5.0, half=0.1), pad("J.1", "N", 3.0, 8.0)
         router.add_pad(pin)
         router.add_pad(far)
-        self.assertTrue(router.escape("N", pin, (10.0, 5.0), 2.0))
+        self.assertTrue(router.escape("N", pin, (8.1, 3.1, 11.9, 6.9)))
         self.assertAlmostEqual(router.net_length("N"), 2.0, places=3)
         self.assertEqual(len(loose_ends(router.tracks, router.vias, [pin, far])), 1, "the escape is still open")
         self.assertEqual(router.route_net("N", [pin, far]), [])
         self.assertTrue(is_connected(router.tracks, router.vias, pin, far))
+        router.prune_dangling(())
+        self.assertTrue(is_connected(router.tracks, router.vias, pin, far))
         self.assertEqual(loose_ends(router.tracks, router.vias, [pin, far]), [])
+
+    def test_escape_to_via_ends_on_a_via_outside_the_box_that_the_net_then_uses(self) -> None:
+        router = small_board()
+        pin, far = pad("U.1", "N", 10.0, 5.0, half=0.1), pad("J.1", "N", 3.0, 8.0, layers=(FRONT,))
+        router.add_pad(pin)
+        router.add_pad(far)
+        box = (9.1, 4.1, 10.9, 5.9)
+        self.assertTrue(router.escape_to_via("N", pin, box))
+        self.assertEqual(len(router.vias), 1)
+        via = router.vias[0]
+        self.assertFalse(box[0] <= via.x <= box[2] and box[1] <= via.y <= box[3], "the via sits outside the box")
+        self.assertEqual(router.route_net("N", [pin, far]), [])
+        router.prune_dangling(())
+        self.assertTrue(is_connected(router.tracks, router.vias, pin, far))
+        self.assertEqual(loose_ends(router.tracks, router.vias, [pin, far]), [])
+        self.assertEqual(router.vias, [via], "the far pad is on the front: the escape's via carries the net there")
 
     def test_tree_of_three_pads_has_no_loose_ends(self) -> None:
         router = small_board()
@@ -246,6 +264,161 @@ class RouterTest(unittest.TestCase):
         for track in router.tracks:
             self.assertEqual(track.width, RULES.wide_track_width)
             self.assertGreaterEqual(rect_gap(track, wall.rect), needed - 1e-6)
+
+    def walled_back_layer(self, fixed: tuple[str, ...]) -> tuple[Router, Pad, Pad]:
+        """Back layer only (front closed, so no vias). Net ONE runs from wall to wall across the middle; TWO's
+        pads sit above and below it. Returns the router after ONE is routed, and TWO's pads."""
+        router = small_board()
+        router.add_keepout((0.0, 0.0, 20.0, 10.0), (FRONT,))
+        a, b = pad("A.1", "ONE", 4.0, 5.0), pad("B.1", "ONE", 16.0, 5.0)
+        c, d = pad("C.1", "TWO", 10.0, 2.0), pad("D.1", "TWO", 10.0, 8.0)
+        for item in (a, b, c, d, Pad("W.1", "", (0.0, 4.5, 3.6, 5.5), BOTH_LAYERS),
+                     Pad("W.2", "", (16.4, 4.5, 20.0, 5.5), BOTH_LAYERS)):
+            router.add_pad(item)
+        router.freeze(fixed)
+        self.assertEqual(router.route_net("ONE", [a, b]), [])
+        self.assertEqual(router.route_net("TWO", [c, d]), ["D.1"])
+        return router, c, d
+
+    def test_reach_names_the_branch_in_the_way_and_rip_up_clears_it(self) -> None:
+        router, c, d = self.walled_back_layer(fixed=())
+        tracks_before = list(router.tracks)
+        crossed = router.reach("TWO", d)
+        self.assertEqual({net for net, _ in crossed}, {"ONE"})
+        self.assertEqual(router.tracks, tracks_before, "a way that crosses copper is not written")
+        (_, branch), = crossed
+        self.assertEqual([pad.name for pad in router.rip_up_branch("ONE", branch)], ["B.1"])
+        self.assertEqual(router.rip_up_branch("ONE", branch), [], "a branch that is gone returns nothing")
+        self.assertEqual([track.net for track in router.tracks], [])
+        self.assertTrue(router.is_open(BACK, 10.0, 5.0), "the ripped track's nodes are free again")
+        self.assertEqual(router.reach("TWO", d), set())
+        self.assertTrue(router.joined("TWO", d))
+        self.assertTrue(is_connected(router.tracks, router.vias, c, d))
+        self.assertFalse(router.is_open(BACK, 10.0, 5.0))
+
+    def test_ripping_a_branch_takes_the_branches_beyond_it_too(self) -> None:
+        router = small_board()
+        router.add_keepout((0.0, 0.0, 20.0, 10.0), (FRONT,))
+        a, b, c = pad("A.1", "N", 2.0, 5.0), pad("B.1", "N", 10.0, 5.0), pad("C.1", "N", 16.0, 5.0)
+        top, bottom = pad("T.1", "TWO", 6.0, 2.0), pad("U.1", "TWO", 6.0, 8.0)
+        for item in (a, b, c, top, bottom, Pad("W.1", "", (0.0, 4.5, 1.6, 5.5), BOTH_LAYERS),
+                     Pad("W.2", "", (16.4, 4.5, 20.0, 5.5), BOTH_LAYERS)):
+            router.add_pad(item)
+        router.freeze(())
+        self.assertEqual(router.route_net("N", [a, b, c]), [])
+        self.assertEqual(router.route_net("TWO", [top, bottom]), ["U.1"])
+        crossed = router.reach("TWO", bottom)
+        self.assertEqual(len(crossed), 1, "only the A to B branch is in the way")
+        (_, branch), = crossed
+        self.assertEqual([pad.name for pad in router.rip_up_branch("N", branch)], ["B.1", "C.1"])
+        self.assertTrue(router.joined("N", a))
+        self.assertFalse(router.joined("N", c))
+        self.assertEqual(router.tracks, [], "C hung on B's branch, so its copper went too")
+
+    def test_long_way_round_is_found_by_the_coarse_map_search(self) -> None:
+        """Back layer only, a wall from the top edge down to Y 8: the way runs round its foot. A plain search
+        with 20,000 expansions gives up here (checked by hand); the guided one finds it within 3 x 3,000."""
+        router = Router(20.0, 10.0, 1.0, Rules(search_limit=3000))
+        router.add_keepout((0.0, 0.0, 20.0, 10.0), (FRONT,))
+        a, b = pad("A.1", "N", 5.0, 2.0), pad("B.1", "N", 15.0, 2.0)
+        for item in (a, b, Pad("W.1", "", (9.5, 0.0, 10.5, 8.0), BOTH_LAYERS)):
+            router.add_pad(item)
+        self.assertEqual(router.route_net("N", [a, b]), [])
+        self.assertTrue(is_connected(router.tracks, router.vias, a, b))
+        self.assertTrue(any(max(track.start[1], track.end[1]) > 8.0 for track in router.tracks))
+
+    def test_restore_puts_back_what_a_rip_up_took(self) -> None:
+        router, _, d = self.walled_back_layer(fixed=())
+        tracks_before = list(router.tracks)
+        saved = router.snapshot()
+        lost = router.rip_up_crossings(router.reach("TWO", d))
+        self.assertEqual([pad.name for pad in lost["ONE"]], ["B.1"])
+        self.assertTrue(router.is_open(BACK, 10.0, 5.0))
+        router.restore(saved)
+        self.assertEqual(router.tracks, tracks_before)
+        self.assertFalse(router.is_open(BACK, 10.0, 5.0), "the restored track claims its nodes again")
+        self.assertEqual({net for net, _ in router.reach("TWO", d)}, {"ONE"}, "and stands in the way again")
+
+    def test_reach_never_crosses_fixed_copper(self) -> None:
+        router, _, d = self.walled_back_layer(fixed=("ONE",))
+        self.assertIsNone(router.reach("TWO", d))
+        with self.assertRaises(AssertionError):
+            router.rip_up("ONE")
+
+    def test_lengthen_adds_a_meander_that_keeps_the_net_whole_and_clear(self) -> None:
+        router = small_board()
+        a, b = pad("A.1", "N", 3.0, 5.0), pad("B.1", "N", 17.0, 5.0)
+        wall = Pad("W.1", "OTHER", (6.0, 3.0, 14.0, 4.4), (BACK,))   # leaves room on one side only
+        for item in (a, b, wall):
+            router.add_pad(item)
+        self.assertEqual(router.route_net("N", [a, b]), [])
+        before = router.net_length("N")
+        self.assertTrue(router.lengthen("N", 3.0, 0.5))
+        self.assertLessEqual(abs(router.net_length("N") - before - 3.0), 0.5)
+        self.assertTrue(is_connected(router.tracks, router.vias, a, b))
+        self.assertEqual(loose_ends(router.tracks, router.vias, [a, b]), [])
+        clearance = RULES.clearance + RULES.track_width / 2
+        self.assertTrue(all(rect_gap(track, wall.rect) >= clearance - 1e-6 for track in router.tracks),
+                        "the meander turns away from the other net's pad")
+
+    def test_lengthen_refuses_when_there_is_no_room(self) -> None:
+        router = small_board()
+        a, b = pad("A.1", "N", 3.0, 5.0), pad("B.1", "N", 5.0, 5.0)
+        for item in (a, b):
+            router.add_pad(item)
+        router.route_net("N", [a, b])
+        tracks = list(router.tracks)
+        self.assertFalse(router.lengthen("N", 10.0, 0.5))
+        self.assertEqual(router.tracks, tracks)
+
+    def test_a_plane_via_walled_in_on_the_inner_layer_moves_into_the_plane(self) -> None:
+        router = Router(20.0, 10.0, 1.0, Rules(layers=(FRONT, BACK, INNER)))
+        for rect in ((8.0, 3.0, 12.0, 3.3), (8.0, 6.7, 12.0, 7.0), (8.0, 3.0, 8.3, 7.0), (11.7, 3.0, 12.0, 7.0)):
+            router.add_pad(Pad("R.1", "RING", rect, (INNER,)))   # other copper all round, on the inner layer only
+        ground = pad("G.1", "GND", 10.0, 5.0)
+        router.add_pad(ground)
+        router.freeze(())
+        self.assertTrue(router.fan_out("GND", ground, lambda x, y: True))
+        inside = router.vias[0]
+        in_plane = router.plane_area("GND", INNER)
+        self.assertFalse(in_plane(inside.x, inside.y), "the first via sits in the ring's island")
+        self.assertTrue(in_plane(2.0, 5.0))
+        self.assertEqual(router.rip_up_plane_vias("GND", [inside]), [ground])
+        self.assertEqual(router.vias, [])
+        self.assertTrue(router.fan_out("GND", ground, in_plane))
+        moved = router.vias[0]
+        self.assertTrue(in_plane(moved.x, moved.y))
+        self.assertFalse(8.0 < moved.x < 12.0 and 3.0 < moved.y < 7.0, "the new via is outside the ring")
+
+    def test_two_pads_with_one_name_keep_their_own_escapes_and_get_joined(self) -> None:
+        router = small_board()
+        left, right = pad("J.MP", "TAB", 4.0, 5.0), pad("J.MP", "TAB", 16.0, 5.0)   # two solder tabs, one number
+        for item in (left, right):
+            router.add_pad(item)
+        for item in (left, right):
+            self.assertTrue(router.escape_to_via("TAB", item, (item.rect[0] - 0.5, 4.0, item.rect[2] + 0.5, 6.0)))
+        self.assertEqual(router.route_net("TAB", [left, right]), [])
+        router.prune_dangling(())
+        self.assertTrue(is_connected(router.tracks, router.vias, left, right))
+
+    def test_split_at_junctions_leaves_no_track_end_on_the_middle_of_another(self) -> None:
+        router = small_board()
+        pads = [pad("A.1", "N", 4.0, 5.0), pad("B.1", "N", 16.0, 5.0), pad("C.1", "N", 10.0, 8.0)]
+        for item in pads:
+            router.add_pad(item)
+        router.route_net("N", pads[:2])   # a straight A-B track first; C then joins its middle
+        router.route_net("N", pads)
+        length = router.net_length("N")
+
+        def ends_on_a_middle() -> list:
+            return [(end, track) for track in router.tracks for other in router.tracks if other is not track
+                    for end in (other.start, other.end) if 0.001 < math.dist(end, track.start)
+                    and 0.001 < math.dist(end, track.end) and segment_gap(Track("N", 0, end, end, 0.1), track) < 0.001]
+        self.assertTrue(ends_on_a_middle(), "C joins the A-B track in its middle")
+        router.split_at_junctions()
+        self.assertEqual(ends_on_a_middle(), [])
+        self.assertAlmostEqual(router.net_length("N"), length, places=6)
+        self.assertEqual(loose_ends(router.tracks, router.vias, pads), [])
 
     def test_same_input_gives_the_same_copper(self) -> None:
         def run() -> tuple[list[Track], list[Via]]:
