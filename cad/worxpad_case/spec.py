@@ -102,6 +102,11 @@ class Case:
     usb_skin_cnc: float = 0.6  # usb-io 6.2 item 3
     rf_insert_pocket_radius: float = 1.0  # POM insert, side pocket corners. guess
     rf_insert_skin: float = 1.45  # enclosure 7.2 item 4
+    # Length tolerances (upper, lower) of the insert bar and of the slot it slides into. The record gives 0.10
+    # total play; ISO 2768-m (+/-0.2) could make the bar longer than the slot. Proposal of
+    # cad/production/jlccnc/ORDER_NOTES.md, not a tested fit.
+    rf_insert_length_tolerance: tuple[float, float] = (0.0, 0.10)
+    rf_slot_length_tolerance: tuple[float, float] = (0.10, 0.0)
     rf_trench_width: float = 3.0  # floor trench along the slot's inner side, wide enough for a 3 mm tool
 
     # FDM variant (enclosure 8.2, D27, D30).
@@ -132,6 +137,10 @@ class Case:
     knob_bore: tuple[float, float, float] = (6.05, 4.55, 6.90)  # diameter, across the flat, top above the rim
     knob_top_radius: float = 1.25
     knob_set_screw_z: float = 3.00  # above the rim, M2 tapped, toward the rear
+    knob_set_screw_thread: str = "M2x0.4-6H"
+    knob_set_screw: str = "M2 x 3 ISO 4029 cup point"  # rotary-buttons 6.5
+    knob_bore_tolerance: float = 0.03  # D-bore, its flat and the round relief, +0.03/0 after anodise (rotary-buttons 6.5)
+    knob_counterbore_tolerance: tuple[float, float] = (0.10, 0.05)  # diameter, depth; each +x/0 (rotary-buttons 6.5)
     print_knob_bore: tuple[float, float] = (6.20, 4.70)
     print_knob_rib: tuple[float, float, float] = (5.90, 0.15, 1.0)  # ribs reach Ø5.90; flat rib 0.15; width 1.0
     shim: float = 1.10  # BOARD.knobs.shim

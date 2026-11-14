@@ -34,8 +34,8 @@ uv pip install --python .venv/bin/python -e .
 | --- | --- | --- |
 | Top shell: deck, key well, 1.15 mm Choc V2 plate lip, lens recess and 0.80 mm web, knob plinth, button holes, C and G posts | CNC 6061 (JLCCNC); FDM prototype | `exports/cnc/top_shell.step`, `exports/print/top_shell.*`, drawing in `exports/drawings/` |
 | Bottom shell: tray with the wedge, flank scoops, battery pocket and relief, RF bay pocket and window slot, USB-C and switch notches, reset pinhole, foot pockets, K posts, C countersinks | CNC 6061; FDM prototype | `exports/cnc/bottom_shell.step`, `exports/print/bottom_shell.*` |
-| RF window insert | POM, CNC | `exports/cnc/rf_insert.step` |
-| Knob (2) | CNC with an M2 set screw; FDM with crush ribs | `exports/cnc/knob.step`, `exports/print/knob.*` |
+| RF window insert | POM, CNC | `exports/cnc/rf_insert.step`, drawing in `exports/drawings/` |
+| Knob (2) | CNC with an M2 set screw; FDM with crush ribs | `exports/cnc/knob.step`, `exports/print/knob.*`, drawing and `knob_holes.csv` in `exports/drawings/` |
 | Button cap (2) | Resin; FDM with a flat top | `exports/resin/button_cap.*`, `exports/print/button_cap.*` |
 | Keycap (16): low, square, square spherical dish (keys 6.5) | Resin (JLC3DP) | `exports/resin/keycap.*` |
 | Lens | 1.0 mm cast PMMA, laser cut | `exports/drawings/lens.dxf`, `exports/drawings/lens_mask.dxf`, `exports/lens.step` |
@@ -57,7 +57,7 @@ uv pip install --python .venv/bin/python -e .
 | `coupons.py` | Coupons and the print pose of every printed part |
 | `checks.py`, `measure.py`, `printsim.py`, `selftest.py` | The checks |
 | `raster.py`, `render.py` | The software renderer and its views |
-| `drawings.py`, `export.py` | Drawings, hole tables, DXF; STEP, STL, 3MF |
+| `drawings.py`, `small_drawings.py`, `export.py` | Drawings, hole tables, DXF (shells; knob and RF insert); STEP, STL, 3MF |
 
 `raster.py` and `printsim.py` are copied from the macropad case (same owner), with support zones and a
 short-ledge rule added to `printsim.py`; `measure.py` and `selftest.py` are adapted from it.

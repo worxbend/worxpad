@@ -10,8 +10,8 @@ Not checked for this revision: PCBWay's current design rules, form options and p
 priority over your technical drawing" (enclosure 4.1). That last point matters: write the threads and the bare
 G faces into the form and the remark, not only into the drawing.
 
-The same blockers apply as on the JLCCNC page: the owner's confirmation of the G1 and G2 bottoming tap (D6), the missing knob and insert
-drawings, the D37 plug test and the fit check against the PCB STEP.
+The same blockers apply as on the JLCCNC page: the owner's confirmation of the G1 and G2 bottoming tap (D6), the
+D37 plug test and the fit check against the PCB STEP.
 
 ## Files
 
@@ -19,8 +19,8 @@ drawings, the D37 plug test and the fit check against the PCB STEP.
 |---|---|---|
 | Part 1 | `worxpad_top_shell.step` + `.pdf` | 1 |
 | Part 2 | `worxpad_bottom_shell.step` + `.pdf`, laser artwork `worxpad_bottom_shell_engraving_underside.dxf` | 1 |
-| Part 3 | `worxpad_rf_insert.step` (drawing missing) | 1 |
-| Part 4 | `worxpad_knob.step` (drawing missing) | **2** |
+| Part 3 | `worxpad_rf_insert.step` + `.pdf` | 1 |
+| Part 4 | `worxpad_knob.step` + `.pdf` | **2** |
 
 Attach the PDF as the technical drawing of each part. `hole_table.csv` answers questions about hole positions.
 

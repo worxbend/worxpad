@@ -14,3 +14,4 @@ worxpad_bottom_shell,K4,61.625,68.15,"M1.6x0.35-6H, plug tap, full thread 4.80, 
 worxpad_bottom_shell,C1,120.9,12.0,"clearance 2.2 thru, csk 4.3 x 90 at Z -12.0",underside,M2 x 6 DIN 7991
 worxpad_bottom_shell,C2,120.9,77.0,"spot-face 4.8 to Z -13.7, clearance 2.2 thru, csk 4.3 x 90 at Z -13.7",underside,M2 x 6 DIN 7991
 worxpad_bottom_shell,RESET,88.0,62.0,1.5 thru to Z -9.5,underside,-
+worxpad_knob,S1,0.0,-5.25,"M2x0.4-6H, drill 1.60 thru the 3.73 wall to the bore, square to the flat, centre 3.00 above the rim","side, rear",M2 x 3 ISO 4029 cup point

@@ -7,18 +7,16 @@ order the same files at PCBWay instead, see [`../pcbway/`](../pcbway/ORDER_NOTES
 [`../hardware.csv`](../hardware.csv). The guide for the whole case order is
 [docs/ordering-case.md](../../../docs/ordering-case.md).
 
-> **Not ready to order.** Nothing has been milled. Four things block this order today; the order index
+> **Not ready to order.** Nothing has been milled. Three things block this order today; the order index
 > [`production/README.md`](../../../production/README.md) lists the files that are still missing.
 >
 > 1. The G1 and G2 threads now use a proposed bottoming tap: 3.00 mm full thread, 0.50 mm unthreaded run,
 >    drill 1.6 x 3.50. The model's thread checks pass with it, but the owner has not yet recorded it in D6,
 >    and the shop must confirm a bottoming tap with a chamfer of 0.5 mm or less. See the open items in
 >    [cad/README.md](../../README.md#open-items).
-> 2. The knob and the RF insert have a STEP file but no drawing yet. JLCCNC needs a 2D drawing for the knob's
->    M2 thread and for any tolerance tighter than ISO 2768-m.
-> 3. The USB-C plug test of [D37](../../../docs/decisions.md#d37-usb-c-recess-kept-at-025-mm-pending-a-plug-test)
+> 2. The USB-C plug test of [D37](../../../docs/decisions.md#d37-usb-c-recess-kept-at-025-mm-pending-a-plug-test)
 >    has not been done.
-> 4. The case has only been checked against the PCB drawn from `board.toml`. The fit check against the PCB
+> 3. The case has only been checked against the PCB drawn from `board.toml`. The fit check against the PCB
 >    STEP runs once the finished board is exported.
 
 ## Files: one upload per part
@@ -32,12 +30,12 @@ customers (enclosure 4.1).
 |---|---|---|---|---|
 | Part 1 | `worxpad_top_shell` (`.step`, `.pdf`, `.dxf`) | 1 | 128.40 x 85.20 x 13.45 | 4 x M2 (C1, C2, G1, G2) |
 | Part 2 | `worxpad_bottom_shell` (`.step`, `.pdf`, `.dxf`), plus `worxpad_bottom_shell_engraving_underside.dxf` | 1 | 128.40 x 85.20 x 15.60 | 4 x M1.6 (K1 to K4) |
-| Part 3 | `worxpad_rf_insert` (`.step`; drawing missing) | 1 | 29.90 x 3.45 x 6.65 | none |
-| Part 4 | `worxpad_knob` (`.step`; drawing missing) | **2** | dia. 10.50 x 9.10 | 1 x M2 (set screw) |
+| Part 3 | `worxpad_rf_insert` (`.step`, `.pdf`, `.dxf`) | 1 | 3.45 x 31.90 x 6.65 over the keys; bar 29.90 | none |
+| Part 4 | `worxpad_knob` (`.step`, `.pdf`, `.dxf`) | **2** | dia. 10.50 x 9.10 | 1 x M2 (S1, set screw) |
 
-Sizes of parts 1 and 2 are read off the drawings, sizes of parts 3 and 4 from `board.toml`. `hole_table.csv`
-lists every tapped and countersunk hole in the drawings' coordinates (datum A, the rear-left outer corner, X to
-the right, Y to the front); keep it for questions. Do not upload `cad/exports/assembly.step`: JLCCNC cannot
+All sizes are read off the drawings. `hole_table.csv` lists every tapped and countersunk hole: for the shells in
+the drawings' coordinates (datum A, the rear-left outer corner, X to the right, Y to the front), for the knob's S1
+the mouth from the knob axis; keep it for questions. Do not upload `cad/exports/assembly.step`: JLCCNC cannot
 quote an assembly.
 
 Quantities: order **one set first** (the drawings say "check every fit on the first article before the batch"),
@@ -53,7 +51,7 @@ then four more. If you order all five at once, you accept that a fit problem cos
 | Appearance standard | **Strict** | Standard | **Strict** | Strict promises no visible colour variation inside a batch; the knobs must match the shells |
 | Threads | Yes: top 4 x M2x0.4-6H; bottom 4 x M1.6x0.35-6H; all right-hand, all blind | No | Yes: 1 x M2x0.4-6H, through the wall to the bore | enclosure 6.4, D30, rotary-buttons 6.5 |
 | Tolerance | ISO 2768-m; tighter only where the drawing notes say FIT-CRITICAL or FIT | ISO 2768-m, length 29.90 +0/-0.10 (see remark) | ISO 2768-m, bore per remark | the general tolerance is a proposal, not a tested requirement |
-| Technical drawing | Yes: the PDF (and DXF) of the same name | missing | missing | |
+| Technical drawing | Yes: the PDF (and DXF) of the same name | Yes: the PDF (and DXF) | Yes: the PDF (and DXF) | |
 | Laser marking | Bottom shell only: `worxpad_bottom_shell_engraving_underside.dxf` on the ramp | No | No | enclosure 5: laser on black anodise is cheap |
 | Quantity | 1 each for the first article; 5 each for the batch | 1, then 5 | 2, then 10 | |
 
@@ -116,7 +114,8 @@ Cosmetic face: the outer face (flush with the case wall).
 ```
 
 The 29.90 +0/-0.10 length is this page's proposal: the record gives 0.10 mm of total play and ISO 2768-m
-(+/-0.2 at this length) could make the bar longer than the slot. The drawing, once it exists, must carry it.
+(+/-0.2 at this length) could make the bar longer than the slot. The drawing carries it as a FIT note, from
+`rf_insert_length_tolerance` in `cad/worxpad_case/spec.py`.
 
 ## Remarks (paste for the KNOB)
 
@@ -125,7 +124,8 @@ worxpad knob, revision A, quantity 2 per set. 6061-T6 turned, bead blast then Ty
 Strict, same batch and colour as the shells.
 Outside dia. 10.50, height 9.10, top edge R1.25, per STEP. Counterbore dia. 8.40 x 1.20 from the rim.
 D-bore dia. 6.05, 4.55 across the flat, to 6.90 above the rim: slip fit on a 6.0 mm D shaft.
-One M2x0.4-6H thread square to the flat, centre 3.00 above the rim, through the wall into the bore.
+S1: one M2x0.4-6H thread square to the flat, toward the rear, centre 3.00 above the rim, through the wall
+into the bore (drill 1.6 through a 3.73 wall).
 Mask the thread during anodising. Cosmetic: the outside and the top face.
 ```
 

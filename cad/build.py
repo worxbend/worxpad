@@ -3,7 +3,8 @@
 check   every check, written to exports/checks.json; exits 1 on any failure
 export  STEP, STL and 3MF files to exports/
 render  quick pictures to ../docs/images/cad/
-draw    CNC drawings (SVG, PDF), hole tables, lens and laser-mark DXF to exports/drawings/
+draw    CNC drawings of shells, knob and RF insert (SVG, PDF, DXF), hole tables, lens and laser-mark DXF
+        to exports/drawings/
 """
 
 import json
@@ -12,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from worxpad_case import checks, drawings, export, render  # noqa: E402
+from worxpad_case import checks, drawings, export, render, small_drawings  # noqa: E402
 
 EXPORTS = Path(__file__).resolve().parent / "exports"
 IMAGES = Path(__file__).resolve().parents[1] / "docs" / "images" / "cad"
@@ -48,7 +49,8 @@ COMMANDS = {
     "check": check,
     "export": lambda: export.export_all(EXPORTS),
     "render": lambda: render.render_all(IMAGES),
-    "draw": lambda: drawings.write_drawings(EXPORTS / "drawings"),
+    "draw": lambda: max(drawings.write_drawings(EXPORTS / "drawings"),
+                        small_drawings.write_small_drawings(EXPORTS / "drawings")),
 }
 
 
