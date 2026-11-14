@@ -21,9 +21,12 @@ DOCKER := docker run --rm --network none -u $$(id -u):$$(id -g) -e HOME=/tmp -e 
 KICAD := $(DOCKER) $(KICAD_IMAGE) bash -c
 KICAD_FULL := $(DOCKER) $(KICAD_FULL_IMAGE) bash -c
 CAD_PYTHON := .venv/bin/python
+# The microsite build needs only the standard library; a Python with Pillow adds WebP copies.
+SITE_PYTHON ?= python3
+SITE_PORT ?= 8000
 
 .PHONY: help test spec-check docs-check pin-check pcb pcb-place pcb-check pcb-fab pcb-test cad cad-check firmware \
-	renders order
+	renders order site site-serve
 
 help:
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/'
@@ -69,3 +72,9 @@ renders: ## Case, PCB and UI pictures -> docs/images/ (tools/render_all.sh)
 
 order: ## Order packages for JLCPCB, PCBWay, JLCCNC, JLC3DP (tools/order_package.py)
 	python3 tools/order_package.py
+
+site: ## Microsite: site/ plus the pictures it names from docs/images/ -> _site/, with its checks (published by GitHub Pages)
+	$(SITE_PYTHON) tools/build_site.py
+
+site-serve: ## Microsite: build, serve on 127.0.0.1:$(SITE_PORT) and rebuild on every change (Ctrl+C stops)
+	$(SITE_PYTHON) tools/build_site.py --serve $(SITE_PORT)

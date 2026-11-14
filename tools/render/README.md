@@ -30,8 +30,8 @@ CAD model, not photos. Nothing has been milled, printed or assembled.
    turntable frame at 800 x 536, both denoised.
 5. `ffmpeg` turns the frames into the MP4 and the GIF.
 
-The last full run took 907 s (about 15 minutes) on 16 CPU threads that other jobs were also using
-(load average about 37).
+The last full run (2026-11-14) took 1,014 s (about 17 minutes). It used the routed board's STEP for the board;
+`pcb_step_to_stl.py` found no part solids in it, so the parts stayed the reference shapes.
 
 Scratch files go to `tools/render/.build/`, which git ignores.
 

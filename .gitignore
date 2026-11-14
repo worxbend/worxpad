@@ -23,3 +23,7 @@ firmware/build/
 
 # Agent worktrees
 .claude/worktrees/
+
+# Microsite build output and its staging folders (tools/build_site.py)
+_site/
+_site.staging*/

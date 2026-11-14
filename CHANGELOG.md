@@ -32,6 +32,9 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
   [docs/flashing.md](docs/flashing.md) and [docs/keymap.md](docs/keymap.md).
 - [README.md](README.md) with the status table, gallery, build steps and the list of open points before an
   order.
+- Microsite in `site/`, built and checked by `tools/build_site.py` (`make site`, `make site-serve`) and
+  published to <https://worxbend.github.io/worxpad/> by `.github/workflows/pages.yml`. The build fails on a
+  missing or unshown picture, a wrong image size, a broken link or anchor, or a skipped heading level.
 
 ### Changed
 
@@ -55,5 +58,7 @@ The first design pass. Nothing in it has been fabricated, printed or run on hard
   joined. The diagnosis of the old failures is in [pcb/README.md](pcb/README.md#routing). Nothing was built.
 - `make pcb-fab` wrote pcb/fab and pcb/production from the routed board: 61 placements in 30 BOM lines, panel
   DRC 0 errors, board STEP 1.616 mm. `tools/order_package.py` exits 0 with 34 files and 0 problems.
+- Renders redone with the routed board's STEP as the board (`make renders`, 1,014 s). The parts on it are still
+  the reference shapes: `pcb_step_to_stl.py` reads no part solids from that STEP.
 - Knob and RF insert drawings (SVG, PDF, DXF) and `knob_holes.csv`, generated from the model by
   `cad/worxpad_case/small_drawings.py` and copied into the JLCCNC package.

@@ -29,8 +29,8 @@ Nothing has been fabricated, printed or run on hardware. Every document must say
   the renders (`tools/render_all.sh`) and the order index (`tools/order_package.py`).
 - State on 2026-11-14: the PCB is routed (0 unrouted pads, DRC 0 violations, 0 unconnected, 0 parity) and
   pcb/fab and pcb/production are written; `tools/order_package.py` exits 0. The case checks pass, G1 and G2
-  only with a bottoming tap D6 does not yet record. The firmware builds. The renders predate routing. The status
-  table in `README.md` holds the numbers.
+  only with a bottoming tap D6 does not yet record. The firmware builds. The renders use the routed board's STEP. The status
+  table in `README.md` holds the numbers; the status table in `site/index.html` copies it by hand.
 
 ## Commands
 
@@ -47,6 +47,7 @@ make cad-check   # case checks only
 make firmware    # ZMK build in zmkfirmware/zmk-build-arm by digest -> firmware/dist/worxpad.uf2
 make renders     # tools/render_all.sh -> docs/images/renders/ (Blender and FreeCAD flatpaks, about 15 min)
 make order       # tools/order_package.py; exits 1 on any missing or disagreeing order file
+make site        # tools/build_site.py: site/ plus docs/images/ -> _site/, fails on any broken picture or link
 pcb/kicad.sh python3 pcb/gen/build.py place      # the same PCB steps, image pinned by digest
 bash tools/pull_images.sh kicad/kicad:10.0.7     # pull a pinned image by digest and tag it
 ```

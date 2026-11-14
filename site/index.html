@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>worxpad</title>
+  <meta name="description" content="worxpad: an open-hardware wireless macropad with 16 Choc V2 keys, two push knobs, two buttons and a 240 x 240 colour display in a CNC aluminium case. Design files only; nothing has been built.">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="worxpad">
+  <meta property="og:description" content="Open-hardware wireless macropad. Design files only: nothing has been built yet.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23101418'/%3E%3Crect x='3' y='3' width='4' height='4' fill='%23e6e8eb'/%3E%3Crect x='9' y='3' width='4' height='4' fill='%23e6e8eb'/%3E%3Crect x='3' y='9' width='4' height='4' fill='%23e6e8eb'/%3E%3Crect x='9' y='9' width='4' height='4' fill='%234cc2d4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&amp;display=optional" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <header class="top">
+    <a class="wordmark" href="#hero">worxpad</a>
+    <nav aria-label="Sections">
+      <ul class="nav-links">
+        <li><a href="#what">What it is</a></li>
+        <li><a href="#design">Design</a></li>
+        <li><a href="#board">Board</a></li>
+        <li><a href="#firmware">Firmware</a></li>
+        <li><a href="#specs">Specs</a></li>
+        <li><a href="#status">Status</a></li>
+        <li><a href="#build">Build</a></li>
+      </ul>
+    </nav>
+    <a class="pill" href="#status"><span class="pill-dot" aria-hidden="true"></span>Not built yet</a>
+  </header>
+
+  <main id="main">
+
+    <section id="hero" class="hero" aria-labelledby="hero-title">
+      <div class="column hero-copy">
+        <h1 id="hero-title">worxpad</h1>
+        <p class="lede">An open-hardware wireless macropad: 16 low-profile keys, two knobs with push, two round buttons and a 240&nbsp;×&nbsp;240 colour display in a CNC aluminium case. Board, case and firmware are generated from code in one repository and checked against one shared file, <code>board.toml</code>.</p>
+        <p class="status-note" role="note">Design files only. Nothing has been built: no board ordered, no case printed or milled, and the firmware has never run on a chip. Every picture on this page is a render, not a photo.</p>
+        <p class="actions">
+          <a class="button primary" href="#status">Where it stands</a>
+          <a class="button" href="https://github.com/worxbend/worxpad">Open the repository</a>
+        </p>
+      </div>
+      <figure class="hero-figure">
+        <picture>
+          <source type="image/webp" srcset="images/renders/hero-960.webp 960w, images/renders/hero-1920.webp 1920w" sizes="100vw">
+          <img src="images/renders/hero.png" width="1920" height="1280" fetchpriority="high" decoding="async"
+               alt="Render of the CNC unit on black: a dark aluminium wedge with sixteen keys on the left, two knobs on a raised plinth, a small colour display showing key labels, and two round buttons on the right.">
+        </picture>
+        <figcaption class="column">A render of the case model, not a photo. The screen shows a drawing of what the firmware should display.</figcaption>
+      </figure>
+    </section>
+
+    <section id="what" class="chapter" aria-labelledby="what-title">
+      <div class="column">
+        <h2 id="what-title">What it is</h2>
+        <p class="lede">A desk controller for shortcuts, media and navigation, connected over USB-C or Bluetooth.</p>
+        <ul class="facts">
+          <li><strong>16 keys</strong> Kailh Choc V2 class switches, 4&nbsp;×&nbsp;4 at 19.05&nbsp;mm pitch, in hot-swap sockets.</li>
+          <li><strong>Two knobs</strong> Rotary encoders with push, 24 detents a turn.</li>
+          <li><strong>Two buttons</strong> Round caps in front of the display. One steps the layers, one holds the System layer.</li>
+          <li><strong>Display</strong> 1.3&nbsp;inch, 240&nbsp;×&nbsp;240 IPS colour panel behind a painted acrylic lens.</li>
+          <li><strong>USB-C</strong> Power, charging, data and firmware updates.</li>
+          <li><strong>Bluetooth</strong> Up to four hosts, through an nRF52840 in a u-blox BMD-340 module.</li>
+          <li><strong>Battery</strong> 1,200&nbsp;mAh LiPo with a charger, fuel gauge and power switch.</li>
+          <li><strong>Case</strong> Two CNC-milled 6061 aluminium shells, bead blasted and anodised black. A PETG print for the prototype.</li>
+          <li><strong>Firmware</strong> ZMK, with four layers, ZMK Studio for changing keys, and its own status screen.</li>
+        </ul>
+        <p class="note">worxpad follows the function set of an existing commercial macropad, used as a reference for measurements only. Nothing of its name, artwork, firmware or files is used. Where worxpad differs, and why: <a href="https://github.com/worxbend/worxpad/blob/main/docs/reference-device.md">docs/reference-device.md</a>.</p>
+      </div>
+    </section>
+
+    <section id="design" class="chapter" aria-labelledby="design-title">
+      <div class="column">
+        <h2 id="design-title">Design</h2>
+        <p class="lede">A wedge, 128.4 by 85.2&nbsp;mm and 20.6&nbsp;mm at its highest point, made of two milled shells. The renders come from the case model in Blender. The board in them is the routed board; the parts on it are reference shapes. Materials and colours are proposals.</p>
+
+        <figure class="turntable">
+          <video controls muted loop playsinline preload="metadata" width="800" height="536"
+                 aria-label="Turntable: the CNC unit turning once on black">
+            <source src="images/renders/turntable.mp4" type="video/mp4">
+          </video>
+          <figcaption>Turntable, 72 frames. <a href="images/renders/turntable.mp4">Download the MP4</a>.</figcaption>
+        </figure>
+
+        <div class="gallery">
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/top-960.webp 960w, images/renders/top-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/top.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="Plan view square to the deck: four by four keys, the knob plinth, the display under its lens and two round buttons.">
+            </picture>
+            <figcaption>From above.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/side-960.webp 960w, images/renders/side-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/side.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="Left side, orthographic: the wedge rising from front to rear, standing on its feet.">
+            </picture>
+            <figcaption>The wedge, from the left.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/exploded-960.webp 960w, images/renders/exploded-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/exploded.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="Exploded view: keycaps, knobs, top shell, switches on the circuit board, battery and bottom shell.">
+            </picture>
+            <figcaption>Exploded: caps, knobs, top shell, board, battery, bottom shell.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/underside-960.webp 960w, images/renders/underside-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/underside.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="Underside of the bottom shell with four round feet.">
+            </picture>
+            <figcaption>Underneath, on four round feet.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/closeup-960.webp 960w, images/renders/closeup-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/closeup.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="Close-up of the two knobs, the display showing the Edit layer and the two round buttons.">
+            </picture>
+            <figcaption>Knobs, display and buttons.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/renders/fdm-960.webp 960w, images/renders/fdm-1920.webp 1920w" sizes="(min-width: 48rem) 36rem, 100vw">
+              <img src="images/renders/fdm.png" width="1920" height="1280" loading="lazy" decoding="async"
+                   alt="The FDM prototype in light PETG with black keycaps.">
+            </picture>
+            <figcaption>The PETG prototype for a test print.</figcaption>
+          </figure>
+        </div>
+
+        <h3>From the case model</h3>
+        <p>Quick pictures from the case package's own renderer. The lens is drawn opaque, so the display under it does not show. Bought parts are reference shapes, not vendor models. <a href="https://github.com/worxbend/worxpad/blob/main/cad/README.md">Case notes and checks</a>.</p>
+        <div class="gallery gallery-3">
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/hero-700.webp 700w, images/cad/hero-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/hero.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="Case model from the front left: black shell, white keycaps, two knobs, the display lens drawn opaque and two round buttons.">
+            </picture>
+            <figcaption>Case model, assembled.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/exploded-700.webp 700w, images/cad/exploded-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/exploded.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="Case model pulled apart: screws, keycaps and knobs, top shell, switches on the green board, battery and bottom shell.">
+            </picture>
+            <figcaption>Parts in their stacking order.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/underside-700.webp 700w, images/cad/underside-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/underside.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="Bottom shell of the case model seen from below, with four round feet.">
+            </picture>
+            <figcaption>Underside.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/side_profile-700.webp 700w, images/cad/side_profile-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/side_profile.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="Case model from the left: the wedge rising from front to rear on its feet.">
+            </picture>
+            <figcaption>Side profile.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/section_display_usb-700.webp 700w, images/cad/section_display_usb-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/section_display_usb.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="Cut through the display, the lens and the USB-C port.">
+            </picture>
+            <figcaption>Section through the display and the USB-C port.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/cad/print_plate-700.webp 700w, images/cad/print_plate-1400.webp 1400w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/cad/print_plate.png" width="1400" height="950" loading="lazy" decoding="async"
+                   alt="FDM parts in grey laid out on two 180 millimetre print beds: the bottom shell on one, the top shell and small parts on the other.">
+            </picture>
+            <figcaption>FDM parts on 180&nbsp;mm beds.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="board" class="chapter" aria-labelledby="board-title">
+      <div class="column">
+        <h2 id="board-title">The board</h2>
+        <p class="lede">A four-layer board with parts on both faces: 107 parts, 74 nets, 61 of them placed by the board house. It is placed and routed by a generator in the repository and passes KiCad's design-rule check with 0 errors.</p>
+        <p>The radio module's PCB antenna sits in a bay with no copper or metal near it, behind a plastic insert in the right wall of the case. These pictures show the routed board. Parts are block models with nominal heights, not the makers' 3D models. <a href="https://github.com/worxbend/worxpad/blob/main/pcb/README.md">PCB notes</a>.</p>
+        <div class="gallery gallery-3">
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/bare-top-784.webp 784w, images/pcb/bare-top-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/bare-top.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Bare board, top face: sixteen switch footprints in a four by four grid on the left and the routing on the right.">
+            </picture>
+            <figcaption>Bare board, top.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/bare-bottom-784.webp 784w, images/pcb/bare-bottom-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/bare-bottom.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Bare board, bottom face: hot-swap socket pads in a four by four grid and the pads for the machine-placed parts.">
+            </picture>
+            <figcaption>Bare board, bottom.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/assembled-angle-784.webp 784w, images/pcb/assembled-angle-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/assembled-angle.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Populated board seen at an angle from the key side, with keycaps and encoders.">
+            </picture>
+            <figcaption>Populated, key side.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/assembled-top-784.webp 784w, images/pcb/assembled-top-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/assembled-top.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Populated board seen square from the top: sixteen keycaps, two encoders and two button switches.">
+            </picture>
+            <figcaption>Populated, from above.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/assembled-bottom-784.webp 784w, images/pcb/assembled-bottom-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/assembled-bottom.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Populated board seen square from the bottom: hot-swap sockets and the machine-placed parts.">
+            </picture>
+            <figcaption>Populated, from below.</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="images/pcb/assembled-underside-784.webp 784w, images/pcb/assembled-underside-1568.webp 1568w" sizes="(min-width: 64rem) 23rem, (min-width: 48rem) 50vw, 100vw">
+              <img src="images/pcb/assembled-underside.png" width="1568" height="1176" loading="lazy" decoding="async"
+                   alt="Populated board seen at an angle from the underside, with the sockets and the machine-placed parts.">
+            </picture>
+            <figcaption>Populated, underside at an angle.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Copper layers</h3>
+        <p>Four layers: signals on the top, ground on In1, 3.3&nbsp;V on In2, signals on the bottom, with short signal hops on both inner layers. Each drawing opens at full size.</p>
+        <div class="gallery gallery-4 plates">
+          <figure>
+            <a class="plate" href="images/pcb/copper-top.svg"><img src="images/pcb/copper-top.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Top copper layer drawn in red: switch matrix traces and the dense routing round the module."></a>
+            <figcaption>Top</figcaption>
+          </figure>
+          <figure>
+            <a class="plate" href="images/pcb/copper-ground.svg"><img src="images/pcb/copper-ground.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Inner layer 1, a ground plane over the whole board with a few short signal hops."></a>
+            <figcaption>In1, ground</figcaption>
+          </figure>
+          <figure>
+            <a class="plate" href="images/pcb/copper-3v3.svg"><img src="images/pcb/copper-3v3.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Inner layer 2, the 3.3 volt plane with a few short signal hops."></a>
+            <figcaption>In2, 3.3&nbsp;V</figcaption>
+          </figure>
+          <figure>
+            <a class="plate" href="images/pcb/copper-bottom.svg"><img src="images/pcb/copper-bottom.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Bottom copper layer drawn in blue: power, charger and display connector routing."></a>
+            <figcaption>Bottom</figcaption>
+          </figure>
+        </div>
+
+        <h3>Assembly drawings and schematic</h3>
+        <div class="gallery plates">
+          <figure>
+            <a class="plate" href="images/pcb/assembly-top.svg"><img src="images/pcb/assembly-top.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Assembly drawing of the top face: part outlines with their reference designators."></a>
+            <figcaption>Assembly, top face.</figcaption>
+          </figure>
+          <figure>
+            <a class="plate" href="images/pcb/assembly-bottom.svg"><img src="images/pcb/assembly-bottom.svg" width="456" height="303" loading="lazy" decoding="async"
+                 alt="Assembly drawing of the bottom face: part outlines with their reference designators."></a>
+            <figcaption>Assembly, bottom face.</figcaption>
+          </figure>
+        </div>
+        <figure class="schematic">
+          <a class="plate" href="images/pcb/schematic.pdf"><img src="images/pcb/schematic.svg" width="2245" height="1587" loading="lazy" decoding="async"
+               alt="The schematic on one A2 sheet: module, power path, charger, gauge, display connector, matrix and encoders."></a>
+          <figcaption>The schematic, one A2 sheet generated with KiCad 10. ERC: 0 errors, 0 warnings. <a href="images/pcb/schematic.pdf">Open the PDF</a>.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="firmware" class="chapter" aria-labelledby="firmware-title">
+      <div class="column">
+        <h2 id="firmware-title">Firmware and keymap</h2>
+        <div class="split">
+          <div>
+            <p class="lede">ZMK on the nRF52840: USB and Bluetooth LE with four host profiles, four layers, and ZMK Studio over USB and Bluetooth for changing keys without a rebuild.</p>
+            <p>The display shows the active layer: the knob functions at the top, the 16 key labels in a grid, and a status bar with the layer name, the output and the battery level. The labels are read from the live keymap, so a change made in Studio shows after the next layer change. After 30&nbsp;seconds without input the backlight goes off and the panel sleeps.</p>
+            <p>The firmware builds. It has never run on a worxpad, because no board exists yet. There is no clock and no host widget channel yet. <a href="https://github.com/worxbend/worxpad/blob/main/firmware/README.md">Firmware notes</a>.</p>
+          </div>
+          <figure class="screen">
+            <img src="images/renders/status_screen.png" width="720" height="720" loading="lazy" decoding="async"
+                 alt="Status screen drawing: knob functions Undo / Redo and Zoom- / Zoom+ at the top, sixteen key labels of the Edit layer in a four by four grid, and a bar with Edit, BT 1 and 84 %.">
+            <figcaption>The status screen, drawn with Pillow from the layout and colours in the firmware source. Not a capture from a panel.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Stock keymap</h3>
+        <p>Four layers. The right button steps Edit, Nav, Media. Hold the left button for System. Shortcuts use Ctrl. Rows run from the rear row to the front. <a href="https://github.com/worxbend/worxpad/blob/main/docs/keymap.md">Full keymap tables</a>.</p>
+        <div class="layers">
+          <table class="keygrid">
+            <caption>Edit <span>Left knob: undo, redo; push Save. Right knob: zoom out, in; push Fit.</span></caption>
+            <tbody>
+              <tr><td>Esc</td><td>Undo</td><td>Redo</td><td>Save as</td></tr>
+              <tr><td>Cut</td><td>Copy</td><td>Paste</td><td>Del</td></tr>
+              <tr><td>Shift</td><td>Ctrl</td><td>Alt</td><td>Space</td></tr>
+              <tr><td>All</td><td>Find</td><td>Tab</td><td>Enter</td></tr>
+            </tbody>
+          </table>
+          <table class="keygrid">
+            <caption>Nav <span>Left knob: left, right; push Space. Right knob: up, down; push Enter.</span></caption>
+            <tbody>
+              <tr><td>Home</td><td>Up</td><td>End</td><td>PgUp</td></tr>
+              <tr><td>Left</td><td>Down</td><td>Right</td><td>PgDn</td></tr>
+              <tr><td>Shift</td><td>Ctrl</td><td>Alt</td><td>Tab</td></tr>
+              <tr><td>Bksp</td><td>Prev tab</td><td>Next tab</td><td>Enter</td></tr>
+            </tbody>
+          </table>
+          <table class="keygrid">
+            <caption>Media <span>Left knob: volume; push Mute. Right knob: screen brightness; push Play.</span></caption>
+            <tbody>
+              <tr><td>Prev</td><td>Play</td><td>Next</td><td>Mute</td></tr>
+              <tr><td>Vol-</td><td>Vol+</td><td>Bright-</td><td>Bright+</td></tr>
+              <tr><td>F13</td><td>F14</td><td>F15</td><td>F16</td></tr>
+              <tr><td>F17</td><td>F18</td><td>F19</td><td>F20</td></tr>
+            </tbody>
+          </table>
+          <table class="keygrid">
+            <caption>System <span>Hold the left button. The knobs keep the layer below.</span></caption>
+            <tbody>
+              <tr><td>Edit</td><td>Nav</td><td>Media</td><td>Studio unlock</td></tr>
+              <tr><td>BT1</td><td>BT2</td><td>BT3</td><td>BT4</td></tr>
+              <tr><td>BT prev</td><td>BT next</td><td>BT clear</td><td>USB / BT</td></tr>
+              <tr><td>USB</td><td>BT</td><td>Reset</td><td>Boot&shy;loader</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="specs" class="chapter" aria-labelledby="specs-title">
+      <div class="column">
+        <h2 id="specs-title">Specifications</h2>
+        <p>Taken from <code>board.toml</code> and the design files. Nothing here is measured on a real unit.</p>
+        <dl class="spec-list">
+          <div><dt>Radio and MCU</dt><dd>u-blox BMD-340-A-R module (nRF52840). PCB trace antenna in a metal-free bay behind a POM insert in a 30&nbsp;mm slot in the right wall</dd></div>
+          <div><dt>Keys</dt><dd>16 Kailh Choc V2 class switches at 19.05&nbsp;mm pitch, hot-swap sockets. 5&nbsp;×&nbsp;4 diode matrix: 16 keys, 2 knob pushes, 2 buttons</dd></div>
+          <div><dt>Knobs</dt><dd>2 × Bourns PEC12R-4215F-S0024, 24 detents, push</dd></div>
+          <div><dt>Buttons</dt><dd>2 × Omron B3FS-1000P under round caps</dd></div>
+          <div><dt>Display</dt><dd>1.3&nbsp;inch 240&nbsp;×&nbsp;240 IPS (ST7789V) on a 24-pin FPC, PWM backlight, painted PMMA lens</dd></div>
+          <div><dt>Storage</dt><dd>16&nbsp;MB QSPI NOR flash, reserved for icons; the firmware only puts it to sleep today</dd></div>
+          <div><dt>Power</dt><dd>1,200&nbsp;mAh LiPo with protection, TI BQ24072 charger with power path (about 400&nbsp;mA), TPS7A02 3.3&nbsp;V LDO, MAX17048 gauge, slide switch on the LDO enable</dd></div>
+          <div><dt>USB</dt><dd>USB-C receptacle, ESD array, 0.75&nbsp;A PTC fuse</dd></div>
+          <div><dt>PCB</dt><dd>4 layers (In1 ground, In2 3.3&nbsp;V), parts on both faces, built in a routed frame panel with mouse-bite tabs</dd></div>
+          <div><dt>Case</dt><dd>Two CNC 6061 shells, bead blast and black anodise. 128.4&nbsp;×&nbsp;85.2&nbsp;mm, 20.6&nbsp;mm at the wedge apex. An FDM PETG variant for a test print</dd></div>
+          <div><dt>Firmware</dt><dd>ZMK: 4 Bluetooth profiles, USB, ZMK Studio over USB and Bluetooth, 4 layers, own status screen. No clock and no widget channel yet</dd></div>
+          <div><dt>Updates</dt><dd>Adafruit UF2 bootloader, flashed once over SWD; then <code>worxpad.uf2</code> by drag and drop</dd></div>
+          <div><dt>Status</dt><dd>Design files only. Not built</dd></div>
+        </dl>
+        <p><a href="https://github.com/worxbend/worxpad/blob/main/docs/hardware.md">Hardware notes</a>: the circuit in words, pin map, power tree, layer stack and mechanical stack.</p>
+      </div>
+    </section>
+
+    <section id="status" class="chapter status" aria-labelledby="status-title">
+      <div class="column">
+        <h2 id="status-title">Where it stands</h2>
+        <p class="lede">Everything here is design files and their automatic checks. A passing check says the files agree with each other. It says nothing about a real part.</p>
+        <table class="status-table">
+          <caption>Copied from the status table in the repository README, checked on 2026-11-13 and 2026-11-14</caption>
+          <thead><tr><th scope="col">Part</th><th scope="col">State</th><th scope="col">How it was checked</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Research and decisions</th><td>Done. Seven decision records, a parts summary, a reference dossier; 40 design decisions.</td><td>Read; <a href="https://github.com/worxbend/worxpad/blob/main/docs/decisions.md">docs/decisions.md</a></td></tr>
+            <tr><th scope="row">Specification</th><td>Done. <code>board.toml</code>: outline, keys, controls, display, module, ports, battery, screws, stack-up, pin map, panel.</td><td><code>python3 tools/check_spec.py</code>, 92 of 92 pass</td></tr>
+            <tr><th scope="row">Circuit and schematic</th><td>Done. 107 parts, 74 nets, 61 machine-placed (31 LCSC codes). ERC: 0 errors, 0 warnings. 309 pins match the circuit.</td><td><code>make pcb-test</code>, 73 unit tests pass</td></tr>
+            <tr><th scope="row">Pin map</th><td>Circuit and firmware agree with <code>board.toml</code>.</td><td><code>python3 tools/check_pins.py</code>, 0 circuit failures, 12 of 12 firmware checks</td></tr>
+            <tr><th scope="row">PCB layout</th><td>Routed. 107 parts on 4 layers. 1,980 tracks, 280 vias, 0 pads unrouted. DRC: 0 errors, 0 unconnected, 0 schematic differences. No copper in the antenna keep-out.</td><td><code>make pcb-place</code> and <code>make pcb-check</code>, exit 0 (2026-11-14)</td></tr>
+            <tr><th scope="row">Board order files</th><td>Written. JLCPCB and PCBWay packages, 61 placements in 30 BOM lines, panel 135.65&nbsp;×&nbsp;95.30&nbsp;mm with 0 DRC errors.</td><td><code>make pcb-fab</code>, exit 0 (2026-11-14)</td></tr>
+            <tr><th scope="row">Case</th><td>Model done. 177 of 177 limit checks pass. G1 and G2 pass only with a proposed bottoming tap that D6 does not yet record. 24 of 24 parts valid, 0 clashes in 666 (CNC) and 703 (FDM) part pairs.</td><td><code>make cad-check</code>, exit 0</td></tr>
+            <tr><th scope="row">Firmware</th><td>Builds. FLASH 391,548&nbsp;B of 811,008&nbsp;B (48.28&nbsp;%), RAM 122,322&nbsp;B of 262,144&nbsp;B (46.66&nbsp;%). UF2 783,360&nbsp;B.</td><td><code>bash firmware/build.sh</code>, exit 0</td></tr>
+            <tr><th scope="row">Pictures</th><td>Done. 7 stills, the status screen and a 72-frame turntable; PCB and case pictures. The PCB pictures show the routed board. The renders use the routed board's STEP for the board; its parts are still the case package's reference shapes.</td><td><code>make renders</code>, exit 0 in 1,014&nbsp;s (2026-11-14)</td></tr>
+            <tr><th scope="row">Order package</th><td>Files complete. 34 files listed, 0 problems; 30 BOM lines, 61 placements. The gates below are still open.</td><td><code>python3 tools/order_package.py</code>, exit 0 (2026-11-14)</td></tr>
+            <tr><th scope="row">Documentation</th><td>Every path and anchor named in Markdown exists.</td><td><code>make docs-check</code></td></tr>
+            <tr class="not-yet"><th scope="row">Real hardware</th><td><strong>None.</strong> No board, no print, no flash.</td><td>-</td></tr>
+          </tbody>
+        </table>
+        <p class="note">The README holds the current numbers; if they differ from this page, the README is right. <a href="https://github.com/worxbend/worxpad#status">Status in the README</a>.</p>
+
+        <h3>Gates before anyone orders</h3>
+        <ol class="gates">
+          <li><strong>PCB review.</strong> A person must review the signal hops on the inner layers, the ground island under the module and the vias under the module (<a href="https://github.com/worxbend/worxpad/blob/main/pcb/README.md#what-a-person-still-has-to-look-at">PCB notes</a>).</li>
+          <li><strong>VBUS on module pad 66 while 3V3 is off</strong> is not read in the nRF52840 Product Specification (<a href="https://github.com/worxbend/worxpad/blob/main/docs/decisions.md#d12-vbus-on-module-pad-66-while-the-rail-is-off">D12</a>).</li>
+          <li><strong>G1 and G2 thread.</strong> The check passes (tip 0.45&nbsp;mm against 0.4) only with a proposed bottoming tap that D6 does not yet record. Needs a decision by the owner (<a href="https://github.com/worxbend/worxpad/blob/main/docs/decisions.md#d6-two-ground-screws-with-the-enclosure-numbers">D6</a>).</li>
+          <li><strong>Knob and RF insert tolerances.</strong> The drawings exist; their insert and bore tolerances are proposals that nobody has milled or measured.</li>
+          <li><strong>USB-C plug test.</strong> Plugs with large overmoulds may not seat in the 0.25&nbsp;mm recess. A plug test gates the case order (<a href="https://github.com/worxbend/worxpad/blob/main/docs/decisions.md#d37-usb-c-recess-kept-at-025-mm-pending-a-plug-test">D37</a>).</li>
+          <li><strong><code>make order</code> exits 0</strong> (it does on 2026-11-14). Run it again after any change; it cross-checks every file the vendors receive.</li>
+        </ol>
+        <p>Electrical, mechanical, firmware and supply points are listed in full under <a href="https://github.com/worxbend/worxpad#before-you-order">Before you order</a>.</p>
+      </div>
+    </section>
+
+    <section id="build" class="chapter" aria-labelledby="build-title">
+      <div class="column">
+        <h2 id="build-title">Build one</h2>
+        <p class="lede">Nobody has done this yet, and it should not be done today: the gates above are open. The guides are written from the design files. Expect mistakes.</p>
+        <ol class="steps">
+          <li><h3>Read the open points</h3><p>Every gate must be closed first.</p><p><a href="https://github.com/worxbend/worxpad#before-you-order">Before you order</a></p></li>
+          <li><h3>Check the order package</h3><p><code>make order</code> must exit 0.</p><p><a href="https://github.com/worxbend/worxpad/blob/main/production/README.md">Order index</a></p></li>
+          <li><h3>Order the board</h3><p>JLCPCB step by step, every form field with its reason; PCBWay as the fallback. Buy what the board house does not place.</p><p><a href="https://github.com/worxbend/worxpad/blob/main/docs/ordering.md">JLCPCB guide</a> <a href="https://github.com/worxbend/worxpad/blob/main/docs/ordering-pcbway.md">PCBWay guide</a> <a href="https://github.com/worxbend/worxpad/blob/main/docs/parts.md">Parts</a></p></li>
+          <li><h3>Make the case</h3><p>Print the PETG prototype and the coupons first. Then the CNC shells, knobs and RF insert, the resin caps and the lens.</p><p><a href="https://github.com/worxbend/worxpad/blob/main/docs/printing.md">Printing guide</a> <a href="https://github.com/worxbend/worxpad/blob/main/docs/ordering-case.md">Case ordering guide</a></p></li>
+          <li><h3>Assemble, flash and test</h3><p>A bench test at each step. The bootloader goes on once over SWD, then <code>worxpad.uf2</code> by drag and drop.</p><p><a href="https://github.com/worxbend/worxpad/blob/main/docs/assembly.md">Assembly guide</a> <a href="https://github.com/worxbend/worxpad/blob/main/docs/flashing.md">Flashing guide</a></p></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="column">
+      <p>worxpad by worxbend. Source, issues and changes: <a href="https://github.com/worxbend/worxpad">github.com/worxbend/worxpad</a>.</p>
+      <p>Every picture on this page is generated by code in the repository. None is a photo, because no worxpad exists yet.</p>
+      <p>Code: GPL-3.0-or-later (<a href="https://github.com/worxbend/worxpad/blob/main/LICENSE">LICENSE</a>). Hardware: CERN-OHL-S-2.0 (<a href="https://github.com/worxbend/worxpad/blob/main/LICENSE-HARDWARE">LICENSE-HARDWARE</a>). The owner has to confirm this choice.</p>
+    </div>
+  </footer>
+</body>
+</html>
