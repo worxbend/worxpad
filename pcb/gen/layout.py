@@ -22,7 +22,7 @@ import circuit
 import models
 import schematic
 from circuit import BOARD_SPEC, BOTTOM, GND, NO_NET, V3, Part
-from router import Rules
+from router import BACK, FRONT, GROUND_INNER, INNER, Rules
 
 STOCK_FOOTPRINTS = Path("/usr/share/kicad/footprints")
 PROJECT_FOOTPRINTS = circuit.REPO_ROOT / "pcb" / "lib"
@@ -40,7 +40,9 @@ EDGE_CLEARANCE = BOARD_SPEC["case"]["copper_to_edge"]
 SILK_EDGE_CLEARANCE = 0.2
 ROUTING_RULES = Rules(track_width=TRACK_WIDTH, wide_track_width=POWER_TRACK_WIDTH, clearance=CLEARANCE,
                       via_diameter=VIA_DIAMETER, via_drill=VIA_DRILL, edge_clearance=EDGE_CLEARANCE,
-                      search_limit=1_000_000)   # a failed search then costs seconds, not tens of seconds
+                      search_limit=200_000,   # then the coarse-map search (router._find_way) takes over
+                      # short hops on In2.Cu, the 3.3 V plane, and dearer ones on In1.Cu, the ground plane (route.py)
+                      layers=(FRONT, BACK, INNER, GROUND_INNER))
 
 # Parts board.toml gives no position: (x, y, rotation in degrees), top-view board coordinates.
 # Rotation is the part's own turn before the bottom-face mirror (see _place).

@@ -7,9 +7,10 @@ The PCB is generated. Nothing in `pcb/kicad/` is drawn by hand: `pcb/gen/` write
 footprints and symbols, and the pictures from two inputs, `board.toml` (positions, pin map) and
 `pcb/gen/circuit.py` (parts and nets).
 
-State on 2026-11-13: circuit, footprints, symbols and schematic are done (PCB part 1). The board is placed
-and **partly routed: 36 pads on 25 nets are not connected**, so the board is **not done** and no order files
-exist yet (the fab step writes them to pcb/fab and pcb/production once the board is finished). See [Board](#board-pcb-part-2).
+State on 2026-11-14: circuit, footprints, symbols and schematic are done (PCB part 1). The board is placed
+and **routed**: `make pcb-place` reports no unrouted pad, and `make pcb-check` finds 0 violations, 0 unconnected
+items and 0 schematic parity issues. The fab step has not been run on the routed board yet, so pcb/fab and
+pcb/production are still not written. See [Board](#board-pcb-part-2) and [Routing](#routing).
 
 <a href="../docs/images/pcb/schematic.pdf"><img src="../docs/images/pcb/schematic.svg" alt="schematic, one A2 sheet"></a>
 
@@ -20,9 +21,9 @@ The schematic, one A2 sheet in 14 blocks. [PDF](../docs/images/pcb/schematic.pdf
 
 | Command | Needs | What it does |
 |---|---|---|
-| `make pcb-test` | Python 3.11+ | Netlist self-checks, the 3V3 capacitance sum (D14), `tools/check_pins.py`, 63 unit tests. |
+| `make pcb-test` | Python 3.11+ | Netlist self-checks, the 3V3 capacitance sum (D14), `tools/check_pins.py`, 73 unit tests. |
 | `pcb/kicad.sh python3 pcb/gen/build.py schematic` | Docker | Footprints written and read back, schematic, ERC, netlist compare, PDF and SVG, block models. About 7 s. |
-| `make pcb-place` | Docker | Schematic step, placed and routed board, planes filled, DRC with schematic parity, RF keep-out copper check, pictures in `docs/images/pcb/`, `pcb/routing.txt`. About 2 min on an idle machine. Fails while any pad is unrouted. |
+| `make pcb-place` | Docker | Schematic step, placed and routed board, planes filled, DRC with schematic parity, RF keep-out copper check, pictures in `docs/images/pcb/`, `pcb/routing.txt`. About 6 min (372 s on 2026-11-14, another job running). Fails while any pad is unrouted. |
 | `pcb/kicad.sh python3 pcb/gen/build.py order` | Docker | Routes again and again, moving walled-in nets to the front; writes the best order to `pcb/gen/route_order.txt`. Several minutes per round. |
 | `make pcb-fab` | Docker | Gerbers, drills, panel, JLCPCB and PCBWay files, board STEP. Refuses a board whose last DRC has an error, an unconnected item or a parity finding. |
 | `pcb/kicad.sh python3 pcb/gen/build.py fab-draft` | Docker | The same files under `pcb/.build/draft/`, for testing the generator on an unfinished board. Never an order. |
@@ -40,15 +41,15 @@ The schematic, one A2 sheet in 14 blocks. [PDF](../docs/images/pcb/schematic.pdf
 | `pcb/gen/sheet_layout.py` | Where each part sits on the sheet and which wires are drawn. Data only. |
 | `pcb/gen/symlib.py`, `pcb/gen/sexpr.py` | Read KiCad symbol libraries; draw box symbols. From macropad, unchanged. |
 | `pcb/gen/layout.py` | Placement: board.toml positions, the spots board.toml leaves open, outline, planes, placement asserts. |
-| `pcb/gen/route.py` | Routing order and the copper writer. |
-| `pcb/gen/router.py` | Grid router on the two outer layers, from macropad, with `close_outside` for this outline. |
-| `pcb/gen/route_order.txt` | Nets routed first. Seeded by hand with the key matrix. |
+| `pcb/gen/route.py` | Routing order and stages, rip-up and reroute, plane island repair, the copper writer. |
+| `pcb/gen/router.py` | Grid router from macropad: outer layers plus short hops on both inner layers, escapes, rip-up with history costs, meanders, plane area check, `close_outside` for this outline. |
+| `pcb/gen/route_order.txt` | Nets routed first: the key matrix, seeded by hand. |
 | `pcb/gen/fab.py` | Gerbers, drills, the D23 panel, BOM, CPL with the rotation table, PCBWay files, STEP. |
 | `pcb/kicad/worxpad.kicad_pcb` | Generated board. `pcb/kicad/worxpad.kicad_dru`: the two edge-clearance exceptions. |
 | `pcb/routing.txt` | Generated routing report: tracks, vias, length per net, unrouted pads. |
 | `pcb/gen/models.py` | Block 3D models (VRML) per footprint type, into `pcb/lib/3d/`. |
 | `pcb/gen/build.py` | The steps above. |
-| `pcb/gen/test_*.py` | Router (16), schematic writer (21) and circuit, footprint and pin-map tests (26). |
+| `pcb/gen/test_*.py` | Router (26), schematic writer (21) and circuit, footprint and pin-map tests (26). |
 | `pcb/lib/SOURCES.txt` | Where every project footprint number comes from. |
 | `pcb/kicad/` | Generated KiCad 10 project: schematic, library tables. |
 | `pcb/netlist.txt` | Generated netlist, one line per net. |
@@ -97,17 +98,19 @@ area, FH34SRJ-24S, TYPE-C-31-M-13C, Choc V2 hot-swap, PEC12R-4 and the plated G 
 | Every project footprint loads in pcbnew with the pads that were meant | `build.write_footprints` | pass, 6 footprints |
 | `kicad-cli sch erc --severity-all` | `build.py schematic` | 0 errors, 0 warnings |
 | KiCad's exported netlist against `circuit.py`, pin by pin | `build.py schematic` | pass, 309 pins, 23 open pins |
-| Unit tests | `make pcb-test` | 63 pass |
+| Unit tests | `make pcb-test` | 73 pass (2026-11-14) |
 | Placement asserts: faces, antenna end and keep-out, J2 contact 1 and entry, socket mirroring, J1 edge and mouth, J3 mouth and body centre, SW18 actuator, hole keep-outs, J4 low zone, RF bay | `layout.check_placement` | pass |
 | Router closes the USB notch and keeps the board middle open | `route.new_router` | pass |
-| Routing | `build.py place` | **36 pads unrouted on 25 nets**; 1,137 tracks, 176 vias, 2,267 mm (2026-11-14) |
-| `kicad-cli pcb drc --severity-all --schematic-parity` | `build.py place` | **0 errors, 39 unconnected**, 0 parity findings, 25 warnings: 11 accepted (`ACCEPTED_DRC_WARNINGS`), 14 dangling escape stubs of the unrouted nets |
+| Routing | `build.py place` | pass: 0 pads unrouted; 1,980 tracks, 280 vias, 3,303 mm, of it 89 mm on In1.Cu and 119 mm on In2.Cu (2026-11-14). Commit 2d364fd left 36 pads on 25 nets |
+| `kicad-cli pcb drc --severity-all --schematic-parity` | `build.py place` | pass: 0 errors, 0 unconnected, 0 parity findings, 11 warnings, all accepted (`ACCEPTED_DRC_WARNINGS`) (2026-11-14) |
+| `kicad-cli pcb drc --severity-error --schematic-parity --exit-code-violations` | `make pcb-check` | pass: 0 violations, 0 unconnected items, 0 schematic parity issues (2026-11-14) |
+| Crystal tracks within 8 mm, USB D+ and D- within 2 mm, no supply track on an inner layer | `route.check_sensitive_lengths` | pass: XL1 7.83 mm, XL2 6.55 mm, D+ 60.58 mm, D- 60.52 mm (2026-11-14) |
 | No copper of any kind inside the RF keep-out on any of the 4 layers | `build.check_keepout_copper` | pass (X 119.85 to 124.45, Y 42.90 to 63.10) |
 | Five thermal vias in U3's exposed pad; the 8-via fence outside both ends of the RF keep-out, each inside the ground fill on F.Cu, In1.Cu and B.Cu | `build.check_ground_vias` | pass (2026-11-14). A copy with one fence via removed failed |
 | Stack-up written and kept by pcbnew, layers and thicknesses as `layout.STACKUP`, sum within 0.01 mm of `pcb.thickness` | `layout.check_stackup`, `layout.stackup_text` | pass (2026-11-14). A copy with the core changed failed |
 | `+` nearer J3 pin 1, `-` nearer pin 2; no silk overlap (DRC) | `layout.check_polarity_marks` | pass (2026-11-14) |
 | Board STEP envelope equals `pcb.thickness` within 0.02 mm | `fab.check_step_thickness` | pass on `fab-draft`: 1.616 mm. Without the mask skins it is 1.562 mm and fails |
-| Order files from the board | `build.py fab` | refused: board not finished. `fab-draft` ran: 61 placements, 30 BOM lines, panel DRC 0 errors and the board's 39 unconnected, nearest tab 14.4 mm from the antenna strip, STEP with 22 model types |
+| Order files from the board | `build.py fab` | not run on the routed board. Earlier `fab-draft` on the unfinished board: 61 placements, 30 BOM lines, panel DRC 0 errors and that board's 39 unconnected, nearest tab 14.4 mm from the antenna strip, STEP with 22 model types |
 
 ERC runs with KiCad's default rule settings, which ignore four checks: single global label, four-way junction,
 simulation model and footprint filter. Any other error fails the build, and so does any warning that is not
@@ -127,18 +130,25 @@ the VBUS_SYS power flag removed failed on `power_pin_not_driven`, so the gate is
 - **Encoder direction:** A and B follow KiCad's stock PEC12R pattern; if the knob counts backwards, swap them
   in firmware, not on the board.
 - **Choc socket pads** have no paste: they are hand-soldered.
-- No impedance calculation for the USB pair was made. Tracks are 0.10 mm; D+ is 56.2 mm and D- 54.0 mm, with
-  vias where J1's alternating pads force them.
-- **Unrouted nets:** BAT (U3.2, U3.3), USB_DP (U6.3), the QSPI bus (U2 pins 1, 2, 3, 5, 6, 7), I2C_SDA, I2C_SCL,
-  CHG_N, PGOOD_N, CHG_TS, LDO_EN, GAUGE_ALRT_N, SWDIO, SWCLK, RESET_N, LCD_RESET, LCD_TE, BL_K, BL_PWM, ENC_L_A,
-  ENC_L_B, ENC_R_A. Exact pads in `pcb/routing.txt`. The control column between the charger, the flash and
-  the module is the bottleneck; the greedy router has no rip-up.
+- No impedance calculation for the USB pair was made. Tracks are 0.10 mm; D+ is 60.58 mm and D- 60.52 mm
+  (D- carries a meander to match), with vias where J1's alternating pads force them.
+- **Signals on the inner layers:** 87 track pieces (89 mm) on In1.Cu and 112 (119 mm) on In2.Cu, all signals
+  (list in [Routing](#result)). They cut the planes locally. Both planes stay whole under
+  the USB pair and the crystal and the supply nets stay off them. In2.Cu fills as one piece; In1.Cu has one
+  8.4 mm2 island under the module's middle, joined to ground only through vias. The return path of a signal
+  that crosses a cut was not analysed. Fast nets on the inner layers: QSPI_IO0 (9.5 mm) and QSPI_IO2 (24.0 mm)
+  on In1.Cu, QSPI_CSN, QSPI_IO1 and QSPI_IO3 (17.3 mm) on In2.Cu, LCD_DC (11.1 mm) on In1.Cu.
+- **Via ring round the module:** the module escapes put a via about 1 mm outside the pad field for most outer
+  pads, about 1.1 mm apart, and a group of vias under the module's middle. The planes fill round them; check
+  the vias under the module against the BMD-340's keep-out guidance, which was not re-read for this.
 - **Router rules:** 0.10 mm track and space everywhere (JLCPCB 4-layer limit 0.09), needed between the
-  BMD-340's inner pad rows; 0.30 mm for the supply nets; 0.6/0.3 mm vias, some under the module.
+  BMD-340's inner pad rows; 0.30 mm for the supply nets; 0.6/0.3 mm vias, some under the module; short signal
+  hops on In2.Cu and In1.Cu.
 - **Layout moves from board.toml guesses:** U6 to Y 11.2, J4 to Y 76.6 (`layout.MOVED`, reasons there).
   U2 is turned 90 degrees. Encoder pin pads are 1.6 mm round because J1's shell slots collide with the
   stock 1.8 mm pads at encoder pin rows Y 7.60.
-- **Planes:** In1.Cu ground, In2.Cu 3.3 V over the whole board. Zones connect pads solid, no thermal spokes.
+- **Planes:** In1.Cu ground, In2.Cu 3.3 V over the whole board, cut locally by the signal hops above. Zones
+  connect pads solid, no thermal spokes.
 - **Rotation table** in `fab.py`: only the SOT-23-5/6 and SOIC-8 rows come from worxboard; check every
   designator in JLCPCB's placement preview.
 
@@ -178,6 +188,92 @@ stock connector outline; `layout.check_polarity_marks` asserts each mark is near
 **Panel (D23).** `fab.py` draws the frame from `[panel]`: board outline grown by the 2.5 mm routed gap (the
 USB notch kept open), eight 5 mm tabs, one row of 0.5 mm mouse bites per tab, 0.25 mm inside the outline.
 
-**Next steps for a finished board.** Free the control column: move the charger group away from the flash, or
-put the QSPI fan-out on F.Cu by hand-placed vias; then `build.py order` until `place` reports no unrouted
-pad, then `make pcb-fab`.
+**Next steps.** `make pcb-fab` on the routed board (not run yet), then the review points under
+[Routing](#routing) and [What a person still has to look at](#what-a-person-still-has-to-look-at).
+
+## Routing
+
+Nothing here was built. The numbers come from real runs of `make pcb-place` and `make pcb-check` on
+2026-11-14; a clean DRC says the copper meets the rules, not that the board works.
+
+### Why 36 pads stayed unrouted at commit 2d364fd
+
+Diagnosis made on 2026-11-14 with the router of that commit on the same obstacles, outside KiCad (the placed
+board's pads, holes and rule areas dumped once from pcbnew; the run reproduced the commit's 1,137 tracks, 176
+vias and 36 unrouted pads exactly). For each unrouted pad a search was run on the finished board that may cross
+other nets' copper at a price (`Router.reach`); the nets it had to cross are the ones that walled the pad in.
+
+| Unrouted pads | Copper a crossing search had to cross | Cause |
+|---|---|---|
+| USB_DP U6.3 | none: a free way existed on the finished board | Search limit. VBUS (0.30 mm) was routed between the pair's first and second half and closed the short way round U6; the 1,000,000-node search gave up on the long way, and a failed search was final. |
+| BAT U3.2, U3.3 | USB_DP | Order. The USB pair, routed on the empty board, ran past the charger's BAT pins and closed them in. |
+| QSPI_CSN, QSPI_SCK, QSPI_IO0 to IO3 (U2 pins 1, 2, 3, 5, 6, 7) | VSYS, VBUS_SYS, LCD bus, ROW0 to ROW2, COL0, COL4, ENC_R_B, plane fan-outs | Escape and order. The flash pins had no escape stage; the 0.30 mm supply nets and the key matrix (head start in `pcb/gen/route_order.txt`) crossed the control column first and boxed the flash in. |
+| CHG_N (U3.9, TP7), PGOOD_N U3.7, CHG_TS U3.1, LDO_EN U4.3 | VSYS, VBUS_SYS, BAT, USB pair, LCD_CS, LCD_SCK, ROW0, ROW1 | Order. The charger's and the LDO's signal pins sit between supply pins; the supply rings went first and these long nets came last. |
+| I2C_SDA, I2C_SCL (U5, R8, R9, TP9, TP10), GAUGE_ALRT_N U5.5 | BAT, VSYS, VBUS_SYS, ROW1, ROW3, BL_PWM, 3.3 V and ground fan-outs | Order. The gauge's pins were walled in by the supply tracks and the fan-out vias before the signals came. |
+| LCD_RESET J2.7, LCD_TE TP11, BL_K Q1.3, BL_PWM R2.1 | VBUS_SYS, VSYS, BL_A, LCD_CS, LCD_SCK, ROW0 to ROW2 | Order. The supply nets passed under J2 and the backlight parts first. |
+| SWDIO, SWCLK, RESET_N (J4, SW17) | COL1 to COL4, ROW2, ENC_R_B | Order. The key matrix head start boxed J4 in at the front edge. |
+| ENC_R_A, ENC_L_A, ENC_L_B (encoder pins and filter pads) | ENC_R_B, COL2, COL4, CC1, USB_DN, LCD_DC, QSPI_CSN, QSPI_IO1 | Order. Routed last; the encoder pin rows sit by the USB-C shell, and A and B cross at the pin row (each A filter pad sits in front of the B pin). |
+
+Behind all of it: one greedy pass in a fixed order and no rip-up, so the first net to take a corridor kept it.
+The module escapes only had to leave a 10.8 mm square round the module centre, which takes in none of the left
+pad column, and ended in plain track ends that later copper sealed. Two more DRC items were not routing at all:
+J2's and J3's two solder tabs each share one open-pin net in KiCad ("MP"), and DRC wants each pair joined.
+
+### What changed
+
+Placement did not move: no `board.toml` position, no part in `layout.py`. All of it is in the router.
+
+1. **Base.** The uncommitted work saved on branch `wip-route-1` (router rework) was taken as the start and
+   re-run: rip-up and reroute by branch with history costs (`Router.reach`, `rip_up_crossings`, `_Plan.repair`),
+   a second search guided by a coarse map, short hops on In2.Cu, pin escapes to vias for U3, U4, U5 and J2,
+   and `prune_dangling`. Run alone outside KiCad, it left 7 pads unrouted and the USB pair 5.8 mm apart.
+   Branch `wip-route-2` (placement moves, D41 and D42) was read but not used: this strategy keeps the placement.
+2. **Module escapes.** A pad on the outer ring of the BMD-340's pad field gets a track to a via just outside
+   the field; a deeper pad gets a via in the empty middle under the module (`route._empty_middle`,
+   `Router.escape_to_via_inside`). Innermost first, up to `MODULE_ESCAPE_ROUNDS` orders, keeping the order that
+   leaves the fewest pads walled in; no escape longer than 3 mm. Plain track ends were the main failure: the
+   copper laid later sealed them, while a via can be reached on any layer.
+3. **More pin escapes.** The flash (U2) and the backlight FET (Q1) join `ESCAPE_PARTS`.
+4. **Inner layers.** Signals may also hop on In1.Cu (four times the cost of an outer step; In2.Cu three
+   times). Both planes stay clear of tracks for 0.9 mm round the USB pair and the crystal; the supply nets
+   keep off both inner layers (`route.check_sensitive_lengths` fails on a supply track there).
+5. **Plane islands.** After routing, every 3.3 V via must sit in the main area of the In2.Cu plane
+   (`Router.plane_area`); a via cut off by inner tracks and vias gets a new fan-out, and the signals that cut it
+   off are routed again off In2.Cu (`_Plan.plane_islands`). The first routed board had one 0.6 mm2 3.3 V island.
+6. **USB lengths.** When D+ and D- differ by more than 2 mm, the shorter one gets a meander on its longest
+   straight track while the board round it is still empty (`Router.lengthen`).
+7. **Rip-up fixes.** A net ripped up whole keeps its escapes, and its next pad starts the tree again; before,
+   ripping a net threw its escape away for good. Escapes are keyed by pad name and place, since two pads can
+   share a name (J2 and J3 "MP").
+8. **Solder tabs.** An open-pin net that several pads share is routed under KiCad's own name
+   (`route._router_net`).
+
+The repair stage (rip-up and reroute) did not have to run in the final routing: the stages above connect every
+pad in the first pass. A second rip-up scheme that let every crossing push its victims (negotiated
+congestion without undo) was tried on the saved board state and diverged from 4 to about 100 unjoined pads; it
+was dropped. Putting the three last failing nets first in `route_order.txt` was tried too and left 4 or 5 pads.
+
+### Result
+
+`make pcb-place` exit 0 and `make pcb-check` exit 0 on 2026-11-14:
+
+| | Commit 2d364fd | Now |
+|---|---|---|
+| Unrouted pads | 36 on 25 nets | 0 |
+| Tracks, vias, length | 1,137, 176, 2,267 mm | 1,980, 280, 3,303 mm |
+| DRC errors, unconnected, parity | 0, 39, 0 | 0, 0, 0 |
+| DRC warnings | 25 (14 not accepted) | 11, all accepted |
+| USB D+, D- | 56.21 mm, 53.97 mm | 60.58 mm, 60.52 mm |
+| Track on In1.Cu, In2.Cu | none, none | 89 mm, 119 mm |
+| Plane fills | | In2.Cu one piece; In1.Cu one 8.4 mm2 island under the module, joined through vias |
+
+The same code run outside KiCad on the dumped obstacles gave the same 1,980 tracks, 280 vias and 3,303 mm, and
+lost no pad at any stage, so the rip-up stage had nothing to do. RF keep-out: no copper on any layer. Ground
+vias: 5 in U3's pad and the 8-via fence, each in the ground fill.
+
+Signals on the inner layers (mm): In1.Cu CHG_N 11.3, ENC_L_A 15.4, ENC_L_B 3.3, ENC_R_A 7.1, LCD_DC 11.1,
+QSPI_IO0 9.5, QSPI_IO2 24.0, SWCLK 7.1; In2.Cu BL_A 2.6, BL_PWM 3.4, ENC_L_B 2.0, ENC_R_B 8.6, I2C_SCL 17.8,
+I2C_SDA 26.0, LDO_EN 10.9, PGOOD_N 7.9, QSPI_CSN 2.7, QSPI_IO1 3.2, QSPI_IO3 11.4, RESET_N 6.7, SWCLK 5.0,
+SWDIO 6.8, J2's solder tab link 3.8.
+
+Placement did not move, so nothing changes for the case.
